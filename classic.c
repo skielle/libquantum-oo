@@ -6,9 +6,6 @@
 #include "classic.h" 
 using namespace std;
 
-		static int ipow ( int base, int exponent );
-		static int gcd ( int num1, int num2 );
-
 int QuantumClassic::ipow( int base, int exponent ) {
 	int i;
 	int r = 1;

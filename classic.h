@@ -2,6 +2,10 @@
  * Classic.h
  */
 
+#ifndef __CLASSIC_H
+
+#define __CLASSIC_H
+
 #include <math.h>
 using namespace std;
 
@@ -14,3 +18,5 @@ class QuantumClassic {
 		static int getWidth ( int n );
 		static int inverseMod ( int n, int g );
 };
+
+#endif
