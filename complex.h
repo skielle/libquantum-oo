@@ -3,13 +3,12 @@
  */
 
 #ifndef __COMPLEX_H
-
 #define __COMPLEX_H
 
 #include "config.h"
-using namespace std;
 
-class QuantumComplex {
+namespace Quantum {
+class Complex {
 	public:
 		static COMPLEX_FLOAT conjugate( COMPLEX_FLOAT a );
 		static float probability ( COMPLEX_FLOAT a );
@@ -18,5 +17,5 @@ class QuantumComplex {
 		static float imaginary ( COMPLEX_FLOAT a );
 		static float probability_inline ( COMPLEX_FLOAT a );
 };
-
+}
 #endif

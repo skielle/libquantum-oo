@@ -2,19 +2,20 @@
 #include <math.h>
 #include "complex.h"
 using namespace std;
+using namespace Quantum;
 
 int main() {
-	COMPLEX_FLOAT a = QuantumComplex::complexExponential( M_PI / 4 );
+	COMPLEX_FLOAT a = Complex::complexExponential( M_PI / 4 );
 
-	printf("a = %f %fi\n", QuantumComplex::real(a), 
-		QuantumComplex::imaginary(a));
+	printf("a = %f %fi\n", Complex::real(a), 
+		Complex::imaginary(a));
 
-	a = QuantumComplex::conjugate(a);
+	a = Complex::conjugate(a);
 
-	printf("a = %f %fi\n", QuantumComplex::real(a), 
-		QuantumComplex::imaginary(a));
+	printf("a = %f %fi\n", Complex::real(a), 
+		Complex::imaginary(a));
 
-	printf("probability(a) = %f\n", QuantumComplex::probability(a));
+	printf("probability(a) = %f\n", Complex::probability(a));
 	
 	return 0;
 }
