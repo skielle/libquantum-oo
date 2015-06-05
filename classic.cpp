@@ -1,12 +1,12 @@
 /*
- * Classic.c
+ * Classic.cpp
  */
 
 #include <math.h>
-#include "classic.h" 
-using namespace std;
-
-int QuantumClassic::ipow( int base, int exponent ) {
+#include "classic.h"
+ 
+namespace Quantum {
+int Classic::ipow( int base, int exponent ) {
 	int i;
 	int r = 1;
 
@@ -17,7 +17,7 @@ int QuantumClassic::ipow( int base, int exponent ) {
 	return r;
 }
 
-int QuantumClassic::gcd( int num1, int num2 ) {
+int Classic::gcd( int num1, int num2 ) {
 	int r;
 
 	while(num2) {
@@ -28,7 +28,7 @@ int QuantumClassic::gcd( int num1, int num2 ) {
 	return num1;
 }
 
-void QuantumClassic::fractionalApproximation ( int *n1, int *n2, int width ) {
+void Classic::fractionalApproximation ( int *n1, int *n2, int width ) {
 	float f = (float) *n1 / *n2;
 	float g = f;
 	int i;
@@ -61,7 +61,7 @@ void QuantumClassic::fractionalApproximation ( int *n1, int *n2, int width ) {
 	*n2 = den;
 }
 
-int QuantumClassic::getWidth ( int n ) {
+int Classic::getWidth ( int n ) {
 	int i;
 
 	for ( i = 1; 1<<i < n; i++ );
@@ -69,10 +69,11 @@ int QuantumClassic::getWidth ( int n ) {
 	return i;
 }
 
-int QuantumClassic::inverseMod ( int n, int g ) {
+int Classic::inverseMod ( int n, int g ) {
 	int i;
 
 	for ( i = 1; ( i * g ) % n != 1; i++ );
 
 	return i;
+}
 }

@@ -3,13 +3,12 @@
  */
 
 #ifndef __CLASSIC_H
-
 #define __CLASSIC_H
 
 #include <math.h>
-using namespace std;
 
-class QuantumClassic {
+namespace Quantum {
+class Classic {
 	public:
 		static int ipow ( int base, int exponent );
 		static int gcd ( int num1, int num2 );
@@ -18,5 +17,5 @@ class QuantumClassic {
 		static int getWidth ( int n );
 		static int inverseMod ( int n, int g );
 };
-
+}
 #endif
