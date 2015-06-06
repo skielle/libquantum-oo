@@ -3,7 +3,7 @@ CFLAGS=-c -Wall
 
 all:
 
-all_tests: classic_test complex_test node_test error_test
+all_tests: classic_test complex_test node_test error_test matrix_test
 
 classic_test: 
 	$(CC) classic.cpp classic_test.cpp -o classic_test
@@ -28,3 +28,9 @@ error_test:
 
 error.o:
 	$(CC) $(CFLAGS) error.cpp
+
+matrix_test:
+	$(CC) complex.cpp error.cpp matrix.cpp matrix_test.cpp -o matrix_test
+
+matrix.o:
+	$(CC) $(CFLAGS) matrix.cpp
