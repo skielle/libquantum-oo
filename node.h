@@ -5,7 +5,7 @@
 #include "config.h"
 
 #ifndef __QUANTUM_NODE_H
-#define __QUQNTUM_NODE_H
+#define __QUANTUM_NODE_H
 
 namespace Quantum {
 class Node {

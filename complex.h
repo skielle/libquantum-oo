@@ -2,8 +2,8 @@
  * complex.h
  */
 
-#ifndef __COMPLEX_H
-#define __COMPLEX_H
+#ifndef __QUANTUM_COMPLEX_H
+#define __QUANTUM_COMPLEX_H
 
 #include "config.h"
 

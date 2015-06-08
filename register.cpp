@@ -1,0 +1,293 @@
+/*
+ * register.cpp
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <vector>
+#include "complex.h"
+#include "config.h"
+#include "error.h"
+#include "matrix.h"
+#include "node.h"
+#include "register.h"
+
+using namespace std;
+
+namespace Quantum {
+Register::Register(Matrix *m, int width) {
+	int i, j;
+	int size = 0;
+
+	if ( m->getCols() != 1 ) {
+		Error::error(QUANTUM_EMCMATRIX);
+	}
+
+	this->width = width;
+
+	for ( i = 0; i < m->getRows(); i++ ) {
+		if ( m->get(i, 0) ) {
+			size++;
+		}
+	}
+
+	this->size = size;
+	this->hashw = width + 2;
+
+	this->node.reserve(size);
+
+	if ( !this->node.max_size() == size ) {
+		Error::error(QUANTUM_ENOMEM);
+	}
+
+	//memman stuff
+
+	this->hash = new int[1 << this->hashw]; 
+
+	if ( !this->hash ) {
+		Error::error(QUANTUM_ENOMEM);
+	}
+
+	//memman stuff
+
+	for ( i = 0, j = 0; i < m->getRows(); i++ ) {
+		if ( m->get(i, 0) ) {
+			Node* n = new Node( m->get(i, 0), i );
+			this->node.push_back(n);
+			j++;
+		}
+	}
+}
+	
+Register::Register(MAX_UNSIGNED initval, int width) {
+	char *c;
+
+	this->width = width;
+	this->size = 1;
+	this->hashw = width + 2;
+
+	this->node.reserve(size);
+
+	if ( !this->node.max_size() == size ) {
+		Error::error(QUANTUM_ENOMEM);
+	}
+
+	//memman stuff
+
+	this->hash = new int[1 << this->hashw]; 
+
+	if ( !this->hash ) {
+		Error::error(QUANTUM_ENOMEM);
+	}
+
+	//memman stuff
+
+	Node* n = new Node(1, initval);
+
+	this->node.push_back(n);
+
+	c = getenv("QUOBFILE");
+
+	if ( c ) {
+		//objcode_start();
+		//objcode_file(c);
+		//atexit((void *) &objectcode_exit);
+	}
+
+	//objcode_put(INIT, intval);
+}
+
+Register::Register(int n, int width) {
+	this->width = width;
+	this->size = n;
+	this->hashw = 0;
+	this->hash = 0;
+
+	this->node.reserve(size);
+
+	if ( !this->node.max_size() == size ) {
+		Error::error(QUANTUM_ENOMEM);
+	}
+
+	//memman stuff
+}
+
+void Register::addScratch(int bits) {
+	int i, oldwidth;
+	MAX_UNSIGNED l;
+
+	oldwidth = this->width;
+
+	this->width += bits;
+
+	for ( i = 0; i < this->size; i++ ) {
+		l = this->node[i]->getState() << bits;
+		this->node[i]->setState(l);
+	}
+}
+
+unsigned int Register::hash64(MAX_UNSIGNED key, int width) {
+	unsigned int k32;
+
+	k32 = ( key & 0xFFFFFFFF ) ^ ( key >> 32 );
+
+	k32 *= 0x9e370001UL;
+	k32 = k32 >> ( 32 - width );
+
+	return k32;
+}
+
+Register& Register::copy() {
+	Matrix m = this->toMatrix();
+	Register* dst = new Register(&m, this->width);
+	return *dst;
+}
+
+Matrix Register::toMatrix() {
+	Matrix* m = new Matrix(1, 1 << this->width);
+	int i;
+
+	for ( i = 0; i < this->size; i++ ) {
+		m->set( this->node[i]->getState(), 0, 
+			this->node[i]->getAmplitude() );
+	}
+
+	return *m;
+}
+
+void Register::applyGate(Gate* g, int target) {
+	g->run(this->node[target]);
+}
+
+int Register::getState(MAX_UNSIGNED a) {
+	int i;
+	
+	if ( !this->hashw ) {
+		return a;
+	}
+
+	i = Register::hash64(a, this->hashw);
+
+	while ( this->hash[i] ) {
+		if ( this->node[ this->hash[i] - 1 ]->getState() == a ) {
+			return this->hash[i] - 1;
+		}
+		i++;
+		if ( i == ( 1 << this->hashw) ) {
+			i = 0;
+		}
+	}
+	return (-1);
+}
+
+void Register::addToHash(MAX_UNSIGNED a, int pos) {
+	int i;
+	int mark = 0;
+
+	i = this->hash64(a, this->hashw);
+
+	while ( this->hash[i] ) {
+		i++;
+		if ( i == ( 1 << this->hashw ) ) {
+			if ( !mark ) {
+				i = 0;
+				mark = 1;
+			} else {
+				Error::error(QUANTUM_EHASHFULL);
+			}
+		}
+	}
+
+	this->hash[i] = pos+1;
+}
+
+int Register::bitMask(MAX_UNSIGNED a, int width, int *bits) {
+	int i;
+	int mask = 0;
+
+	for ( i = 0; i < width; i++ ) {
+		if ( a & ((MAX_UNSIGNED) 1 < bits[i] ) ) {
+			mask += 1 << i;
+		}
+	}
+	return mask;
+}
+		
+void Register::reconstructHash() {
+	int i;
+
+	if ( !this->hashw ) {
+		return;
+	}
+
+	for ( i = 0; i < ( 1 << this->hashw ); i++ ) {
+		this->hash[i] = 0;
+	}
+
+	for ( i = 0; i < this->size; i++ ) {
+		this->addToHash(this->node[i]->getState(), i);
+	}
+}
+
+void Register::destroyHash() {
+	free(this->hash);
+	//memman
+	this->hash = 0;
+}
+
+void Register::deleteRegister() {
+	if ( this->hashw && this->hash ) {
+		this->destroyHash();
+	}
+	this->node.clear();
+	this->node.resize(0);
+	//memman
+}
+
+void Register::deleteRegisterOnly() {
+	this->node.clear();
+	this->node.resize(0);
+	//memman
+}
+
+void Register::print() {
+	int i, j;
+
+	for ( i = 0; i < this->size; i++ ) {
+		Node *n = this->node[i];
+		printf("% f %+fi|%lli> (%e) (|", 
+			Complex::real(n->getAmplitude()),
+			Complex::imaginary(n->getAmplitude()),
+			Complex::probability(n->getAmplitude()));
+		for ( j = this->width - 1; j >= 0; j-- ) {
+			if ( j % 4 == 3 ) {
+				printf(" ");
+				printf("%i", ((((MAX_UNSIGNED) 1 << j ) &
+					n->getState() > 0 )));
+			}
+		}
+		printf(">)\n");
+	}
+	printf("\n");
+}
+
+//	void printExpn();
+//	void printHash();
+//	void printTimeop(int width, void f(Register *));
+
+//void might not be right here, we might want to drop a qureg
+//	void stateCollapse(int bit, int value);
+/*
+ * Functions for manipulating multiple registers.  Probably don't need?
+ */
+/*
+ * static Register kronecker(Register *reg1, Register *reg2);
+ * static COMPLEX_FLOAT dotProduct(Register *reg1, Register *reg2);
+ * static Register vectorAdd(Register *reg1, Register *reg2);
+ * void vectorAddInPlace(Register *reg1, Register *reg2);
+ * static Register matrixRegister(Register A(MAX_UNSIGNED, double), 
+ *					double t, Register *reg);
+ * void scalarRegister(COMPLEX_FLOAT r, Register *reg);
+ */
+}
+

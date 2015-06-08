@@ -5,7 +5,7 @@
 #include "config.h"
 
 #ifndef __QUANTUM_MATRIX_H
-#define __QUQNTUM_MATRIX_H
+#define __QUANTUM_MATRIX_H
 
 namespace Quantum {
 class Matrix {
