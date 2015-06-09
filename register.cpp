@@ -218,11 +218,17 @@ void Register::apply2x2Matrix(int target, Matrix *m) {
 			t = this->node[i]->getAmplitude();
 
 			if ( j >= 0 ) {
+				tnot = this->node[j]->getAmplitude();
+			}
+
+			if ( iset ) {
 				this->node[i]->setAmplitude(
-					m->get(2, 0) * tnot + m->get(3, 0) * t );
+					m->get(2, 0) * tnot + 
+					m->get(3, 0) * t );
 			} else {
 				this->node[i]->setAmplitude( 
-					m->get(0, 0) * t + m->get(1, 0) * tnot );
+					m->get(0, 0) * t +
+					m->get(1, 0) * tnot );
 			}
 
 			if ( j >= 0 ) {
