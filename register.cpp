@@ -398,8 +398,11 @@ void Register::print() {
 		for ( j = this->width - 1; j >= 0; j-- ) {
 			if ( j % 4 == 3 ) {
 				printf(" ");
-				printf("%i", ((((MAX_UNSIGNED) 1 << j ) &
-					n->getState() > 0 )));
+			}
+			if ( (((MAX_UNSIGNED) 1 << j ) & n->getState() ) > 0 ) {
+				printf("1");
+			} else {
+				printf("0");
 			}
 		}
 		printf(">)\n");
