@@ -7,25 +7,30 @@ using namespace std;
 using namespace Quantum;
 
 int main() {
-	Matrix m = Matrix(1, 4);
+	Register s = Register((MAX_UNSIGNED) 0, 4);
 
-	m.set(0, 0, .25);
-	m.set(1, 0, .25);
-	m.set(2, 0, .25);
-	m.set(3, 0, .25);
+	Matrix m = Matrix(2, 2);
+
+	m.set(0, 0, sqrt(1.0/2));
+	m.set(1, 0, sqrt(1.0/2));
+	m.set(2, 0, sqrt(1.0/2));
+	m.set(3, 0, sqrt(1.0/2));
 
 	m.print();
 
-	Register r = Register(&m, 4);
+	s.print();
 
-	r.print();
-
-	Matrix n = r.toMatrix();
-
-	n.print();
-
-	Register s = Register(&n, 4);
-
+	s.applyMatrix(0, &m);
+	s.applyMatrix(1, &m);
+	s.applyMatrix(2, &m);
+	s.applyMatrix(3, &m);
+	
+	s.print();
+	s.applyMatrix(3, &m);
+	s.applyMatrix(2, &m);
+	s.applyMatrix(1, &m);
+	s.applyMatrix(0, &m);
+	
 	s.print();
 
 	return 0;

@@ -34,6 +34,8 @@ class Register {
 		Register& copy();
 		Matrix toMatrix();
 		void applyGate(Gate* g, int target);
+		void applyMatrix(int target, Matrix *m);
+		void apply2x2Matrix(int target, Matrix *m);
 
 		int getState(MAX_UNSIGNED a);
 		void addToHash(MAX_UNSIGNED a, int pos);

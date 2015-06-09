@@ -7,6 +7,7 @@
 #include <vector>
 #include "complex.h"
 #include "config.h"
+#include "defs.h"
 #include "error.h"
 #include "matrix.h"
 #include "node.h"
@@ -61,6 +62,7 @@ Register::Register(Matrix *m, int width) {
 	
 Register::Register(MAX_UNSIGNED initval, int width) {
 	char *c;
+	int i;
 
 	this->width = width;
 	this->size = 1;
@@ -82,9 +84,10 @@ Register::Register(MAX_UNSIGNED initval, int width) {
 
 	//memman stuff
 
-	Node* n = new Node(1, initval);
-
-	this->node.push_back(n);
+	for ( i = 0; i < this->size; i++ ) {
+		Node* n = new Node(1, initval);
+		this->node.push_back(n);
+	}
 
 	c = getenv("QUOBFILE");
 
@@ -157,6 +160,139 @@ Matrix Register::toMatrix() {
 
 void Register::applyGate(Gate* g, int target) {
 	g->run(this->node[target]);
+}
+
+void Register::applyMatrix(int target, Matrix *m) {
+	if ( m->getCols() == 2 && m->getRows() == 2 ) {
+		this->apply2x2Matrix(target, m);
+	}
+}
+
+void Register::apply2x2Matrix(int target, Matrix *m) {
+	int i, j, k, iset;
+	int addsize = 0, decsize = 0;
+	COMPLEX_FLOAT t;
+	COMPLEX_FLOAT tnot = 0;
+	float limit;
+	char *done;
+
+	if ( m->getCols() != 2 || m->getRows() != 2 ) {
+		Error::error(QUANTUM_EMSIZE);
+	}
+
+	if ( this->hashw ) {
+		this->reconstructHash();
+	}
+	for ( i = 0; i < this->size; i++ ) {
+		if ( this->getState( this->node[i]->getState() ^ 
+			((MAX_UNSIGNED) 1 << target ) ) == -1 ) {
+			addsize++;
+		}
+	}
+
+	this->node.reserve(this->size + addsize);
+
+	if ( !this->node.max_size() == this->size + addsize ) {
+		Error::error(QUANTUM_ENOMEM);
+	}
+
+	//memman
+
+	for ( i = 0; i < addsize; i++ ) {
+		this->node.push_back(new Node(0,0));
+	}
+	
+	done = new char[ this->size + addsize ];
+
+	k = this->size;
+
+	limit = ( 1.0 / ((MAX_UNSIGNED) 1 << this->width ) ) * epsilon;
+
+	for ( i = 0; i < this->size; i++ ) {
+		if ( !done[i] ) {
+			iset = this->node[i]->getState() 
+				& ( (MAX_UNSIGNED) 1 << target );
+			tnot = 0;
+			j = this->getState( this->node[i]->getState() 
+				^ ( (MAX_UNSIGNED) 1 << target ) );
+			t = this->node[i]->getAmplitude();
+
+			if ( j >= 0 ) {
+				this->node[i]->setAmplitude(
+					m->get(2, 0) * tnot + m->get(3, 0) * t );
+			} else {
+				this->node[i]->setAmplitude( 
+					m->get(0, 0) * t + m->get(1, 0) * tnot );
+			}
+
+			if ( j >= 0 ) {
+				if ( iset ) {
+					this->node[j]->setAmplitude(
+						m->get(0, 0) * tnot +
+						m->get(1, 0) * t );
+				} else {
+					this->node[j]->setAmplitude(
+						m->get(2, 0) * t +
+						m->get(3, 0) * tnot );
+				}
+			}  else {
+				if ( ( m->get(1, 0) == 0 ) && (iset) ) {
+					break;
+				}
+				if ( ( m->get(2, 0) == 0 ) && !(iset) ) {
+					break;
+				}
+	
+				this->node[k]->setState(
+					this->node[i]->getState()
+					^ ( (MAX_UNSIGNED) 1 << target ) );
+	
+				if ( iset ) {
+					this->node[k]->setAmplitude(
+						m->get(1, 0) * t );
+				} else {
+					this->node[k]->setAmplitude(
+						m->get(2, 0) * t );
+				}
+	
+				k++;
+			}
+
+			if ( j >= 0 ) {
+				done[j] = 1;
+			}
+		}
+	}
+
+	this->size += addsize;
+	
+	//memman stuff
+
+	if ( this->hashw ) {
+		for ( i = 0, j = 0; i < this->size; i++ ) {
+			if ( Complex::probability( 
+				this->node[i]->getAmplitude() )	< limit ) {
+				j++;
+				decsize++;
+			} else if ( j ) {
+				this->node[ i - j ]->setState( 
+					this->node[i]->getState() );
+				this->node[ i - j ]->setAmplitude(
+					this->node[i]->getAmplitude() );
+			}
+		}
+
+		if ( decsize ) {
+			this->size -= decsize;
+			this->node.resize(this->size);
+
+			if ( !this->node.max_size() == this->size ) {
+				Error::error(QUANTUM_ENOMEM);
+			}
+
+			//memman
+		}
+	}
 }
 
 int Register::getState(MAX_UNSIGNED a) {
