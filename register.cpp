@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <time.h>
 #include <vector>
 #include "complex.h"
 #include "config.h"
@@ -159,7 +160,7 @@ Matrix Register::toMatrix() {
 }
 
 void Register::applyGate(Gate* g, int target) {
-	g->run(this->node[target]);
+	g->run(this, target);
 }
 
 void Register::applyMatrix(int target, Matrix *m) {
@@ -301,6 +302,34 @@ void Register::apply2x2Matrix(int target, Matrix *m) {
 	}
 }
 
+MAX_UNSIGNED Register::measure() {
+	double r;
+	int i;
+	MAX_UNSIGNED result;	
+
+	srand(time(NULL));
+	r = (double) rand() / RAND_MAX;
+
+	for ( i = 0; i < this->size; i++ ) {
+		r -= Complex::probability(this->node[i]->getAmplitude());
+		if ( 0 >= r ) {
+			result = this->node[i]->getState();
+			this->deleteRegister();
+			return result;
+		}
+	}
+}
+
+int Register::measure(int target) {
+
+}
+
+int Register::measure(int target, bool preserve) {
+	if (!preserve) {
+		return this->measure(target);
+	}
+}
+
 int Register::getState(MAX_UNSIGNED a) {
 	int i;
 	
@@ -381,6 +410,7 @@ void Register::deleteRegister() {
 	if ( this->hashw && this->hash ) {
 		this->destroyHash();
 	}
+	this->node.erase(this->node.begin(), this->node.end());
 	this->node.clear();
 	this->node.resize(0);
 	//memman

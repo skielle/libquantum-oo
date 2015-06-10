@@ -9,13 +9,15 @@
 #include <sys/types.h>
 #include <vector>
 #include "config.h"
-#include "gate.h"
+#include "defs.h"
 #include "matrix.h"
 #include "error.h"
 #include "node.h"
 using namespace std;
 
 namespace Quantum {
+class Gate;
+
 class Register {
 	int width;
 	int size;
@@ -36,6 +38,9 @@ class Register {
 		void applyGate(Gate* g, int target);
 		void applyMatrix(int target, Matrix *m);
 		void apply2x2Matrix(int target, Matrix *m);
+		MAX_UNSIGNED measure();
+		int measure(int target);
+		int measure(int target, bool preserve);
 
 		int getState(MAX_UNSIGNED a);
 		void addToHash(MAX_UNSIGNED a, int pos);
@@ -70,6 +75,12 @@ class Register {
 		 * void scalarRegister(COMPLEX_FLOAT r, Register *reg);
 	 	 */
 };
+
+class Gate {
+	public:
+                virtual void run ( Register* r, int target ) = 0;
+};
+
 }
 
 #endif

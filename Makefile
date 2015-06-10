@@ -24,4 +24,4 @@ register_test:
 	$(CC) complex.cpp error.cpp matrix.cpp node.cpp register.cpp register_test.cpp -o register_test
 
 gate_test:
-	$(CC) complex.cpp error.cpp matrix.cpp node.cpp register.cpp gates.cpp gate_test.cpp -o gate_test
+	$(CC) complex.cpp error.cpp matrix.cpp node.cpp register.cpp -g gates.cpp gate_test.cpp -o gate_test
