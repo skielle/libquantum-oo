@@ -17,6 +17,10 @@
 using namespace std;
 
 namespace Quantum {
+Register::Register() {
+	Error::error(QUANTUM_EOPCODE);
+}
+
 Register::Register(Matrix *m, int width) {
 	int i, j;
 	int size = 0;
@@ -84,21 +88,9 @@ Register::Register(MAX_UNSIGNED initval, int width) {
 	}
 
 	//memman stuff
-
-	for ( i = 0; i < this->size; i++ ) {
-		Node* n = new Node(1, initval);
-		this->node.push_back(n);
-	}
-
-	c = getenv("QUOBFILE");
-
-	if ( c ) {
-		//objcode_start();
-		//objcode_file(c);
-		//atexit((void *) &objectcode_exit);
-	}
-
-	//objcode_put(INIT, intval);
+	
+	Node* n = new Node(1, initval);
+	this->node.push_back(n);
 }
 
 Register::Register(int n, int width) {
@@ -114,6 +106,18 @@ Register::Register(int n, int width) {
 	}
 
 	//memman stuff
+}
+
+int Register::getWidth() {
+	return this->width;
+}
+
+int Register::getSize() {
+	return this->size;
+}
+
+int Register::getHashw() {
+	return this->hashw;
 }
 
 void Register::addScratch(int bits) {

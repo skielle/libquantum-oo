@@ -7,7 +7,7 @@ using namespace std;
 using namespace Quantum;
 
 int main() {
-	Register s = Register((MAX_UNSIGNED) 0, 4);
+	Register s = Register((MAX_UNSIGNED) 7, 4);
 
 	Matrix m = Matrix(2, 2);
 

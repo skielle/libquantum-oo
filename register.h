@@ -29,6 +29,11 @@ class Register {
 		Register(Matrix *m, int width);
 		Register(MAX_UNSIGNED initval, int width);
 		Register(int n, int width);
+		Register();
+
+		int getWidth();
+		int getSize();
+		int getHashw();
 
 		void addScratch(int bits);
 		unsigned int hash64(MAX_UNSIGNED key, int width);
