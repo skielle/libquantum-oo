@@ -13,26 +13,53 @@ int main() {
 	r.print();
 
 	RotateX* rx = new RotateX();
-	rx->setPsi(pi / 3);
+	rx->setPsi(pi / 2);
 	r.applyGate(rx, 0);
+	printf("Rotation by pi/2:\n");
 	r.print();
 
 	SigmaX* sx = new SigmaX();
 	r.applyGate(sx, 0);
+	printf("Sigma X\n");
 	r.print();
 	r.applyGate(sx, 0);
+	printf("Sigma X\n");
 	r.print();
 
 	SigmaY* sy = new SigmaY();
 	r.applyGate(sy, 0);
+	printf("Sigma Y\n");
 	r.print();
 	r.applyGate(sy, 0);
+	printf("Sigma Y\n");
 	r.print();
 
 	SigmaZ* sz = new SigmaZ();
 	r.applyGate(sz, 0);
+	printf("Sigma Z\n");
 	r.print();
 	r.applyGate(sz, 0);
+	printf("Sigma Z\n");
+	r.print();
+
+	printf("Sigma Y ( Sigma X )\n");
+	r.applyGate(sx, 0);
+	r.applyGate(sy, 0);
+	r.print();
+
+	printf("Sigma Y ( Sigma X )\n");
+	r.applyGate(sx, 0);
+	r.applyGate(sy, 0);
+	r.print();
+
+	printf("Sigma Y ( Sigma X )\n");
+	r.applyGate(sx, 0);
+	r.applyGate(sy, 0);
+	r.print();
+
+	printf("Sigma Y ( Sigma X )\n");
+	r.applyGate(sx, 0);
+	r.applyGate(sy, 0);
 	r.print();
 
 	return 0;
