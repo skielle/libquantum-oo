@@ -13,9 +13,6 @@ class Matrix {
 	int cols;
 	COMPLEX_FLOAT *t;
 
-	long mem;
-	long max;
-
 	public:
 		Matrix();
 		Matrix(int cols, int rows);
@@ -28,8 +25,6 @@ class Matrix {
 		COMPLEX_FLOAT get(int x, int y);
 		void set(int x, int y, COMPLEX_FLOAT v);
 		static Matrix matrixMultiply(Matrix a, Matrix b);
-
-		unsigned long memman(long change);
 
 		void del();
 		~Matrix();

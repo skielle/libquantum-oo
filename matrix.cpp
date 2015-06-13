@@ -8,14 +8,12 @@
 #include "config.h"
 #include "error.h"
 #include "matrix.h"
+#include "system.h"
 
 using namespace std;
 
 namespace Quantum {
 Matrix::Matrix(int cols, int rows) {
-	this->mem = 0;
-	this->max = 0;
-	
 	this->setRows(rows);
 	this->setCols(cols);
 
@@ -25,7 +23,7 @@ Matrix::Matrix(int cols, int rows) {
 		Error::error(QUANTUM_ENOMEM);
 	}
 
-	this->memman(this->getRows() * this->getCols() * sizeof(COMPLEX_FLOAT));	
+	System::memman(this->getRows() * this->getCols() * sizeof(COMPLEX_FLOAT));	
 }
 
 void Matrix::setRows(int rows) { this->rows = rows; }
@@ -63,18 +61,10 @@ Matrix Matrix::matrixMultiply(Matrix a, Matrix b) {
 	return c;
 }
 
-unsigned long Matrix::memman(long change) {
-	this->mem += change;
-	if ( this->mem > this->max ) {
-		this->max = this->mem;
-	}
-	return mem;
-}
-
 void Matrix::del() { this->~Matrix(); }
 Matrix::~Matrix() {
 	//free(this->t);
-	this->memman(-sizeof(COMPLEX_FLOAT) * this->getCols() * this->getRows());
+	System::memman(-sizeof(COMPLEX_FLOAT) * this->getCols() * this->getRows());
 	this->t = 0;
 }
 
