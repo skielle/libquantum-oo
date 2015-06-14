@@ -18,10 +18,16 @@ error_test:
 	$(CC) error.cpp error_test.cpp -o error_test
 
 matrix_test:
-	$(CC) complex.cpp error.cpp matrix.cpp matrix_test.cpp -o matrix_test
+	$(CC) complex.cpp error.cpp system.cpp matrix.cpp matrix_test.cpp -o matrix_test
+
+entangledPair_test:
+	$(CC) complex.cpp error.cpp system.cpp matrix.cpp -g entangledPair.cpp -g tests/entangledPair_test.cpp -o entangledPair_test	
 
 register_test:
-	$(CC) complex.cpp error.cpp matrix.cpp node.cpp register.cpp register_test.cpp -o register_test
+	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp register_test.cpp -o register_test
 
 gate_test:
-	$(CC) complex.cpp error.cpp matrix.cpp node.cpp register.cpp -g gates.cpp gate_test.cpp -o gate_test
+	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp -g gates.cpp gate_test.cpp -o gate_test
+
+entangledRegister_test:
+	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp entangledRegister.cpp entangledRegister_test.cpp -o entangledRegister_test

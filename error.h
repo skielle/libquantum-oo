@@ -1,5 +1,5 @@
 /*
- * complex.h
+ * error.h
  */
 
 #ifndef __QUANTUM_ERROR_H
@@ -15,7 +15,8 @@ enum {
 	QUANTUM_EHASHFULL = 5,
 	QUANTUM_EMCMATRIX = 65536,
 	/* internal errors start at 65536 */
-	QUANTUM_EOPCODE   = 65537
+	QUANTUM_EOPCODE   = 65537,
+	QUANTUM_EBADAMP	  = 65538
 };
 class Error {
 	public:
