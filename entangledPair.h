@@ -1,6 +1,9 @@
 /*
  * entangledPair.h
  */
+#ifndef __QUANTUM_ENTANGLED_PAIR_H
+#define __QUANTUM_ENTANGLED_PAIR_H
+
 #include "matrix.h"
 
 namespace Quantum {
@@ -16,15 +19,17 @@ class EntangledPair {
 		 */
 		Matrix* entanglementAmplitudes;
 		int target;
-		vector<Matrix> alphaHistory;
-		vector<Matrix> betaHistory;
+		bool _isNull;
 
 	public:
-		EntangledPair(int target, COMPLEX_FLOAT a_00, 
-			COMPLEX_FLOAT a_01, COMPLEX_FLOAT a_10, 
-			COMPLEX_FLOAT a_11);
+		EntangledPair(COMPLEX_FLOAT a_00, COMPLEX_FLOAT a_01, 
+			COMPLEX_FLOAT a_10, COMPLEX_FLOAT a_11);
+		EntangledPair();
 		COMPLEX_FLOAT get(int a, int b);
-
+		void setEntanglements(COMPLEX_FLOAT a_00, COMPLEX_FLOAT a_01, 
+			COMPLEX_FLOAT a_10, COMPLEX_FLOAT a_11);
 		int getTarget();
+		bool isNull();
 };
 }
+#endif

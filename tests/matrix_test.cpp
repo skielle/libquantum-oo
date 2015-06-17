@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-#include "matrix.h"
+#include "../matrix.h"
 
 using namespace std;
 using namespace Quantum;
@@ -9,12 +9,15 @@ int main() {
 	Matrix m = Matrix(2, 2);
 	Matrix n = Matrix(1, 2);
 
-	m.set(0, 0, 1);
-	m.set(0, 1, 1);
-	m.set(1, 0, 0);
-	m.set(1, 1, 1);
+	m.set(0, 0, sqrt(.5));
+	m.set(0, 1, sqrt(.5));
+	m.set(1, 0, sqrt(.5));
+	m.set(1, 1, -1 * sqrt(.5));
+
+	Matrix p = Matrix::inverse(m);
 
 	m.print();
+	p.print();
 
 	n.set(0, 0, 2);
 	n.set(0, 1, 2);

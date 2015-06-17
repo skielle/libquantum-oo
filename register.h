@@ -1,5 +1,5 @@
 /*
- * qureg.h
+ * register.h
  */
 
 #ifndef __QUANTUM_REGISTER_H
@@ -19,11 +19,12 @@ namespace Quantum {
 class Gate;
 
 class Register {
-	int width;
-	int size;
-	int hashw;
-	vector<Node*> node;
-	int *hash;
+	protected:
+		int width;
+		int size;
+		int hashw;
+		vector<Node*> node;
+		int *hash;
 
 	public:
 		Register(Matrix *m, int width);
@@ -48,6 +49,8 @@ class Register {
 		int measure(int target, bool preserve);
 
 		int getState(MAX_UNSIGNED a);
+		void collapse(int target, int value);
+		void normalize();
 		void addToHash(MAX_UNSIGNED a, int pos);
 		int bitMask(MAX_UNSIGNED a, int width, int *bits);
 		

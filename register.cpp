@@ -1,6 +1,7 @@
 /*
  * register.cpp
  */
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -24,6 +25,8 @@ Register::Register() {
 Register::Register(Matrix *m, int width) {
 	int i, j;
 	int size = 0;
+	
+	srand(time(NULL));
 
 	if ( m->getCols() != 1 ) {
 		Error::error(QUANTUM_EMCMATRIX);
@@ -68,6 +71,8 @@ Register::Register(Matrix *m, int width) {
 Register::Register(MAX_UNSIGNED initval, int width) {
 	char *c;
 	int i;
+	
+	srand(time(NULL));
 
 	this->width = width;
 	this->size = 1;
@@ -100,6 +105,8 @@ Register::Register(int n, int width) {
 	this->hash = 0;
 
 	this->node.reserve(size);
+	
+	srand(time(NULL));
 
 	if ( !this->node.max_size() == size ) {
 		Error::error(QUANTUM_ENOMEM);
@@ -311,7 +318,6 @@ MAX_UNSIGNED Register::measure() {
 	int i;
 	MAX_UNSIGNED result;	
 
-	srand(time(NULL));
 	r = (double) rand() / RAND_MAX;
 
 	for ( i = 0; i < this->size; i++ ) {
@@ -325,7 +331,29 @@ MAX_UNSIGNED Register::measure() {
 }
 
 int Register::measure(int target) {
+	int i;
+	int result = 0;
+	int sTarget = (MAX_UNSIGNED) 1 << target;
+	double r;
+	double totalZeroProb = 0;
 
+	/* Sum the probability for zero being the result */
+	for ( i = 0; i < this->size; i++ ) {
+		if ( ! ( this->node[i]->getState() & sTarget ) ) {
+			totalZeroProb += Complex::probability(
+				this->node[i]->getAmplitude());
+		}
+	}
+
+	r = (double) rand() / RAND_MAX;
+
+	if ( r > totalZeroProb ) {
+		result = 1;
+	}
+
+	this->collapse(target, result);
+
+	return result;	
 }
 
 int Register::measure(int target, bool preserve) {
@@ -355,11 +383,39 @@ int Register::getState(MAX_UNSIGNED a) {
 	return (-1);
 }
 
+void Register::collapse(int target, int value) {
+	int i;
+	for ( i = 0; i < this->size; i++ ) {
+		if ( (int)(( this->node[i]->getState() >> (target) ) % 2 )
+			!= value ) {
+			this->node[i]->setAmplitude(0);
+		}
+	}
+	this->normalize();
+}
+
+void Register::normalize() {
+	int i;
+	double totalProbability = 0;
+
+	for ( i = 0; i < this->size; i++ ) {
+		totalProbability += Complex::probability(
+			this->node[i]->getAmplitude());
+	}
+
+	for ( i = 0; i < this->size; i++ ) {
+		this->node[i]->setAmplitude(
+			this->node[i]->getAmplitude() *
+			1 / (float) sqrt(totalProbability));
+	}
+}
+
 void Register::addToHash(MAX_UNSIGNED a, int pos) {
 	int i;
 	int mark = 0;
 
 	i = this->hash64(a, this->hashw);
+
 
 	while ( this->hash[i] ) {
 		i++;
@@ -429,11 +485,13 @@ void Register::deleteRegisterOnly() {
 void Register::print() {
 	int i, j;
 
+	this->reconstructHash();
+
 	for ( i = 0; i < this->size; i++ ) {
 		Node *n = this->node[i];
 		printf("% f %+fi|%lli> (%e) (|", 
 			Complex::real(n->getAmplitude()),
-			Complex::imaginary(n->getAmplitude()),
+			Complex::imaginary(n->getAmplitude()), n->getState(),
 			Complex::probability(n->getAmplitude()));
 		for ( j = this->width - 1; j >= 0; j-- ) {
 			if ( j % 4 == 3 ) {

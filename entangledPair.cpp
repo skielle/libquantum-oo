@@ -10,6 +10,23 @@
 
 namespace Quantum {
 EntangledPair::EntangledPair(COMPLEX_FLOAT a_00, COMPLEX_FLOAT a_10, COMPLEX_FLOAT a_01, COMPLEX_FLOAT a_11) {
+	this->_isNull = true;
+	this->setEntanglements(a_00, a_10, a_01, a_11);
+}
+
+EntangledPair::EntangledPair() {
+	this->_isNull = true;
+}
+	
+COMPLEX_FLOAT EntangledPair::get(int a, int b) {
+	return this->entanglementAmplitudes->get(a, b);
+}
+void EntangledPair::setEntanglements(COMPLEX_FLOAT a_00, COMPLEX_FLOAT a_01, 
+			COMPLEX_FLOAT a_10, COMPLEX_FLOAT a_11) {
+	if ( !this->_isNull ) {
+		Error::error(QUANTUM_EIMUTEAMP);
+	}
+
 	float totalProbability =  Complex::probability(a_00) 
 		+ Complex::probability(a_01) + Complex::probability(a_10) 
 		+ Complex::probability(a_11);
@@ -22,10 +39,10 @@ EntangledPair::EntangledPair(COMPLEX_FLOAT a_00, COMPLEX_FLOAT a_10, COMPLEX_FLO
 			this->entanglementAmplitudes->set(1, 0, a_10);
 			this->entanglementAmplitudes->set(0, 1, a_01);
 			this->entanglementAmplitudes->set(1, 1, a_11);
+			this->_isNull = false;
 	}
 }
-	
-COMPLEX_FLOAT EntangledPair::get(int a, int b) {
-	return this->entanglementAmplitudes->get(a, b);
+bool EntangledPair::isNull() {
+	return this->_isNull;
 }
 }

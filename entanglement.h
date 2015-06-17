@@ -1,26 +1,30 @@
 /*
  * entanglement.h
  */
+#ifndef __QUANTUM_ENTANGLEMENT_H
+#define __QUANTUM_ENTANGLEMENT_H
 
 #include "register.h"
 #include "entangledRegister.h"
+#include "entangledPair.h"
 
 namespace Quantum {
 class Entanglement {
 	protected:
-		EntangledRegister* alpha;
-		EntangledRegister* beta;
+		EntangledRegister* aleph;
+		EntangledRegister* beit;
 		EntangledPair* entanglements;
 	public:
-		static Entanglement createEntanglement();
-		EntangledRegister getAlpha();
-		EntangledRegister getBeta();
-		void entangle(int target, EntanglementPair entanglementData);
+		static Entanglement createEntanglement(MAX_UNSIGNED init, int width);
+		EntangledRegister* getAleph();
+		EntangledRegister* getBeit();
+		void entangle(int target, EntangledPair entanglementData);
 
 		bool isEntangled( int target);
 
 		void applyMatrix(int target, Matrix* m);
 
-		viod measure(int target);
+		void measured(bool isAleph, int target, int result);
 };
-}		
+}
+#endif		

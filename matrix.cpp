@@ -61,6 +61,42 @@ Matrix Matrix::matrixMultiply(Matrix a, Matrix b) {
 	return c;
 }
 
+COMPLEX_FLOAT Matrix::determinant(Matrix m) {
+	if ( m.getCols() != m.getRows() ) {
+		Error::error(QUANTUM_EINVMATRIX);
+	}
+
+	if ( m.getCols() == 2 ) {
+		return m.get(0, 0) * m.get(1, 1) 
+			- m.get(0, 1) * m.get(1, 0);
+	} else {
+		//recurse here
+	}		
+}
+
+Matrix Matrix::inverse(Matrix m) {
+	COMPLEX_FLOAT detr = Matrix::determinant(m);
+	if ( Complex::probability(detr) > .001 ) { 
+//		Error::error(QUANTUM_EINVMATRIX);
+	}
+	Matrix inv = Matrix(m.getRows(), m.getCols());
+	if ( m.getCols() == 2 ) {
+		inv.set(0, 0, m.get(1, 1) / detr );
+		inv.set(1, 1, m.get(0, 0) / detr );
+		inv.set(0, 1, m.get(0, 1) * -1 / detr );
+		inv.set(1, 0, m.get(1, 0) * -1 / detr );
+		return inv;
+	}
+
+	if ( m.getCols() == 3 ) {
+	}
+
+	if ( m.getCols() == 4 ) {
+	}
+
+	Error::error(QUANTUM_EINVMATRIX);
+}
+
 void Matrix::del() { this->~Matrix(); }
 Matrix::~Matrix() {
 	//free(this->t);

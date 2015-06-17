@@ -3,31 +3,37 @@ CFLAGS=-c -Wall
 
 all:
 
-all_tests: classic_test complex_test node_test error_test matrix_test register_test
+clean:
+	rm -f bin/*
 
-classic_test: 
-	$(CC) classic.cpp classic_test.cpp -o classic_test
+all_tests: classic_test complex_test node_test error_test matrix_test register_test gate_test entangledPair_test entangledRegister_test
 
-complex_test:
-	$(CC) complex.cpp complex_test.cpp -o complex_test
+classic_test: clean
+	$(CC) classic.cpp tests/classic_test.cpp -o bin/classic_test
 
-node_test:
-	$(CC) node.cpp node_test.cpp -o node_test
+complex_test: clean
+	$(CC) complex.cpp tests/complex_test.cpp -o bin/complex_test
 
-error_test:
-	$(CC) error.cpp error_test.cpp -o error_test
+node_test: clean
+	$(CC) node.cpp tests/node_test.cpp -o bin/node_test
 
-matrix_test:
-	$(CC) complex.cpp error.cpp system.cpp matrix.cpp matrix_test.cpp -o matrix_test
+error_test: clean
+	$(CC) error.cpp tests/error_test.cpp -o bin/error_test
 
-entangledPair_test:
-	$(CC) complex.cpp error.cpp system.cpp matrix.cpp -g entangledPair.cpp -g tests/entangledPair_test.cpp -o entangledPair_test	
+matrix_test: clean
+	$(CC) -g complex.cpp error.cpp system.cpp matrix.cpp tests/matrix_test.cpp -o bin/matrix_test
 
-register_test:
-	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp register_test.cpp -o register_test
+entangledPair_test: clean
+	$(CC) complex.cpp error.cpp system.cpp matrix.cpp -g entangledPair.cpp -g tests/entangledPair_test.cpp -o bin/entangledPair_test	
 
-gate_test:
-	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp -g gates.cpp gate_test.cpp -o gate_test
+register_test: clean
+	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp tests/register_test.cpp -o bin/register_test
 
-entangledRegister_test:
-	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp entangledRegister.cpp entangledRegister_test.cpp -o entangledRegister_test
+gate_test: clean
+	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp -g gates.cpp tests/gate_test.cpp -o bin/gate_test
+
+entangledRegister_test: clean
+	$(CC) -g complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp entangledRegister.cpp entanglement.cpp entangledPair.cpp tests/entangledRegister_test.cpp -o bin/entangledRegister_test
+
+entanglement_test: clean
+	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp entangledRegister.cpp entanglement.cpp entangledPair.cpp tests/entanglement_test.cpp -o bin/entanglement_test

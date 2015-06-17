@@ -22,6 +22,8 @@ class Matrix {
 		int getRows();
 		int getCols();
 
+		static COMPLEX_FLOAT determinant(Matrix m);
+		static Matrix inverse(Matrix m);
 		COMPLEX_FLOAT get(int x, int y);
 		void set(int x, int y, COMPLEX_FLOAT v);
 		static Matrix matrixMultiply(Matrix a, Matrix b);
