@@ -43,10 +43,10 @@ class Register {
 		Matrix toMatrix();
 		void applyGate(Gate* g, int target);
 		void applyMatrix(int target, Matrix *m);
-		void apply2x2Matrix(int target, Matrix *m);
+		void virtual apply2x2Matrix(int target, Matrix *m);
 		MAX_UNSIGNED measure();
 		int measure(int target);
-		int measure(int target, bool preserve);
+		int virtual measure(int target, bool preserve);
 
 		int getState(MAX_UNSIGNED a);
 		void collapse(int target, int value);

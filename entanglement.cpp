@@ -3,6 +3,7 @@
  */
 #include <stdio.h>
 #include "complex.h"
+#include "defs.h"
 #include "entanglement.h"
 #include "entangledRegister.h"
 #include "entangledPair.h"
@@ -36,8 +37,7 @@ void Entanglement::entangle(int target, EntangledPair entanglementData) {
 }
 
 bool Entanglement::isEntangled(int target) {
-	return this->entanglements[target].isNull();
-return true;
+	return !(this->entanglements[target].isNull());
 }
 
 void Entanglement::measured(bool isAleph, int target, int result){
@@ -49,14 +49,21 @@ void Entanglement::measured(bool isAleph, int target, int result){
 			this->entanglements[target].get(result, 0));
 		p1 = Complex::probability(
 			this->entanglements[target].get(result, 1));
-		this->beit->updateAmplitudes(target, p0, p1);
+		if ( p0 + p1 > float_zero ) {
+			this->beit->revert(target);
+			this->beit->updateAmplitudes(target, p0, p1);
+			this->beit->playAltHistory(target, 
+				aleph->getOpHistory(target));
+			this->beit->replay(target);
+		}
 	} else {
-		printf("Measured from beit.  Aleph (0): %f, (1): %f\n",
-			Complex::probability(
-				this->entanglements[target].get(0, result) ),
-			Complex::probability(
-				this->entanglements[target].get(1, result) ) );
+		p0 = Complex::probability(
+			this->entanglements[target].get(0, result));
+		p1 = Complex::probability(
+			this->entanglements[target].get(1, result));
+		if ( p0 + p1 > float_zero ) {
+			this->aleph->updateAmplitudes(target, p0, p1);
+		}
 	}
-	//need to know aleph or beit to do lookup
 }
 }		

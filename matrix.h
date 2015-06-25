@@ -1,11 +1,13 @@
 /*
  * matrix.h
  */
-
+#include <iostream>
 #include "config.h"
 
 #ifndef __QUANTUM_MATRIX_H
 #define __QUANTUM_MATRIX_H
+
+using namespace std;
 
 namespace Quantum {
 class Matrix {
@@ -32,6 +34,9 @@ class Matrix {
 		~Matrix();
 
 		void print();
+
+		void serialize(iostream& output);
+		static Matrix unserialize(iostream& input);
 };
 }
 #endif

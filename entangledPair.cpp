@@ -2,6 +2,7 @@
  * entangledPair.cpp
  */
 #include <stdio.h>
+#include "defs.h"
 #include "entangledPair.h"
 #include "complex.h"
 #include "matrix.h"
@@ -30,7 +31,7 @@ void EntangledPair::setEntanglements(COMPLEX_FLOAT a_00, COMPLEX_FLOAT a_01,
 	float totalProbability =  Complex::probability(a_00) 
 		+ Complex::probability(a_01) + Complex::probability(a_10) 
 		+ Complex::probability(a_11);
-	if ( fabsf(totalProbability - 1.0) > .0000001 ) {
+	if ( fabsf(totalProbability - 1.0) > float_zero ) {
 		printf("Bad probability sum: %f \n", totalProbability); 
 		Error::error(QUANTUM_EBADAMP);
 	} else {

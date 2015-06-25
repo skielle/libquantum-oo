@@ -30,6 +30,10 @@ class EntangledRegister: public Register {
 		void setAleph(bool aleph);
 		bool getAleph();
 		void updateAmplitudes(int target, float p0, float p1);
+		void revert(int target);
+		void replay(int target);
+		void playAltHistory(int target, vector<Matrix>* altHistory);
+		void revertAltHistory(int target, vector<Matrix>* altHistory);
 };
 }
 

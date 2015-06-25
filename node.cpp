@@ -1,8 +1,12 @@
 /*
  * node.cpp
  */
-#include "node.h"
+#include "complex.h"
 #include "config.h"
+#include "node.h"
+
+using namespace std;
+using namespace Quantum;
 
 namespace Quantum {
 Node::Node ( COMPLEX_FLOAT amplitude, MAX_UNSIGNED state ) {

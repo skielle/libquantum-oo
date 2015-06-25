@@ -1,11 +1,12 @@
 /*
  * node.h
  */
-
 #include "config.h"
 
 #ifndef __QUANTUM_NODE_H
 #define __QUANTUM_NODE_H
+
+using namespace std;
 
 namespace Quantum {
 class Node {

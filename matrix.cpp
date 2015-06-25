@@ -2,12 +2,14 @@
  * matrix.cpp
  */
 
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include "complex.h"
 #include "config.h"
 #include "error.h"
 #include "matrix.h"
+//#include "quantumMessage.pb.h"
 #include "system.h"
 
 using namespace std;
@@ -120,4 +122,38 @@ void Matrix::print() {
 	}
 	printf("\n");
 }
+/*
+void Matrix::serialize(iostream &output) {
+	int i;
+	QuantumMessage::MatrixMessage saveMessage;
+	
+	saveMessage.set_rows(this->getRows());
+	saveMessage.set_cols(this->getCols());
+
+	for ( i = 0; i < this->getRows() * this->getCols(); i++ ) {
+		QuantumMessage::ComplexMessage* saveT = saveMessage.add_t();
+
+		saveT->set_real(Complex::real(this->t[i]));
+		saveT->set_imaginary(Complex::imaginary(this->t[i]));
+	}
+
+	saveMessage.SerializeToOstream(&output);
+}
+
+Matrix Matrix::unserialize(iostream &input) {
+	int i;
+	QuantumMessage::MatrixMessage loadMessage;
+	loadMessage.ParseFromIstream(&input);
+
+	Matrix m ( loadMessage.cols(), loadMessage.rows() );
+
+	for ( i = 0; i < loadMessage.t_size(); i++ ) {
+		QuantumMessage::ComplexMessage cMessage = loadMessage.t(i);
+
+		m.set(i % m.getCols(), i / m.getCols(), 
+			 cMessage.real() + cMessage.imaginary() * IMAGINARY);
+	}
+
+	return m;
+}*/
 }

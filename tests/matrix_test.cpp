@@ -1,3 +1,4 @@
+#include <fstream>
 #include <stdio.h>
 #include <math.h>
 #include "../matrix.h"
@@ -6,6 +7,7 @@ using namespace std;
 using namespace Quantum;
 
 int main() {
+	fstream output("/tmp/pb.mx.s", ios::out | ios::trunc | ios::binary);
 	Matrix m = Matrix(2, 2);
 	Matrix n = Matrix(1, 2);
 
@@ -16,6 +18,10 @@ int main() {
 
 	Matrix p = Matrix::inverse(m);
 
+	p.serialize(output);
+
+	output.close();
+
 	m.print();
 	p.print();
 
@@ -24,8 +30,12 @@ int main() {
 	n.print();
 
 	Matrix o = Matrix::matrixMultiply(m, n);
-
 	o.print();
+
+	fstream input("/tmp/pb.mx.s", ios::in | ios::binary);
+	Matrix q = Matrix::unserialize(input);
+
+	q.print();
 
 	return 0;
 }

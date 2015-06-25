@@ -9,6 +9,7 @@
 #define epsilon 1e-6
 #define byte unsigned char
 #define num_regs 4
+#define float_zero 0.000001
 
 #endif
 

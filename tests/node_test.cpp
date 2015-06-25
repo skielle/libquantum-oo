@@ -1,11 +1,13 @@
 #include <stdio.h>
+#include <fstream>
 #include <math.h>
-#include "node.h"
+#include "../node.h"
 
 using namespace std;
 using namespace Quantum;
 
 int main() {
+
 	Node n(100, 0);
 
 	n.setAmplitude(10);
