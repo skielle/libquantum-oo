@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package QuantumMessage;
+
+message MatrixMessage {
+	int32 rows = 1;
+	int32 cols = 2;
+	repeated ComplexMessage t = 3; 
+}
+
+message ComplexMessage {
+	float real = 1;
+	float imaginary = 2;
+}

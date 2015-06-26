@@ -22,19 +22,24 @@ int main() {
 
 	output.close();
 
+	printf("m\n");
 	m.print();
-	p.print();
 
+	printf("p=m^-1\n");
+	p.print();
+	
 	n.set(0, 0, 2);
 	n.set(0, 1, 2);
+	printf("n\n");
 	n.print();
 
 	Matrix o = Matrix::matrixMultiply(m, n);
+	printf("m*n\n");
 	o.print();
 
 	fstream input("/tmp/pb.mx.s", ios::in | ios::binary);
 	Matrix q = Matrix::unserialize(input);
-
+	printf("unserialize(serialize(p))\n");
 	q.print();
 
 	return 0;

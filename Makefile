@@ -9,6 +9,9 @@ clean:
 
 all_tests: classic_test complex_test node_test error_test matrix_test register_test gate_test entangledPair_test entangledRegister_test
 
+protocol_buffers:
+	$(CC) $(CFLAGS) $(LIBS) quantumMessage.pb.cc -o bin/quantumMessage.o
+
 classic_test: clean
 	$(CC) classic.cpp tests/classic_test.cpp -o bin/classic_test
 
@@ -16,13 +19,13 @@ complex_test: clean
 	$(CC) complex.cpp tests/complex_test.cpp -o bin/complex_test
 
 node_test: clean
-	$(CC) $(LIBS) complex.cpp node.cpp tests/node_test.cpp -o bin/node_test
+	$(CC) complex.cpp node.cpp tests/node_test.cpp -o bin/node_test
 
 error_test: clean
 	$(CC) error.cpp tests/error_test.cpp -o bin/error_test
 
-matrix_test: clean
-	$(CC) $(LIBS) -g complex.cpp error.cpp system.cpp matrix.cpp tests/matrix_test.cpp -o bin/matrix_test
+matrix_test: clean protocol_buffers
+	$(CC) $(LIBS) bin/quantumMessage.o complex.cpp error.cpp system.cpp matrix.cpp tests/matrix_test.cpp -o bin/matrix_test
 
 entangledPair_test: clean
 	$(CC) complex.cpp error.cpp system.cpp matrix.cpp -g entangledPair.cpp -g tests/entangledPair_test.cpp -o bin/entangledPair_test	

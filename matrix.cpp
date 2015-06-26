@@ -9,7 +9,7 @@
 #include "config.h"
 #include "error.h"
 #include "matrix.h"
-//#include "quantumMessage.pb.h"
+#include "quantumMessage.pb.h"
 #include "system.h"
 
 using namespace std;
@@ -122,7 +122,7 @@ void Matrix::print() {
 	}
 	printf("\n");
 }
-/*
+
 void Matrix::serialize(iostream &output) {
 	int i;
 	QuantumMessage::MatrixMessage saveMessage;
@@ -155,5 +155,5 @@ Matrix Matrix::unserialize(iostream &input) {
 	}
 
 	return m;
-}*/
+}
 }
