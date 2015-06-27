@@ -69,9 +69,6 @@ Register::Register(Matrix *m, int width) {
 }
 	
 Register::Register(MAX_UNSIGNED initval, int width) {
-	char *c;
-	int i;
-	
 	srand(time(NULL));
 
 	this->width = width;
@@ -128,10 +125,8 @@ int Register::getHashw() {
 }
 
 void Register::addScratch(int bits) {
-	int i, oldwidth;
+	int i;
 	MAX_UNSIGNED l;
-
-	oldwidth = this->width;
 
 	this->width += bits;
 
@@ -186,7 +181,7 @@ void Register::apply2x2Matrix(int target, Matrix *m) {
 	COMPLEX_FLOAT t;
 	COMPLEX_FLOAT tnot = 0;
 	float limit;
-	char *done;
+	vector<bool> done;
 
 	if ( m->getCols() != 2 || m->getRows() != 2 ) {
 		Error::error(QUANTUM_EMSIZE);
@@ -214,7 +209,7 @@ void Register::apply2x2Matrix(int target, Matrix *m) {
 		this->node.push_back(new Node(0,0));
 	}
 	
-	done = new char[ this->size + addsize ];
+	done.resize(this->size + addsize, false);
 
 	k = this->size;
 

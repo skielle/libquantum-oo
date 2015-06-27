@@ -3,6 +3,7 @@
  */
 
 #include <iostream>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "complex.h"
@@ -64,6 +65,7 @@ Matrix Matrix::matrixMultiply(Matrix a, Matrix b) {
 }
 
 COMPLEX_FLOAT Matrix::determinant(Matrix m) {
+	int i, j, k, x, y;
 	if ( m.getCols() != m.getRows() ) {
 		Error::error(QUANTUM_EINVMATRIX);
 	}
@@ -72,7 +74,27 @@ COMPLEX_FLOAT Matrix::determinant(Matrix m) {
 		return m.get(0, 0) * m.get(1, 1) 
 			- m.get(0, 1) * m.get(1, 0);
 	} else {
-		//recurse here
+		COMPLEX_FLOAT det = 0;
+		for ( i = 0; i < m.getCols(); i++ ) {
+			x = 0;
+			y = 0;
+			Matrix n = Matrix(m.getCols()-1, m.getCols()-1);
+
+			for (j = 1; j < m.getCols(); j++ ) {
+				for (k = 0; k < m.getCols(); k++ ) {
+					if ( k != i ) {
+						n.set(x, y, m.get(k, j));
+						y++;
+						if ( y == m.getCols() - 1 ) {
+							x++;
+							y = 0;
+						}
+					}
+				}
+			}
+			det += m.get(i, 0) * pow(-1, i) * Matrix::determinant(n);
+		}
+		return det;
 	}		
 }
 
@@ -97,6 +119,7 @@ Matrix Matrix::inverse(Matrix m) {
 	}
 
 	Error::error(QUANTUM_EINVMATRIX);
+	return m;
 }
 
 void Matrix::del() { this->~Matrix(); }
@@ -115,7 +138,7 @@ void Matrix::print() {
 
 	for ( i = 0; i < this->getRows(); i++ ) {
 		for ( j = 0; j < this->getCols(); j++ ) {
-			printf("%g %+gi", Complex::real( this->get( j, i ) ),
+			printf("%g %+gi, ", Complex::real( this->get( j, i ) ),
 				Complex::imaginary( this->get( j, i ) ) );
 		}
 		printf("\n");

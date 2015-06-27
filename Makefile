@@ -10,6 +10,7 @@ clean:
 all_tests: classic_test complex_test node_test error_test matrix_test register_test gate_test entangledPair_test entangledRegister_test
 
 protocol_buffers:
+	protoc --cpp_out=. quantumMessage.proto
 	$(CC) $(CFLAGS) $(LIBS) quantumMessage.pb.cc -o bin/quantumMessage.o
 
 classic_test: clean
@@ -36,8 +37,8 @@ register_test: clean
 gate_test: clean
 	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp -g gates.cpp tests/gate_test.cpp -o bin/gate_test
 
-entangledRegister_test: clean
-	$(CC) -g complex.cpp error.cpp system.cpp matrix.cpp node.cpp -g register.cpp -g entangledRegister.cpp entanglement.cpp entangledPair.cpp tests/entangledRegister_test.cpp -o bin/entangledRegister_test
+entangledRegister_test: clean protocol_buffers
+	$(CC) $(LIBS) bin/quantumMessage.o -g complex.cpp error.cpp system.cpp matrix.cpp node.cpp -g register.cpp -g entangledRegister.cpp entanglement.cpp entangledPair.cpp tests/entangledRegister_test.cpp -o bin/entangledRegister_test
 
 entanglement_test: clean
 	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp entangledRegister.cpp entanglement.cpp entangledPair.cpp tests/entanglement_test.cpp -o bin/entanglement_test
