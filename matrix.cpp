@@ -146,8 +146,9 @@ void Matrix::print() {
 	printf("\n");
 }
 
-void Matrix::serialize(iostream &output) {
+QuantumMessage::MatrixMessage Matrix::serialize() {
 	int i;
+	string serializedMessage;
 	QuantumMessage::MatrixMessage saveMessage;
 	
 	saveMessage.set_rows(this->getRows());
@@ -160,18 +161,16 @@ void Matrix::serialize(iostream &output) {
 		saveT->set_imaginary(Complex::imaginary(this->t[i]));
 	}
 
-	saveMessage.SerializeToOstream(&output);
+	return saveMessage;
 }
 
-Matrix Matrix::unserialize(iostream &input) {
+Matrix Matrix::unserialize(const QuantumMessage::MatrixMessage* loadMessage) {
 	int i;
-	QuantumMessage::MatrixMessage loadMessage;
-	loadMessage.ParseFromIstream(&input);
 
-	Matrix m ( loadMessage.cols(), loadMessage.rows() );
+	Matrix m ( loadMessage->cols(), loadMessage->rows() );
 
-	for ( i = 0; i < loadMessage.t_size(); i++ ) {
-		QuantumMessage::ComplexMessage cMessage = loadMessage.t(i);
+	for ( i = 0; i < loadMessage->t_size(); i++ ) {
+		QuantumMessage::ComplexMessage cMessage = loadMessage->t(i);
 
 		m.set(i % m.getCols(), i / m.getCols(), 
 			 cMessage.real() + cMessage.imaginary() * IMAGINARY);

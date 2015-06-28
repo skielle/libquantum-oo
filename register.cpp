@@ -14,6 +14,7 @@
 #include "matrix.h"
 #include "node.h"
 #include "register.h"
+#include "quantumMessage.pb.h"
 
 using namespace std;
 
@@ -506,6 +507,21 @@ void Register::print() {
 //	void printExpn();
 //	void printHash();
 //	void printTimeop(int width, void f(Register *));
+
+QuantumMessage::MatrixMessage Register::serialize() {
+	QuantumMessage::MatrixMessage saveMessage;
+	
+	Matrix m = this->toMatrix();
+	return m.serialize();
+}
+
+Register& Register::unserialize(
+	const QuantumMessage::MatrixMessage* loadMessage) {
+
+	Matrix m = Matrix::unserialize(loadMessage);
+	Register* ret = new Register(&m, m.getRows());
+	return *ret;
+}	
 
 //void might not be right here, we might want to drop a qureg
 //	void stateCollapse(int bit, int value);

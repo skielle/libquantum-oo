@@ -12,3 +12,11 @@ message ComplexMessage {
 	float real = 1;
 	float imaginary = 2;
 }
+
+message ResponseCode {
+	bool responseCode = 1;
+}
+
+service QuantumChannel {
+	rpc SendMatrix(MatrixMessage) returns (ResponseCode) {}
+}

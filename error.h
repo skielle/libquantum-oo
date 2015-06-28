@@ -24,8 +24,8 @@ class Error {
 	public:
 	
 		static void errorHandler(void *f(int));
-		static const char *strerr(int errno);
-		static void error(int errno);
+		static const char *strerr(int errorNumber);
+		static void error(int errorNumber);
 };
 }
 #endif

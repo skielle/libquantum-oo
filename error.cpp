@@ -15,8 +15,8 @@ void Error::errorHandler(void *f(int)) {
 	return;
 }
  
-const char *Error::strerr(int errno) {
-	switch(errno) {
+const char *Error::strerr(int errorNumber) {
+	switch(errorNumber) {
 		case QUANTUM_SUCCESS:
 			return "success";
 		case QUANTUM_FAILURE:
@@ -38,7 +38,7 @@ const char *Error::strerr(int errno) {
 	}
 }
 		
-void Error::error(int errno) {
-	throw runtime_error(Error::strerr(errno));
+void Error::error(int errorNumber) {
+	throw runtime_error(Error::strerr(errorNumber));
 }
 }

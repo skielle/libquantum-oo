@@ -1,8 +1,9 @@
 /*
  * matrix.h
  */
-#include <iostream>
+#include <string.h>
 #include "config.h"
+#include "quantumMessage.pb.h"
 
 #ifndef __QUANTUM_MATRIX_H
 #define __QUANTUM_MATRIX_H
@@ -35,8 +36,9 @@ class Matrix {
 
 		void print();
 
-		void serialize(iostream& output);
-		static Matrix unserialize(iostream& input);
+		QuantumMessage::MatrixMessage serialize();
+		static Matrix unserialize(
+			const QuantumMessage::MatrixMessage* loadMessage);
 };
 }
 #endif

@@ -13,6 +13,8 @@
 #include "matrix.h"
 #include "error.h"
 #include "node.h"
+#include "quantumMessage.pb.h"
+
 using namespace std;
 
 namespace Quantum {
@@ -63,6 +65,10 @@ class Register {
 		void printExpn();
 		void printHash();
 		void printTimeop(int width, void f(Register *));
+
+		QuantumMessage::MatrixMessage serialize();
+		static Register& unserialize(
+			const QuantumMessage::MatrixMessage* loadMessage);
 
 		//void might not be right here, we might want to drop a qureg
 		void stateCollapse(int bit, int value);

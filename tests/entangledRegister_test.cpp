@@ -5,6 +5,7 @@
 #include "../entangledPair.h"
 #include "../entangledRegister.h"
 #include "../matrix.h"
+#include "../gates.cpp"
 
 using namespace std;
 using namespace Quantum;
@@ -34,16 +35,22 @@ int main() {
 
 	sigX.print();
 
+	RotateX* rx = new RotateX();
+	rx->setPsi(pi / 3);
+
 	a->EntangledRegister::applyMatrix(0, &m);
 	b->EntangledRegister::applyMatrix(0, &m);
 
 	e.entangle(0, *ab0);
+
 	a->print();
 
 	a->EntangledRegister::applyMatrix(0, &sigX);
+	a->EntangledRegister::applyGate(rx, 0);
 
 	a->print();
 	b->print();
+
 	a->EntangledRegister::measure(0, false);
 	a->print();
 	b->print();
