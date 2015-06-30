@@ -19,10 +19,10 @@ protocol_buffers:
 		-o bin/quantumMessage.grpc.o
 
 channel_source: protocol_buffers
-	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelSource -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp system.cpp error.cpp matrix.cpp channelSource.cpp 
+	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelSource -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp system.cpp error.cpp matrix.cpp node.cpp -g register.cpp gates.cpp channelSource.cpp 
 
 channel_sink: protocol_buffers
-	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelSink -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp system.cpp error.cpp matrix.cpp channelSink.cpp 
+	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelSink -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp system.cpp error.cpp matrix.cpp node.cpp register.cpp channelSink.cpp 
 
 channel: channel_source channel_sink
 

@@ -6,6 +6,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
+
 #include "complex.h"
 #include "config.h"
 #include "error.h"
@@ -20,7 +22,8 @@ Matrix::Matrix(int cols, int rows) {
 	this->setRows(rows);
 	this->setCols(cols);
 
-	this->t = new COMPLEX_FLOAT [ this->getRows() * this->getCols() ];
+	this->t = new vector<COMPLEX_FLOAT> ( 
+		this->getRows() * this->getCols(), 0) ;
 
 	if ( !this->t ) {
 		Error::error(QUANTUM_ENOMEM);
@@ -35,11 +38,11 @@ int Matrix::getRows() { return this->rows; }
 int Matrix::getCols() { return this->cols; }
 
 COMPLEX_FLOAT Matrix::get( int x, int y ) {
-	return this->t[ x + y * this->getCols() ];
+	return this->t->at(x + y * this->getCols());
 }
 
 void Matrix::set( int x, int y, COMPLEX_FLOAT v ) {
-	this->t[ x + y * this->getCols() ] = v;
+	this->t->at(x + y * this->getCols()) = v;
 }
 
 Matrix Matrix::matrixMultiply(Matrix a, Matrix b) {
@@ -157,8 +160,8 @@ QuantumMessage::MatrixMessage Matrix::serialize() {
 	for ( i = 0; i < this->getRows() * this->getCols(); i++ ) {
 		QuantumMessage::ComplexMessage* saveT = saveMessage.add_t();
 
-		saveT->set_real(Complex::real(this->t[i]));
-		saveT->set_imaginary(Complex::imaginary(this->t[i]));
+		saveT->set_real(Complex::real(this->t->at(i)));
+		saveT->set_imaginary(Complex::imaginary(this->t->at(i)));
 	}
 
 	return saveMessage;

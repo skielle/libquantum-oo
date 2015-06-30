@@ -19,4 +19,5 @@ message ResponseCode {
 
 service QuantumChannel {
 	rpc SendMatrix(MatrixMessage) returns (ResponseCode) {}
+	rpc SendRegister(MatrixMessage) returns (ResponseCode) {}
 }

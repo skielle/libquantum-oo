@@ -91,7 +91,7 @@ Register::Register(MAX_UNSIGNED initval, int width) {
 	}
 
 	//memman stuff
-	
+
 	Node* n = new Node(1, initval);
 	this->node.push_back(n);
 }

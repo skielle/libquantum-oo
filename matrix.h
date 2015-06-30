@@ -2,6 +2,7 @@
  * matrix.h
  */
 #include <string.h>
+#include <vector>
 #include "config.h"
 #include "quantumMessage.pb.h"
 
@@ -14,7 +15,7 @@ namespace Quantum {
 class Matrix {
 	int rows;
 	int cols;
-	COMPLEX_FLOAT *t;
+	vector<COMPLEX_FLOAT> *t;
 
 	public:
 		Matrix();
