@@ -14,7 +14,6 @@ message ComplexMessage {
 }
 
 message ResponseCode {
-	bool responseCode = 1;
 }
 
 service QuantumChannel {

@@ -34,11 +34,7 @@ class ChannelSource {
 			grpc::Status status = stub_->SendRegister(&ctx,
 				mm, &rc);
 	
-			if ( status.ok() ) {
-			
-			}
-			
-			return rc.responsecode();
+			return status.ok();
 		}
 	
 		bool SendMatrix(Matrix m) {
@@ -50,10 +46,7 @@ class ChannelSource {
 			grpc::Status status = stub_->SendMatrix(&ctx,
 				mm, &rc);
 	
-			if ( status.ok() ) {
-			
-			}
-			return rc.responsecode();
+			return status.ok();
 		}
 	
 	private:

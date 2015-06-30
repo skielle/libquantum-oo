@@ -19,14 +19,12 @@ class QuantumMessageServiceImpl final : public QuantumMessage::QuantumChannel::S
 	grpc::Status SendMatrix(grpc::ServerContext* context, const QuantumMessage::MatrixMessage* request, QuantumMessage::ResponseCode* reply) override {
 		Matrix mx = Matrix::unserialize(request);
 		mx.print();
-		reply->set_responsecode(true);
 		return grpc::Status::OK;
 	}
 
 	grpc::Status SendRegister(grpc::ServerContext* context, const QuantumMessage::MatrixMessage* request, QuantumMessage::ResponseCode* reply) override {
 		Register rg = Register::unserialize(request);
 		rg.print();
-		reply->set_responsecode(true);
 		return grpc::Status::OK;
 	}
 };
