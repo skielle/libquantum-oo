@@ -34,6 +34,11 @@ class EntangledRegister: public Register {
 		void replay(int target);
 		void playAltHistory(int target, vector<Matrix>* altHistory);
 		void revertAltHistory(int target, vector<Matrix>* altHistory);
+
+		void updateAmplitudes(int target, int result);
+		void playAltHistory(int target);
+
+		void pairMeasured(int target, int result);
 };
 }
 

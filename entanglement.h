@@ -18,11 +18,10 @@ class Entanglement {
 		static Entanglement createEntanglement(MAX_UNSIGNED init, int width);
 		EntangledRegister* getAleph();
 		EntangledRegister* getBeit();
+
 		void entangle(int target, EntangledPair entanglementData);
-
+		EntangledPair getEntanglement(int target);
 		bool isEntangled( int target);
-
-		void applyMatrix(int target, Matrix* m);
 
 		void measured(bool isAleph, int target, int result);
 };

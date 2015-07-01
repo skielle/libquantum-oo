@@ -3,6 +3,7 @@
  */
 #include <stdio.h>
 #include <math.h>
+#include "complex.h"
 #include "entanglement.h"
 #include "entangledRegister.h"
 #include "register.h"
@@ -46,6 +47,39 @@ bool EntangledRegister::getAleph() {
 void EntangledRegister::setAleph(bool aleph) {
 	this->aleph = aleph;
 } 
+
+void EntangledRegister::updateAmplitudes(int target, int result) {
+	int i;
+	float p0, p1;
+
+	if ( !this->aleph ) {
+		p0 = Complex::probability(
+			this->ent->getEntanglement(target).get(result, 0) );
+		p1 = Complex::probability(
+			this->ent->getEntanglement(target).get(result, 1) );
+	} else {
+		p0 = Complex::probability(
+			this->ent->getEntanglement(target).get(0, result) );
+		p1 = Complex::probability(
+			this->ent->getEntanglement(target).get(1, result) );
+	}
+
+	if ( p0 + p1 > float_zero ) { 
+		for ( i = 0; i < this->size; i++ ) {
+			if ( (int)(( this->node[i]->getState() >> (target) ) 
+				% 2 ) == 0 ) {
+				this->node[i]->setAmplitude( 
+					this->node[i]->getAmplitude() *
+					 sqrt(p0) );
+			} else {
+				this->node[i]->setAmplitude(
+					this->node[i]->getAmplitude() *
+					 sqrt(p1) );
+			}
+		}
+		this->normalize();
+	}
+}
 
 void EntangledRegister::updateAmplitudes(int target, float p0, float p1) {
 	int i;

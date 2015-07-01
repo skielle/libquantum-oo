@@ -36,6 +36,10 @@ void Entanglement::entangle(int target, EntangledPair entanglementData) {
 	this->entanglements[target] = entanglementData;
 }
 
+EntangledPair Entanglement::getEntanglement(int target) {
+	return this->entanglements[target];
+}
+
 bool Entanglement::isEntangled(int target) {
 	return !(this->entanglements[target].isNull());
 }
@@ -51,7 +55,7 @@ void Entanglement::measured(bool isAleph, int target, int result){
 			this->entanglements[target].get(result, 1));
 		if ( p0 + p1 > float_zero ) {
 			this->beit->revert(target);
-			this->beit->updateAmplitudes(target, p0, p1);
+			this->beit->updateAmplitudes(target, result);
 			this->beit->playAltHistory(target, 
 				aleph->getOpHistory(target));
 			this->beit->replay(target);
