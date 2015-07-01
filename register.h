@@ -66,9 +66,9 @@ class Register {
 		void printHash();
 		void printTimeop(int width, void f(Register *));
 
-		QuantumMessage::MatrixMessage serialize();
+		QuantumMessage::RegisterMessage serialize();
 		static Register& unserialize(
-			const QuantumMessage::MatrixMessage* loadMessage);
+			const QuantumMessage::RegisterMessage* loadMessage);
 
 		//void might not be right here, we might want to drop a qureg
 		void stateCollapse(int bit, int value);

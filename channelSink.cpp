@@ -22,7 +22,7 @@ class QuantumMessageServiceImpl final : public QuantumMessage::QuantumChannel::S
 		return grpc::Status::OK;
 	}
 
-	grpc::Status SendRegister(grpc::ServerContext* context, const QuantumMessage::MatrixMessage* request, QuantumMessage::VoidMessage* reply) override {
+	grpc::Status SendRegister(grpc::ServerContext* context, const QuantumMessage::RegisterMessage* request, QuantumMessage::VoidMessage* reply) override {
 		Register rg = Register::unserialize(request);
 		rg.print();
 		return grpc::Status::OK;

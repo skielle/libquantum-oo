@@ -4,6 +4,7 @@ package QuantumMessage;
 
 message RegisterMessage {
 	MatrixMessage m = 1;
+	int32 Width = 2;
 }
 
 message RegisterAddressMessage {
@@ -41,7 +42,7 @@ message EntangledPairMessage {
 
 service QuantumChannel {
 	rpc SendMatrix(MatrixMessage) returns (VoidMessage) {}
-	rpc SendRegister(MatrixMessage) returns (VoidMessage) {}
+	rpc SendRegister(RegisterMessage) returns (VoidMessage) {}
 	rpc SendEntangledRegister(EntanglementMessage) returns (VoidMessage) {}
 	rpc EventEntanglePair(EntangledPairMessage) returns (VoidMessage) {}
 	rpc EventDisentanglePair(RegisterAddressMessage) returns (VoidMessage) {}

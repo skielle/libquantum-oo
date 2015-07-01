@@ -508,18 +508,22 @@ void Register::print() {
 //	void printHash();
 //	void printTimeop(int width, void f(Register *));
 
-QuantumMessage::MatrixMessage Register::serialize() {
-	QuantumMessage::MatrixMessage saveMessage;
-	
-	Matrix m = this->toMatrix();
-	return m.serialize();
+QuantumMessage::RegisterMessage Register::serialize() {
+	QuantumMessage::RegisterMessage saveMessage;
+
+	saveMessage.mutable_m()->CopyFrom(this->toMatrix().serialize());
+	saveMessage.set_width(this->width);
+
+	return saveMessage;
 }
 
 Register& Register::unserialize(
-	const QuantumMessage::MatrixMessage* loadMessage) {
+	const QuantumMessage::RegisterMessage* loadMessage) {
+	QuantumMessage::MatrixMessage mMessage = loadMessage->m();
 
-	Matrix m = Matrix::unserialize(loadMessage);
-	Register* ret = new Register(&m, m.getRows());
+	Matrix m = Matrix::unserialize(&mMessage);
+
+	Register* ret = new Register(&m, loadMessage->width());
 	return *ret;
 }	
 

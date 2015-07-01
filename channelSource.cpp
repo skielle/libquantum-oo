@@ -25,14 +25,14 @@ class ChannelSource {
 		ChannelSource(shared_ptr<grpc::ChannelInterface> channel)
 			: stub_(QuantumMessage::QuantumChannel::NewStub(channel)) {}
 
-		bool SendRegister(Register m) {
-			QuantumMessage::MatrixMessage mm;
-			mm = m.serialize();
+		bool SendRegister(Register r) {
+			QuantumMessage::RegisterMessage rm;
+			rm = r.serialize();
 			QuantumMessage::VoidMessage rc;
 			grpc::ClientContext ctx;
 
 			grpc::Status status = stub_->SendRegister(&ctx,
-				mm, &rc);
+				rm, &rc);
 	
 			return status.ok();
 		}
