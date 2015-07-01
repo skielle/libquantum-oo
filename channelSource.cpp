@@ -28,7 +28,7 @@ class ChannelSource {
 		bool SendRegister(Register m) {
 			QuantumMessage::MatrixMessage mm;
 			mm = m.serialize();
-			QuantumMessage::ResponseCode rc;
+			QuantumMessage::VoidMessage rc;
 			grpc::ClientContext ctx;
 
 			grpc::Status status = stub_->SendRegister(&ctx,
@@ -40,7 +40,7 @@ class ChannelSource {
 		bool SendMatrix(Matrix m) {
 			QuantumMessage::MatrixMessage mm;
 			mm = m.serialize();
-			QuantumMessage::ResponseCode rc;
+			QuantumMessage::VoidMessage rc;
 			grpc::ClientContext ctx;
 
 			grpc::Status status = stub_->SendMatrix(&ctx,

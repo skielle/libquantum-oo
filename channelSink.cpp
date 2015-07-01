@@ -16,13 +16,13 @@ using namespace std;
 using namespace Quantum;
 
 class QuantumMessageServiceImpl final : public QuantumMessage::QuantumChannel::Service {
-	grpc::Status SendMatrix(grpc::ServerContext* context, const QuantumMessage::MatrixMessage* request, QuantumMessage::ResponseCode* reply) override {
+	grpc::Status SendMatrix(grpc::ServerContext* context, const QuantumMessage::MatrixMessage* request, QuantumMessage::VoidMessage* reply) override {
 		Matrix mx = Matrix::unserialize(request);
 		mx.print();
 		return grpc::Status::OK;
 	}
 
-	grpc::Status SendRegister(grpc::ServerContext* context, const QuantumMessage::MatrixMessage* request, QuantumMessage::ResponseCode* reply) override {
+	grpc::Status SendRegister(grpc::ServerContext* context, const QuantumMessage::MatrixMessage* request, QuantumMessage::VoidMessage* reply) override {
 		Register rg = Register::unserialize(request);
 		rg.print();
 		return grpc::Status::OK;

@@ -2,6 +2,24 @@ syntax = "proto3";
 
 package QuantumMessage;
 
+message RegisterMessage {
+	MatrixMessage m = 1;
+}
+
+message RegisterAddressMessage {
+	int32 RegisterAddress = 1;
+}
+
+message EntangledMeasurementMessage {
+	bool aleph = 1;
+	RegisterAddressMessage target = 2;
+	int32 result = 3;
+	repeated MatrixMessage opHistory = 4;
+}
+
+message EntanglementMessage {
+}
+
 message MatrixMessage {
 	int32 rows = 1;
 	int32 cols = 2;
@@ -13,10 +31,20 @@ message ComplexMessage {
 	float imaginary = 2;
 }
 
-message ResponseCode {
+message VoidMessage {
+}
+
+message EntangledPairMessage {
+	MatrixMessage amplitudes = 1;
+	bool _isNull = 2;
 }
 
 service QuantumChannel {
-	rpc SendMatrix(MatrixMessage) returns (ResponseCode) {}
-	rpc SendRegister(MatrixMessage) returns (ResponseCode) {}
+	rpc SendMatrix(MatrixMessage) returns (VoidMessage) {}
+	rpc SendRegister(MatrixMessage) returns (VoidMessage) {}
+	rpc SendEntangledRegister(EntanglementMessage) returns (VoidMessage) {}
+	rpc EventEntanglePair(EntangledPairMessage) returns (VoidMessage) {}
+	rpc EventDisentanglePair(RegisterAddressMessage) returns (VoidMessage) {}
+	rpc EventPairMessureStart(RegisterAddressMessage) returns (VoidMessage) {}
+	rpc EventPairMessureFinish(EntangledMeasurementMessage) returns (VoidMessage) {}
 }
