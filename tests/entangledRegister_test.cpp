@@ -25,15 +25,12 @@ int main() {
 	m.set(0, 1, sqrt(1.0/2));
 	m.set(1, 1, -1 * sqrt(1.0/2));
 
-	m.print();
 
 	Matrix sigX = Matrix(2, 2);
 	sigX.set(0, 0, 0);
 	sigX.set(1, 0, 1);
 	sigX.set(0, 1, 1);
 	sigX.set(1, 1, 0);
-
-	sigX.print();
 
 	RotateX* rx = new RotateX();
 	rx->setPsi(pi / 3);
@@ -43,9 +40,7 @@ int main() {
 
 	e.entangle(0, *ab0);
 
-	a->print();
-
-	a->EntangledRegister::applyMatrix(0, &sigX);
+//	a->EntangledRegister::applyMatrix(0, &sigX);
 	a->EntangledRegister::applyGate(rx, 0);
 
 	a->print();
