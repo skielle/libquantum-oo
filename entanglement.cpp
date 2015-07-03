@@ -46,28 +46,11 @@ bool Entanglement::isEntangled(int target) {
 
 void Entanglement::measured(bool isAleph, int target, int result){
 	printf("Measured: %i\n", result);
-	float p0, p1;
 
 	if ( isAleph ) {
-		p0 = Complex::probability(
-			this->entanglements[target].get(result, 0));
-		p1 = Complex::probability(
-			this->entanglements[target].get(result, 1));
-		if ( p0 + p1 > float_zero ) {
-			this->beit->revert(target);
-			this->beit->updateAmplitudes(target, result);
-			this->beit->playAltHistory(target, 
-				aleph->getOpHistory(target));
-			this->beit->replay(target);
-		}
+		this->beit->pairMeasured(target, result);
 	} else {
-		p0 = Complex::probability(
-			this->entanglements[target].get(0, result));
-		p1 = Complex::probability(
-			this->entanglements[target].get(1, result));
-		if ( p0 + p1 > float_zero ) {
-			this->aleph->updateAmplitudes(target, p0, p1);
-		}
+		this->aleph->pairMeasured(target, result);
 	}
 }
 }		

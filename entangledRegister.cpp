@@ -48,6 +48,13 @@ void EntangledRegister::setAleph(bool aleph) {
 	this->aleph = aleph;
 } 
 
+void EntangledRegister::pairMeasured(int target, int result) {
+	this->revert(target);
+	this->updateAmplitudes(target, result);
+	this->playAltHistory(target);
+	this->replay(target);
+}
+
 void EntangledRegister::updateAmplitudes(int target, int result) {
 	int i;
 	float p0, p1;
@@ -81,28 +88,11 @@ void EntangledRegister::updateAmplitudes(int target, int result) {
 	}
 }
 
-void EntangledRegister::updateAmplitudes(int target, float p0, float p1) {
-	int i;
-	printf("Updating Amps.... %f, %f\n", p0, p1);
-	for ( i = 0; i < this->size; i++ ) {
-		if ( (int)(( this->node[i]->getState() >> (target) ) % 2 ) == 0 ) {
-			this->node[i]->setAmplitude( 
-				this->node[i]->getAmplitude() * sqrt(p0) );
-		} else {
-			this->node[i]->setAmplitude(
-				this->node[i]->getAmplitude() * sqrt(p1) );
-		}
-	}
-	this->normalize();
-}
-
 void EntangledRegister::revert(int target) {
 	int i;
-	printf("Reverting...\n");
 	if ( !this->opHistory[target]->empty() ) {
 		for ( i = this->opHistory[target]->size() - 1; i >= 0; i-- ) {
 			Matrix im = Matrix::inverse(opHistory[target]->at(i));
-			im.print();
 			Register::apply2x2Matrix(target, &im);
 		}
 	}
@@ -110,26 +100,23 @@ void EntangledRegister::revert(int target) {
 
 void EntangledRegister::replay(int target) {
 	int i;
-	printf("Replaying...\n");
 	for ( i = 0; i < this->opHistory[target]->size(); i++ ) {
 		Register::apply2x2Matrix(target, &this->opHistory[target]->at(i));
 	}
 }
 
-void EntangledRegister::playAltHistory(int target, vector<Matrix>* altHistory) {
+void EntangledRegister::playAltHistory(int target) {
 	int i;
-	printf("Playing alts...\n");
+	vector<Matrix>* altHistory;
+	if ( this->aleph ) {
+		altHistory = this->ent->getBeit()->getOpHistory(target);
+	} else {
+		altHistory = this->ent->getAleph()->getOpHistory(target);
+	}
+
 	for ( i = 0; i < altHistory->size(); i++ ) {
-		altHistory->at(i).print();
 		Register::apply2x2Matrix(target, &altHistory->at(i));
 	}
 }
 
-void EntangledRegister::revertAltHistory(int target, vector<Matrix>* altHistory) {
-	int i;
-	for ( i = altHistory->size() - 1; i >= 0; i-- ) {
-		Matrix im = Matrix::inverse(altHistory->at(i));
-		Register::apply2x2Matrix(target, &im);
-	}
-}
 }

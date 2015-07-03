@@ -22,7 +22,10 @@ channel_source: protocol_buffers
 	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelSource -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp system.cpp error.cpp matrix.cpp node.cpp -g register.cpp gates.cpp channelSource.cpp 
 
 channel_sink: protocol_buffers
-	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelSink -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp system.cpp error.cpp matrix.cpp node.cpp register.cpp channelSink.cpp 
+	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelSink -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp system.cpp error.cpp matrix.cpp node.cpp -g register.cpp channelSink.cpp 
+
+channelListener_test: protocol_buffers channel_source
+	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelListener_test -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp system.cpp error.cpp matrix.cpp node.cpp -g register.cpp channelListener.cpp channelService.cpp tests/channelListener_test.cpp
 
 channel: channel_source channel_sink
 
@@ -55,3 +58,6 @@ entangledRegister_test: clean protocol_buffers
 
 entanglement_test: clean
 	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp entangledRegister.cpp entanglement.cpp entangledPair.cpp tests/entanglement_test.cpp -o bin/entanglement_test
+
+system_test: clean protocol_buffers
+	$(CC) $(LIBS) bin/quantumMessage.o complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp tests/system_test.cpp -o bin/system_test

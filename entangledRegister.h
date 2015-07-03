@@ -18,6 +18,11 @@ class EntangledRegister: public Register {
 		Entanglement* ent;
 		vector<Matrix>** opHistory;
 		bool aleph;
+
+		void revert(int target);
+		void replay(int target);
+		void updateAmplitudes(int target, int result);
+		void playAltHistory(int target);
 	public:
 		//do some stuff to modification methods
 		// modifications must either:
@@ -29,14 +34,6 @@ class EntangledRegister: public Register {
 		vector<Matrix>* getOpHistory(int target);
 		void setAleph(bool aleph);
 		bool getAleph();
-		void updateAmplitudes(int target, float p0, float p1);
-		void revert(int target);
-		void replay(int target);
-		void playAltHistory(int target, vector<Matrix>* altHistory);
-		void revertAltHistory(int target, vector<Matrix>* altHistory);
-
-		void updateAmplitudes(int target, int result);
-		void playAltHistory(int target);
 
 		void pairMeasured(int target, int result);
 };
