@@ -10,7 +10,6 @@
 #include <vector>
 #include "config.h"
 #include "defs.h"
-#include "iRegister.h"
 #include "matrix.h"
 #include "error.h"
 #include "node.h"
@@ -21,7 +20,7 @@ using namespace std;
 namespace Quantum {
 class Gate;
 
-class Register: public iRegister {
+class Register {
 	protected:
 		int width;
 		int size;

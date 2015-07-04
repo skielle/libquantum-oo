@@ -2,8 +2,6 @@
  * stub__networkRegister.h
  */
 
-#include "iRegister.h"
-
 #ifndef __QUANTUM_STUB__NETWORKREGISTER_H
 #define __QUANTUM_STUB__NETWORKREGISTER_H
 

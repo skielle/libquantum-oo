@@ -10,9 +10,9 @@ using namespace Quantum;
 
 int main() {
 	System* mySys = System::getInstance();
-
+	mySys->runServer();
 	Register s = Register((MAX_UNSIGNED) 0, 8);
-	int key = mySys->addRegister(&s);
+	int key = mySys->addRegister(s);
 
 	Matrix m = Matrix(2, 2);
 
@@ -28,8 +28,8 @@ int main() {
 	s.applyGate(new SigmaX(), 0);
 	s.print();
 
-	Register* q = (Register*)(mySys->getRegister(key));
-	q->print();
+	Register q = (Register)(mySys->getRegister(key));
+	q.print();
 	
 	return 0;
 }

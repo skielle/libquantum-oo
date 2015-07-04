@@ -14,7 +14,6 @@
 #include <grpc++/credentials.h>
 #include <grpc++/status.h>
 #include "quantumMessage.grpc.pb.h"
-#include "matrix.h"
 #include "register.h"
 #include "gates.cpp"
 
@@ -33,18 +32,6 @@ class ChannelSource {
 
 			grpc::Status status = stub_->SendRegister(&ctx,
 				rm, &rc);
-	
-			return status.ok();
-		}
-	
-		bool SendMatrix(Matrix m) {
-			QuantumMessage::MatrixMessage mm;
-			mm = m.serialize();
-			QuantumMessage::VoidMessage rc;
-			grpc::ClientContext ctx;
-
-			grpc::Status status = stub_->SendMatrix(&ctx,
-				mm, &rc);
 	
 			return status.ok();
 		}

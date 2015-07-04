@@ -23,8 +23,7 @@ grpc::Status ChannelService::SendRegister(grpc::ServerContext* context,
 	QuantumMessage::VoidMessage* reply) {
 	System* s = System::getInstance();
 	Register rg = Register::unserialize(request);
-	rg.print();
-	s->addRegister(&rg);
+	s->addRegister(rg);
 	return grpc::Status::OK;
 }
 }

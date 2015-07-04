@@ -19,7 +19,7 @@ protocol_buffers:
 		-o bin/quantumMessage.grpc.o
 
 channel_source: protocol_buffers
-	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelSource -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp system.cpp error.cpp matrix.cpp node.cpp -g register.cpp gates.cpp channelSource.cpp 
+	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelSource -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp channelService.cpp channelListener.cpp system.cpp error.cpp matrix.cpp node.cpp -g register.cpp gates.cpp channelSource.cpp 
 
 channel_sink: protocol_buffers
 	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelSink -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp system.cpp error.cpp matrix.cpp node.cpp -g register.cpp channelSink.cpp 
@@ -59,5 +59,5 @@ entangledRegister_test: clean protocol_buffers
 entanglement_test: clean
 	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp entangledRegister.cpp entanglement.cpp entangledPair.cpp tests/entanglement_test.cpp -o bin/entanglement_test
 
-system_test: clean protocol_buffers
-	$(CC) $(LIBS) bin/quantumMessage.o complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp tests/system_test.cpp -o bin/system_test
+system_test: protocol_buffers
+	$(CC) -std=c++11 -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl bin/quantumMessage.o bin/quantumMessage.grpc.o complex.cpp error.cpp channelService.cpp channelListener.cpp -g system.cpp matrix.cpp node.cpp register.cpp tests/system_test.cpp -o bin/system_test
