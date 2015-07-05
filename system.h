@@ -1,14 +1,20 @@
+/*
+ * system.h
+ */
+
+#ifndef __QUANTUM_SYSTEM_H
+#define __QUANTUM_SYSTEM_H
+
 #include <memory>
-#include <utility>
 #include <queue>
-#include <vector>
 #include <string>
+#include <utility>
+#include <vector>
+
 #include "register.h"
 
 using namespace std;
 
-#ifndef __QUANTUM_SYSTEM_H
-#define __QUANTUM_SYSTEM_H
 namespace Quantum {
 
 enum class SystemMessage {
@@ -17,8 +23,7 @@ enum class SystemMessage {
 
 class System {
 	private:
-		vector<Register> registers;
-shared_ptr<Register>  rxfake;
+		vector<shared_ptr<iRegister>> registers;
 		System();
 		static System* systemInstance;
 		queue<pair<SystemMessage, int>> messageQueue;
@@ -32,8 +37,8 @@ shared_ptr<Register>  rxfake;
 
 		void runServer();
 		void runAlgorithm();
-		int addRegister(Register reg);
-		Register getRegister(int i);
+		int addRegister(shared_ptr<iRegister> reg);
+		shared_ptr<iRegister> getRegister(int i);
 };
 }
 #endif

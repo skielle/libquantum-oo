@@ -10,10 +10,10 @@ class iRegister {
 	protected:
 		int id;
 	public:
-		void setID(int id) {
+		virtual	void setID(int id) {
 			this->id = id;
 		}
-		int getID() { return this->id; }
+		virtual int getID() { return this->id; }
 };
 }
 #endif

@@ -1,3 +1,4 @@
+#include <memory>
 #include <thread>
 #include <queue>
 #include <unistd.h>
@@ -41,9 +42,9 @@ void System::runAlgorithm() {
 		} else {
 			if ( this->messageQueue.front().first ==
 				SystemMessage::REGISTER_RECIEVED ) {
-				Register rx = this->registers.at(
-					this->messageQueue.front().second);
-				rx.print();
+				shared_ptr<Register> rx = dynamic_pointer_cast<Register> (this->registers.at(
+					this->messageQueue.front().second));
+				rx->print();
 			}
 			this->messageQueue.pop();
 		}
@@ -57,7 +58,7 @@ System* System::getInstance() {
 	return System::systemInstance;
 }
 
-int System::addRegister(Register reg) {
+int System::addRegister(shared_ptr<iRegister> reg) {
 	registers.push_back(reg);
 	messageQueue.push(
 		pair<SystemMessage, int>(
@@ -66,7 +67,7 @@ int System::addRegister(Register reg) {
 	return registers.size() - 1;
 }
 
-Register System::getRegister(int hash) {
+shared_ptr<iRegister> System::getRegister(int hash) {
 	return registers.at(hash);
 }
 

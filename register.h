@@ -3,15 +3,16 @@
  */
 
 #ifndef __QUANTUM_REGISTER_H
-
 #define __QUANTUM_REGISTER_H
 
 #include <sys/types.h>
 #include <vector>
+
 #include "config.h"
 #include "defs.h"
-#include "matrix.h"
 #include "error.h"
+#include "iRegister.h"
+#include "matrix.h"
 #include "node.h"
 #include "quantumMessage.pb.h"
 
@@ -20,7 +21,7 @@ using namespace std;
 namespace Quantum {
 class Gate;
 
-class Register {
+class Register : public iRegister {
 	protected:
 		int width;
 		int size;
