@@ -32,6 +32,9 @@ channel: channel_source channel_sink
 classic_test: clean
 	$(CC) classic.cpp tests/classic_test.cpp -o bin/classic_test
 
+classic_register_test: clean protocol_buffers
+	$(CC) $(LIBS) bin/quantumMessage.o classic.cpp error.cpp classicRegister.cpp tests/classicRegister_test.cpp -o bin/classicRegister_test
+
 complex_test: clean
 	$(CC) complex.cpp tests/complex_test.cpp -o bin/complex_test
 

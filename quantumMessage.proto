@@ -2,6 +2,11 @@ syntax = "proto3";
 
 package QuantumMessage;
 
+message ClassicRegisterMessage {
+	int32 bitValue = 1;
+	int32 width = 2;
+}
+
 message RegisterMessage {
 	MatrixMessage m = 1;
 	int32 Width = 2;
