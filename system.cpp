@@ -42,11 +42,10 @@ void System::runAlgorithm() {
 		} else {
 			if ( this->messageQueue.front().first ==
 				SystemMessage::REGISTER_RECIEVED ) {
-				shared_ptr<Register> rx = dynamic_pointer_cast<Register> (this->registers.at(
-					this->messageQueue.front().second));
-				rx->print();
+				this->getMessage<Register>();
+				//Register rx = this->getMessage<Register>();
+				//rx.print();
 			}
-			this->messageQueue.pop();
 		}
 	}
 }

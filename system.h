@@ -35,6 +35,16 @@ class System {
 		static unsigned long memman(long change);
 		static System* getInstance();
 
+		template<class messageType> void getMessage() {
+			shared_ptr<messageType> rx = 
+				dynamic_pointer_cast<messageType> (
+				this->registers.at( 
+				this->messageQueue.front().second) );
+			rx->print();
+			this->messageQueue.pop();
+//			return rx;
+		}
+
 		void runServer();
 		void runAlgorithm();
 		int addRegister(shared_ptr<iRegister> reg);
