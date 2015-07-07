@@ -6,6 +6,7 @@
 
 #include "channelListener.h"
 #include "channelService_client.h"
+#include "classicRegister.h"
 #include "echoRunnable.h"
 #include "gates.cpp"
 #include "system.h"
@@ -45,8 +46,11 @@ void System::runAlgorithm() {
 	myReg.applyGate(new Hadamard(), 0);
 	myReg.applyGate(new Hadamard(), 3);
 
+	ClassicRegister myCreg = ClassicRegister(8, 4);
+
 	QuantumChannel::ChannelService_client csc("127.0.0.1", 50050);
 	csc.SendRegister(myReg);
+	csc.SendClassicRegister(myCreg);
 
 	this->algorithm->Run();
 }

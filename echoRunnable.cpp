@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <utility>
 #include <stdio.h>
+
+#include "classicRegister.h"
 #include "echoRunnable.h"
 #include "register.h"
 #include "system.h"
@@ -24,8 +26,10 @@ void EchoRunnable::Run() {
 			if ( sys->getMessageType() ==
 				SystemMessage::REGISTER_RECIEVED ) {
 				sys->getMessage<Register>();
-				//Register rx = this->getMessage<Register>();
-				//rx.print();
+			}
+			if ( sys->getMessageType() ==
+				SystemMessage::CLASSIC_REGISTER_RECIEVED ) {
+				sys->getMessage<ClassicRegister>();
 			}
 		}
 	}

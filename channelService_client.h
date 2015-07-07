@@ -11,6 +11,7 @@
 #include <grpc++/channel_interface.h>
 #include <grpc++/create_channel.h>
 #include "quantumMessage.grpc.pb.h"
+#include "classicRegister.h"
 #include "register.h"
 
 using namespace std;
@@ -24,6 +25,7 @@ class ChannelService_client {
 		ChannelService_client(string server, int port);
 
 		bool SendRegister(Register r);
+		bool SendClassicRegister(ClassicRegister r);
 };
 }
 #endif

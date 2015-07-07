@@ -39,4 +39,14 @@ bool ChannelService_client::SendRegister(Register r) {
 
 	return status.ok();
 }
+
+bool ChannelService_client::SendClassicRegister(ClassicRegister r) {
+	QuantumMessage::ClassicRegisterMessage rm;
+	rm = r.serialize();
+	QuantumMessage::VoidMessage rc;
+	grpc::ClientContext ctx;
+
+	grpc::Status status = stub_->SendClassicRegister(&ctx, rm, &rc);
+
+}
 }
