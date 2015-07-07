@@ -63,4 +63,4 @@ entanglement_test: clean
 	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp entangledRegister.cpp entanglement.cpp entangledPair.cpp tests/entanglement_test.cpp -o bin/entanglement_test
 
 system_test: protocol_buffers
-	$(CC) -std=c++11 -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl bin/quantumMessage.o bin/quantumMessage.grpc.o complex.cpp error.cpp channelService.cpp channelListener.cpp channelService_client.cpp -g system.cpp matrix.cpp node.cpp register.cpp tests/system_test.cpp -o bin/system_test
+	$(CC) -std=c++11 -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl bin/quantumMessage.o bin/quantumMessage.grpc.o complex.cpp error.cpp channelService.cpp channelListener.cpp channelService_client.cpp echoRunnable.cpp -g system.cpp matrix.cpp node.cpp register.cpp tests/system_test.cpp -o bin/system_test

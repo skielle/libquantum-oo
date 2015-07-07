@@ -3,11 +3,13 @@
 #include <queue>
 #include <unistd.h>
 #include <utility>
-#include "register.h"
-#include "gates.cpp"
-#include "system.h"
+
 #include "channelListener.h"
 #include "channelService_client.h"
+#include "echoRunnable.h"
+#include "gates.cpp"
+#include "system.h"
+#include "register.h"
 
 namespace Quantum {
 long System::mem = 0;
@@ -24,6 +26,8 @@ unsigned long System::memman(long change) {
 }
 
 System::System () {
+	shared_ptr<iRunnable> a ( new EchoRunnable() );
+	this->algorithm = a;
 }
 
 void System::runServer() {
@@ -44,20 +48,7 @@ void System::runAlgorithm() {
 	QuantumChannel::ChannelService_client csc("127.0.0.1", 50050);
 	csc.SendRegister(myReg);
 
-	printf("RUNNING AN ALGORITHM NOW...");
-	while ( true ) {
-		sleep(1);
-		if ( this->messageQueue.empty() ) {
-			printf ("NO MESSAGES CAME IN\n");
-		} else {
-			if ( this->messageQueue.front().first ==
-				SystemMessage::REGISTER_RECIEVED ) {
-				this->getMessage<Register>();
-				//Register rx = this->getMessage<Register>();
-				//rx.print();
-			}
-		}
-	}
+	this->algorithm->Run();
 }
 
 System* System::getInstance() {
@@ -65,6 +56,14 @@ System* System::getInstance() {
 		System::systemInstance = new System();
 	}
 	return System::systemInstance;
+}
+
+bool System::isMessageQueueEmpty() {
+	return this->messageQueue.empty();
+}
+
+SystemMessage System::getMessageType() {
+	return this->messageQueue.front().first;
 }
 
 int System::addRegister(shared_ptr<iRegister> reg) {

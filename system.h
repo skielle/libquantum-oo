@@ -11,7 +11,8 @@
 #include <utility>
 #include <vector>
 
-#include "register.h"
+#include "iRegister.h"
+#include "iRunnable.h"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ enum class SystemMessage {
 
 class System {
 	private:
+		shared_ptr<iRunnable> algorithm;
 		vector<shared_ptr<iRegister>> registers;
 		System();
 		static System* systemInstance;
@@ -36,6 +38,8 @@ class System {
 		static unsigned long memman(long change);
 		static System* getInstance();
 
+		bool isMessageQueueEmpty();
+		SystemMessage getMessageType();
 		template<class messageType> void getMessage() {
 			shared_ptr<messageType> rx = 
 				dynamic_pointer_cast<messageType> (
