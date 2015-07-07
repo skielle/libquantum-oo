@@ -66,12 +66,10 @@ SystemMessage System::getMessageType() {
 	return this->messageQueue.front().first;
 }
 
-int System::addRegister(shared_ptr<iRegister> reg) {
+int System::addRegister(shared_ptr<iRegister> reg, SystemMessage message) {
 	registers.push_back(reg);
 	messageQueue.push(
-		pair<SystemMessage, int>(
-			SystemMessage::REGISTER_RECIEVED, 
-			registers.size() -1));
+		pair<SystemMessage, int>(message, registers.size() -1));
 	return registers.size() - 1;
 }
 

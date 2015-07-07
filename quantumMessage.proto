@@ -49,6 +49,7 @@ service QuantumChannel {
 	rpc SendMatrix(MatrixMessage) returns (VoidMessage) {}
 	rpc SendRegister(RegisterMessage) returns (VoidMessage) {}
 	rpc SendEntangledRegister(EntanglementMessage) returns (VoidMessage) {}
+	rpc SendClassicRegister(ClassicRegisterMessage) returns (VoidMessage) {}
 	rpc EventEntanglePair(EntangledPairMessage) returns (VoidMessage) {}
 	rpc EventDisentanglePair(RegisterAddressMessage) returns (VoidMessage) {}
 	rpc EventPairMessureStart(RegisterAddressMessage) returns (VoidMessage) {}

@@ -19,7 +19,8 @@ using namespace std;
 namespace Quantum {
 
 enum class SystemMessage {
-	REGISTER_RECIEVED = 1
+	REGISTER_RECIEVED = 1,
+	CLASSIC_REGISTER_RECIEVED = 2
 };
 
 class System {
@@ -54,7 +55,8 @@ class System {
 		void setListenerPort(int port);
 		void runServer();
 		void runAlgorithm();
-		int addRegister(shared_ptr<iRegister> reg);
+		int addRegister(shared_ptr<iRegister> reg, 
+			SystemMessage message);
 		shared_ptr<iRegister> getRegister(int i);
 };
 }

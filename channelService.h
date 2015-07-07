@@ -20,6 +20,9 @@ class ChannelService final : public QuantumMessage::QuantumChannel::Service {
 	grpc::Status SendRegister(grpc::ServerContext* context, 
 		const QuantumMessage::RegisterMessage* request, 
 		QuantumMessage::VoidMessage* reply) override;
+	grpc::Status SendClassicRegister(grpc::ServerContext* context, 
+		const QuantumMessage::ClassicRegisterMessage* request, 
+		QuantumMessage::VoidMessage* reply) override;
 };
 }
 
