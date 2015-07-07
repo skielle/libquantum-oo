@@ -4,8 +4,10 @@
 #include <unistd.h>
 #include <utility>
 #include "register.h"
+#include "gates.cpp"
 #include "system.h"
 #include "channelListener.h"
+#include "channelService_client.h"
 
 namespace Quantum {
 long System::mem = 0;
@@ -27,13 +29,21 @@ System::System () {
 void System::runServer() {
 	QuantumChannel::ChannelListener cl;
 	thread serverThread = thread(&QuantumChannel::ChannelListener::Run, 
-		&cl, 50051);
+		&cl, this->getListenerPort());
 	thread algorithmThread = thread(&System::runAlgorithm, this);
 	serverThread.join();
 	algorithmThread.join();
 }
 
 void System::runAlgorithm() {
+	sleep(5);
+	Register myReg = Register((MAX_UNSIGNED)0, 4);
+	myReg.applyGate(new Hadamard(), 0);
+	myReg.applyGate(new Hadamard(), 3);
+
+	QuantumChannel::ChannelService_client csc("127.0.0.1", 50050);
+	csc.SendRegister(myReg);
+
 	printf("RUNNING AN ALGORITHM NOW...");
 	while ( true ) {
 		sleep(1);
@@ -68,6 +78,14 @@ int System::addRegister(shared_ptr<iRegister> reg) {
 
 shared_ptr<iRegister> System::getRegister(int hash) {
 	return registers.at(hash);
+}
+
+int System::getListenerPort() {
+	return this->listenerPort;
+}
+
+void System::setListenerPort(int port) {
+	this->listenerPort = port;
 }
 
 }

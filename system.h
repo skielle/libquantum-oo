@@ -27,6 +27,7 @@ class System {
 		System();
 		static System* systemInstance;
 		queue<pair<SystemMessage, int>> messageQueue;
+		int listenerPort = 50051;
 
 	public:
 		static long mem;
@@ -45,6 +46,8 @@ class System {
 //			return rx;
 		}
 
+		int getListenerPort();
+		void setListenerPort(int port);
 		void runServer();
 		void runAlgorithm();
 		int addRegister(shared_ptr<iRegister> reg);
