@@ -41,19 +41,20 @@ class System {
 
 		bool isMessageQueueEmpty();
 		SystemMessage getMessageType();
-		template<class messageType> void getMessage() {
+		template<class messageType> 
+		shared_ptr<messageType> getMessage() {
 			shared_ptr<messageType> rx = 
 				dynamic_pointer_cast<messageType> (
 				this->registers.at( 
 				this->messageQueue.front().second) );
-			rx->print();
 			this->messageQueue.pop();
-//			return rx;
+			return rx;
 		}
 
 		int getListenerPort();
 		void setListenerPort(int port);
 		void runServer();
+		void setAlgorithm(shared_ptr<iRunnable> a);
 		void runAlgorithm();
 		int addRegister(shared_ptr<iRegister> reg, 
 			SystemMessage message);

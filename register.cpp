@@ -214,7 +214,7 @@ void Register::apply2x2Matrix(int target, Matrix *m) {
 
 	k = this->size;
 
-	limit = ( 1.0 / ((MAX_UNSIGNED) 1 << this->width ) ) * epsilon;
+	limit = ( 1.0 / ((MAX_UNSIGNED) 1 << this->width ) ) * float_zero;
 
 	for ( i = 0; i < this->size; i++ ) {
 		if ( !done[i] ) {

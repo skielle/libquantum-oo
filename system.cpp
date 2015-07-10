@@ -5,7 +5,6 @@
 #include <utility>
 
 #include "channelListener.h"
-#include "channelService_client.h"
 #include "classicRegister.h"
 #include "echoRunnable.h"
 #include "gates.cpp"
@@ -40,18 +39,11 @@ void System::runServer() {
 	algorithmThread.join();
 }
 
+void System::setAlgorithm(shared_ptr<iRunnable> a) {
+	this->algorithm = a;
+}
+
 void System::runAlgorithm() {
-	sleep(5);
-	Register myReg = Register((MAX_UNSIGNED)0, 4);
-	myReg.applyGate(new Hadamard(), 0);
-	myReg.applyGate(new Hadamard(), 3);
-
-	ClassicRegister myCreg = ClassicRegister(8, 4);
-
-	QuantumChannel::ChannelService_client csc("127.0.0.1", 50050);
-	csc.SendRegister(myReg);
-	csc.SendClassicRegister(myCreg);
-
 	this->algorithm->Run();
 }
 

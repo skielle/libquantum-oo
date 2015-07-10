@@ -4,7 +4,7 @@
 
 #include <vector>
 #include "register.h"
-#include "types.h"
+#include "config.h"
 #include "matrix.h"
 
 #ifndef __QUANTUM_ENTANGLED_REGISTER_H

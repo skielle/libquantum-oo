@@ -25,11 +25,15 @@ void EchoRunnable::Run() {
 		if ( !sys->isMessageQueueEmpty() ) {
 			if ( sys->getMessageType() ==
 				SystemMessage::REGISTER_RECIEVED ) {
-				sys->getMessage<Register>();
+				shared_ptr<Register> rx 
+					= sys->getMessage<Register>();
+			rx->print();
 			}
 			if ( sys->getMessageType() ==
 				SystemMessage::CLASSIC_REGISTER_RECIEVED ) {
-				sys->getMessage<ClassicRegister>();
+				shared_ptr<ClassicRegister> rx
+					= sys->getMessage<ClassicRegister>();
+			rx->print();
 			}
 		}
 	}

@@ -7,7 +7,7 @@
 #include "entanglement.h"
 #include "entangledRegister.h"
 #include "register.h"
-#include "types.h"
+#include "config.h"
 
 namespace Quantum {
 EntangledRegister::EntangledRegister(MAX_UNSIGNED init, int width, Entanglement* ent):

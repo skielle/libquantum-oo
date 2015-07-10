@@ -2,6 +2,7 @@ CC=g++
 LIBS=-L/usr/local/lib -lprotobuf
 CFLAGS=-c -Wall
 C11FLAGS=-c -Wall -std=c++11
+PWD=$(shell pwd)
 
 all:
 
@@ -64,3 +65,7 @@ entanglement_test: clean
 
 system_test: protocol_buffers
 	$(CC) -std=c++11 -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl bin/quantumMessage.o bin/quantumMessage.grpc.o classic.cpp complex.cpp error.cpp channelService.cpp channelListener.cpp channelService_client.cpp echoRunnable.cpp -g system.cpp matrix.cpp node.cpp classicRegister.cpp register.cpp tests/system_test.cpp -o bin/system_test
+
+bb84: protocol_buffers
+	$(CC) -std=c++11 -I$(PWD) -I$(PWD)/runnables -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl bin/quantumMessage.o bin/quantumMessage.grpc.o classic.cpp complex.cpp error.cpp channelService.cpp channelListener.cpp channelService_client.cpp echoRunnable.cpp -g system.cpp matrix.cpp node.cpp classicRegister.cpp register.cpp runnables/bb84Util.cpp runnables/bb84Determination_runnable.cpp runnables/bb84Determination.cpp -o bin/bb84Determination
+	$(CC) -std=c++11 -I$(PWD) -I$(PWD)/runnables -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl bin/quantumMessage.o bin/quantumMessage.grpc.o classic.cpp complex.cpp error.cpp channelService.cpp channelListener.cpp channelService_client.cpp echoRunnable.cpp -g system.cpp matrix.cpp node.cpp classicRegister.cpp register.cpp runnables/bb84Util.cpp runnables/bb84Generation_runnable.cpp runnables/bb84Generation.cpp -o bin/bb84Generation
