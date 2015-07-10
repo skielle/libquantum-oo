@@ -16,7 +16,7 @@ protocol_buffers:
 	$(CC) $(CFLAGS) $(LIBS) quantumMessage.pb.cc -o bin/quantumMessage.o
 	protoc --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` \
 		 quantumMessage.proto
-	$(CC) $(C11FLAGS) $(LIBS) quantumMessage.grpc.pb.cc \
+	$(CC) $(C11FLAGS) $(LIBS) -g quantumMessage.grpc.pb.cc \
 		-o bin/quantumMessage.grpc.o
 
 channel_source: protocol_buffers
@@ -34,7 +34,7 @@ classic_test: clean
 	$(CC) classic.cpp tests/classic_test.cpp -o bin/classic_test
 
 classic_register_test: clean protocol_buffers
-	$(CC) $(LIBS) bin/quantumMessage.o classic.cpp error.cpp classicRegister.cpp tests/classicRegister_test.cpp -o bin/classicRegister_test
+	$(CC) $(LIBS) bin/quantumMessage.o classic.cpp error.cpp -g classicRegister.cpp tests/classicRegister_test.cpp -o bin/classicRegister_test
 
 complex_test: clean
 	$(CC) complex.cpp tests/complex_test.cpp -o bin/complex_test

@@ -16,52 +16,66 @@ using namespace std;
 using namespace Quantum;
 
 namespace Quantum {
-ClassicRegister::ClassicRegister(int initval, int width) {
-	if ( Classic::ipow(2, width) < initval ){
-		Error::error(QUANTUM_EINDEXOOB);
-	}
-	this->bitValue = initval;
-	this->width = width;
+ClassicRegister::ClassicRegister(int width) {
+	this->bitValue = vector<int> (width,0);
 }
 
 void ClassicRegister::setBit(int index, int value) {
-	if ( index > width ) {
+	if ( index > this->bitValue.size() ) {
 		Error::error(QUANTUM_EINDEXOOB);
 	}
-	if ( this->getBit(index) != value ) {
-		if ( value == 0 ) {
-			this->bitValue -= Classic::ipow(2, index);
-		} else {
-			this->bitValue += Classic::ipow(2, index);
-		}
+	if ( value == 0 ) {
+		this->bitValue.at(index) = 0;
+	} else {
+		this->bitValue.at(index) = 1;
 	}
 }
 
 int ClassicRegister::getBit(int index) {
-	return (this->bitValue >> index) % 2;
+	return this->bitValue.at(index);
 }
 
 int ClassicRegister::getWidth() {
-	return this->width;
+	return this->bitValue.size();
 }
+
+void ClassicRegister::setValue(int regValue) {
+	int i;
+	for ( i = 0; i < this->bitValue.size() 
+			; i++ ) {
+		this->bitValue.at(i) = (regValue >> i) % 2;
+	}
+}
+
+int ClassicRegister::getValue() {
+	int value = 0;
+	int i;
+	for ( i = 0; i < this->bitValue.size(); i++ ) {
+		if ( this->bitValue.at(i) == 1 ) {
+			value += Classic::ipow( 2, this->bitValue.at(i) * i);
+		}
+	}
+	return value;
+} 
 
 void ClassicRegister::print() {
 	int i;
-	for ( i = this->width-1; i >= 0; i-- ) {
-		printf("%i", (this->bitValue >> i) % 2 );
+	for ( i = this->bitValue.size()-1; i >= 0; i-- ) {
+		printf("%i", this->bitValue.at(i) );
 	}
-	printf("\n");
+	printf("\t(%i)\n", this->getValue());
 }
 
 QuantumMessage::ClassicRegisterMessage ClassicRegister::serialize() {
 	QuantumMessage::ClassicRegisterMessage saveMessage;
-	saveMessage.set_bitvalue(this->bitValue);
-	saveMessage.set_width(this->width);
+	saveMessage.set_bitvalue(this->getValue());
+	saveMessage.set_width(this->bitValue.size());
 	return saveMessage;
 }
 ClassicRegister& ClassicRegister::unserialize(
 	const QuantumMessage::ClassicRegisterMessage* loadMessage) {
-	ClassicRegister* ret = new ClassicRegister(loadMessage->bitvalue(), loadMessage->width());
+	ClassicRegister* ret = new ClassicRegister(loadMessage->width());
+	ret->setValue(loadMessage->bitvalue());
 	return *ret;
 }
 }

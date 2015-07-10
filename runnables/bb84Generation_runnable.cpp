@@ -19,12 +19,12 @@ using namespace BB84;
 
 void BB84Generation_Runnable::Run() {
 	System* sys = System::getInstance();
-	ClassicRegister rawKey = ClassicRegister(0, BB84Util::RAW_KEY_LENGTH);
+	ClassicRegister rawKey = ClassicRegister(BB84Util::RAW_KEY_LENGTH);
 	int keyBitsDetermined = 0;
-	ClassicRegister bits = ClassicRegister(0, BB84Util::REGISTER_SIZE);
-	ClassicRegister bases = ClassicRegister(0, BB84Util::REGISTER_SIZE);
+	ClassicRegister bits = ClassicRegister(BB84Util::REGISTER_SIZE);
+	ClassicRegister bases = ClassicRegister(BB84Util::REGISTER_SIZE);
 	Register quBitReg = Register((MAX_UNSIGNED)0, BB84Util::REGISTER_SIZE);
-	ClassicRegister correctBases = ClassicRegister(0, 
+	ClassicRegister correctBases = ClassicRegister(
 		BB84Util::REGISTER_SIZE );
 
 	BB84Util::States runState = BB84Util::KEYEX_INITIATED;

@@ -19,16 +19,18 @@ using namespace std;
 namespace Quantum {
 class ClassicRegister : public iRegister {
 	protected:
-		int bitValue;
+		vector<int> bitValue;
 		int width;
 
 	public:
-		ClassicRegister(int initval, int width);
+		ClassicRegister(int width);
 
 		int getWidth();
 		void setBit(int index, int value);
 		int getBit(int index);
 
+		void setValue(int regValue);
+		int getValue();
 		void print();
 
 		QuantumMessage::ClassicRegisterMessage serialize();

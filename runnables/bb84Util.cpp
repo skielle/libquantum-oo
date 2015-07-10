@@ -14,8 +14,7 @@ using namespace Quantum;
 
 namespace BB84 {
 ClassicRegister BB84Util::generateRandomClassicRegister(int width, bool allOnes) {
-	ClassicRegister r = ClassicRegister((MAX_UNSIGNED)0, 
-		BB84Util::REGISTER_SIZE);
+	ClassicRegister r = ClassicRegister(BB84Util::REGISTER_SIZE);
 	int i;
 	for ( i = 0; i < BB84Util::REGISTER_SIZE; i++ ) {
 		int bitValue = 1;
@@ -48,7 +47,7 @@ Register BB84Util::encodeRegister(ClassicRegister bits,
 
 ClassicRegister BB84Util::decodeRegister(Register quBits,
 			ClassicRegister bases) {
-	ClassicRegister bits = ClassicRegister(0, BB84Util::REGISTER_SIZE);
+	ClassicRegister bits = ClassicRegister(BB84Util::REGISTER_SIZE);
 	Hadamard* h = new Hadamard();
 	int i;
 	for ( i = 0; i < BB84Util::REGISTER_SIZE; i++ ) {
