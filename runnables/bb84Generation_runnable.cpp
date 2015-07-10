@@ -33,15 +33,16 @@ void BB84Generation_Runnable::Run() {
 
 	while ( runState != BB84Util::KEYEX_COMPLETE && 
 		keyBitsDetermined < BB84Util::RAW_KEY_LENGTH ) {
+sleep(1);
 		switch ( runState ) { 
 		case BB84Util::KEYEX_INITIATED:
 			//TODO: wait for client connecting in
 			bits = BB84Util::generateRandomClassicRegister(
-					BB84Util::REGISTER_SIZE);
+					BB84Util::REGISTER_SIZE, false);
 			printf("Bits: \t");
 			bits.print();
 			bases = BB84Util::generateRandomClassicRegister(
-					BB84Util::REGISTER_SIZE);
+					BB84Util::REGISTER_SIZE, false);
 			printf("Bases: \t");
 			bases.print();
 			quBitReg = BB84Util::encodeRegister(bits, bases);
@@ -55,19 +56,24 @@ void BB84Generation_Runnable::Run() {
 			}
 			if ( sys->getMessageType() == 			
 				SystemMessage::CLASSIC_REGISTER_RECIEVED ) {
-				shared_ptr<ClassicRegister> detBases =
-					sys->getMessage<ClassicRegister>();
+				ClassicRegister detBases =
+					*(sys->getMessage<ClassicRegister>());
+				printf("dBases:\t");
+				detBases.print();
 				printf("Agree:\t");
 				int i;
-				for ( i = 0; i < detBases->getWidth(); i++ ) {
+				for ( i = BB84Util::REGISTER_SIZE-1;
+					i >= 0 && keyBitsDetermined < 
+					BB84Util::RAW_KEY_LENGTH; i-- ) {
 					if ( bases.getBit(i) == 
-						detBases->getBit(i) ) {
+						detBases.getBit(i) ) {
 						rawKey.setBit(keyBitsDetermined,
 							bits.getBit(i));
 						keyBitsDetermined++;
 						printf("^");
 						correctBases.setBit(i, 1);
 					} else {
+						correctBases.setBit(i, 0);
 						printf(" ");
 					}
 				}
@@ -78,4 +84,5 @@ void BB84Generation_Runnable::Run() {
 			break;
 		}
 	}
+	printf("hi");
 }

@@ -35,21 +35,22 @@ void BB84Determination_Runnable::Run() {
 		keyBitsDetermined < BB84Util::RAW_KEY_LENGTH ) {
 		switch ( runState ) {
 		case BB84Util::KEYEX_INITIATED:
-			bases = BB84Util::generateRandomClassicRegister(
-				BB84Util::REGISTER_SIZE);
-			printf("Bases: \t");
-			bases.print();
-		
 			while ( sys->isMessageQueueEmpty() ) {
 				sleep(1);
 			}
 			if ( sys->getMessageType() == 
 				SystemMessage::REGISTER_RECIEVED ) {
-				shared_ptr<Register> quBitReg = 
-					sys->getMessage<Register>();
+		
+				Register quBitReg = 
+					*(sys->getMessage<Register>());
 				bits = BB84Util::decodeRegister( quBitReg,
 					bases);
+				printf("Bits: \t");
 				bits.print();
+				bases = BB84Util::generateRandomClassicRegister(
+					BB84Util::REGISTER_SIZE, false);
+				printf("Bases: \t");
+				bases.print();
 
 				csc.SendClassicRegister(bases);
 				runState = BB84Util::KEYEX_QBITS_SENT;
@@ -61,13 +62,15 @@ void BB84Determination_Runnable::Run() {
 			}
 			if ( sys->getMessageType() == 
 				SystemMessage::CLASSIC_REGISTER_RECIEVED ) {
-				shared_ptr<ClassicRegister> correctBases =
-					sys->getMessage<ClassicRegister>();
+				ClassicRegister correctBases =
+					*(sys->getMessage<ClassicRegister>());
 				printf("Agree:\t");
 				int i;
-				for ( i = 0; i < correctBases->getWidth(); 
-					i++ ) {
-					if ( correctBases->getBit(i) == 1 ) {
+				for ( i = BB84Util::REGISTER_SIZE-1; i >= 0 &&
+					keyBitsDetermined < 
+					BB84Util::RAW_KEY_LENGTH; 
+					i-- ) {
+					if ( correctBases.getBit(i) == 1 ) {
 						rawKey.setBit(keyBitsDetermined,
 							bits.getBit(i));
 						keyBitsDetermined++;
@@ -82,4 +85,5 @@ void BB84Determination_Runnable::Run() {
 			break;
 		}
 	}
+	rawKey.print();
 }

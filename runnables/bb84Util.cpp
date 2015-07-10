@@ -13,12 +13,16 @@ using namespace std;
 using namespace Quantum;
 
 namespace BB84 {
-ClassicRegister BB84Util::generateRandomClassicRegister(int width) {
+ClassicRegister BB84Util::generateRandomClassicRegister(int width, bool allOnes) {
 	ClassicRegister r = ClassicRegister((MAX_UNSIGNED)0, 
 		BB84Util::REGISTER_SIZE);
 	int i;
 	for ( i = 0; i < BB84Util::REGISTER_SIZE; i++ ) {
-		r.setBit(i, 1);
+		int bitValue = 1;
+		if ( !allOnes ) {
+			bitValue = rand() % 2;
+		}
+		r.setBit(i, bitValue);
 	}
 	return r;
 }
@@ -42,16 +46,16 @@ Register BB84Util::encodeRegister(ClassicRegister bits,
 	return r;
 }
 
-ClassicRegister BB84Util::decodeRegister(shared_ptr<Register> quBits,
+ClassicRegister BB84Util::decodeRegister(Register quBits,
 			ClassicRegister bases) {
 	ClassicRegister bits = ClassicRegister(0, BB84Util::REGISTER_SIZE);
 	Hadamard* h = new Hadamard();
 	int i;
 	for ( i = 0; i < BB84Util::REGISTER_SIZE; i++ ) {
 		if ( bases.getBit(i) == 1 ) {
-			quBits->applyGate(h, i);
+			quBits.applyGate(h, i);
 		}
-		bits.setBit(i, quBits->measure(i));
+		bits.setBit(i, quBits.measure(i));
 	}
 	return bits;
 }
