@@ -48,7 +48,7 @@ void BB84Determination_Runnable::Run() {
 				printf("Bits: \t");
 				bits.print();
 				bases = BB84Util::generateRandomClassicRegister(
-					BB84Util::REGISTER_SIZE, false);
+					BB84Util::REGISTER_SIZE, true);
 				printf("Bases: \t");
 				bases.print();
 

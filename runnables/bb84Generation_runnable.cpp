@@ -42,7 +42,7 @@ sleep(1);
 			printf("Bits: \t");
 			bits.print();
 			bases = BB84Util::generateRandomClassicRegister(
-					BB84Util::REGISTER_SIZE, false);
+					BB84Util::REGISTER_SIZE, true);
 			printf("Bases: \t");
 			bases.print();
 			quBitReg = BB84Util::encodeRegister(bits, bases);
@@ -79,10 +79,11 @@ sleep(1);
 				}
 				printf("\n");
 				csc.SendClassicRegister(correctBases);
+				printf("count(kb): %i\n", keyBitsDetermined);
 				runState = BB84Util::KEYEX_INITIATED;
 			}
 			break;
 		}
 	}
-	printf("hi");
+	rawKey.print();
 }
