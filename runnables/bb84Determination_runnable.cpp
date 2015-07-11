@@ -41,14 +41,14 @@ void BB84Determination_Runnable::Run() {
 			if ( sys->getMessageType() == 
 				SystemMessage::REGISTER_RECIEVED ) {
 		
+				bases = BB84Util::generateRandomClassicRegister(
+					BB84Util::REGISTER_SIZE, false);
 				Register quBitReg = 
 					*(sys->getMessage<Register>());
 				bits = BB84Util::decodeRegister( quBitReg,
 					bases);
 				printf("Bits: \t");
 				bits.print();
-				bases = BB84Util::generateRandomClassicRegister(
-					BB84Util::REGISTER_SIZE, true);
 				printf("Bases: \t");
 				bases.print();
 

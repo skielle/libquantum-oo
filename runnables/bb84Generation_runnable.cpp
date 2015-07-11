@@ -42,7 +42,7 @@ sleep(1);
 			printf("Bits: \t");
 			bits.print();
 			bases = BB84Util::generateRandomClassicRegister(
-					BB84Util::REGISTER_SIZE, true);
+					BB84Util::REGISTER_SIZE, false);
 			printf("Bases: \t");
 			bases.print();
 			quBitReg = BB84Util::encodeRegister(bits, bases);

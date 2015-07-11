@@ -60,10 +60,17 @@ int ClassicRegister::getValue() {
 
 void ClassicRegister::print() {
 	int i;
+	int j = 0;
+	int value = 0;
 	for ( i = this->bitValue.size()-1; i >= 0; i-- ) {
 		printf("%i", this->bitValue.at(i) );
+		j++;
+		if ( j % 16 == 0 && i != 0) {
+			value = 0;
+			printf("\n", value);
+		}
 	}
-	printf("\t(%i)\n", this->getValue());
+	printf("\n");
 }
 
 QuantumMessage::ClassicRegisterMessage ClassicRegister::serialize() {
