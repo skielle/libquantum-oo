@@ -58,4 +58,31 @@ ClassicRegister BB84Util::decodeRegister(Register quBits,
 	}
 	return bits;
 }
+
+ClassicRegister BB84Util::generateErrorBits(ClassicRegister rawKey) {
+	int i;
+	int j = 0;
+	ClassicRegister errorBits = ClassicRegister(BB84Util::RAW_KEY_LENGTH -
+		BB84Util::KEY_LENGTH );
+	for ( i = BB84Util::KEY_LENGTH; i < BB84Util::RAW_KEY_LENGTH; i++ ) {
+		errorBits.setBit(j, rawKey.getBit(i));
+		j++;
+	}
+	return errorBits;
+}
+
+float BB84Util::checkErrorBits(ClassicRegister rawKey, 
+	ClassicRegister errorBits) {
+	int i;
+	int j = 0;
+	int failures = 0;
+	for ( i = BB84Util::KEY_LENGTH; i < BB84Util::RAW_KEY_LENGTH; i++ ) {
+		if ( rawKey.getBit(i) != errorBits.getBit(j) ) {
+			failures++;
+		}
+		j++;
+	}
+	return (float)failures/(float)BB84Util::KEY_LENGTH;
+}
+
 }

@@ -33,7 +33,7 @@ class BB84Util {
 
 		static constexpr float ERROR_TOLERANCE = .02;
 		static const int REGISTER_SIZE = 16;
-		static const int KEY_LENGTH = 128;
+		static const int KEY_LENGTH = 64;
 		static const int RAW_KEY_LENGTH = KEY_LENGTH * 1.5;
 
 		static ClassicRegister generateRandomClassicRegister(int width,
@@ -42,6 +42,10 @@ class BB84Util {
 			ClassicRegister basis);
 		static ClassicRegister decodeRegister(Register quBits,
 			ClassicRegister basis);
+		static ClassicRegister generateErrorBits(
+			ClassicRegister rawKey);
+		static float checkErrorBits(ClassicRegister rawKey, 
+			ClassicRegister errorBits);
 };
 }
 #endif

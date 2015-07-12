@@ -31,8 +31,7 @@ void BB84Generation_Runnable::Run() {
  	
 	QuantumChannel::ChannelService_client csc("127.0.0.1", 50085);
 
-	while ( runState != BB84Util::KEYEX_COMPLETE && 
-		keyBitsDetermined < BB84Util::RAW_KEY_LENGTH ) {
+	while ( runState != BB84Util::KEYEX_COMPLETE ) {
 sleep(1);
 		switch ( runState ) { 
 		case BB84Util::KEYEX_INITIATED:
@@ -58,8 +57,6 @@ sleep(1);
 				SystemMessage::CLASSIC_REGISTER_RECIEVED ) {
 				ClassicRegister detBases =
 					*(sys->getMessage<ClassicRegister>());
-				printf("dBases:\t");
-				detBases.print();
 				printf("Agree:\t");
 				int i;
 				for ( i = BB84Util::REGISTER_SIZE-1;
@@ -79,8 +76,37 @@ sleep(1);
 				}
 				printf("\n");
 				csc.SendClassicRegister(correctBases);
-				printf("count(kb): %i\n", keyBitsDetermined);
+				if ( keyBitsDetermined ==
+					BB84Util::RAW_KEY_LENGTH ) {
+					runState = BB84Util::KEYEX_EC;
+				} else {
+					runState = BB84Util::KEYEX_INITIATED;
+				}
+			}
+			break;
+		case BB84Util::KEYEX_EC:
+			printf("Performing error checking, tolerance: %f\n", 
+				BB84Util::ERROR_TOLERANCE);
+			csc.SendClassicRegister(
+				BB84Util::generateErrorBits(rawKey));
+
+			while ( sys->isMessageQueueEmpty() ) {
+				sleep(1);
+			}
+			ClassicRegister errorBits =
+				*(sys->getMessage<ClassicRegister>());
+			float errorRate = 
+				BB84Util::checkErrorBits(rawKey, errorBits);
+			if ( errorRate >= BB84Util::ERROR_TOLERANCE ) {
+				printf("Error rate of %f above tolerance.\n",
+					errorRate);
+				keyBitsDetermined = 0;
+				rawKey = ClassicRegister(BB84Util::RAW_KEY_LENGTH);
 				runState = BB84Util::KEYEX_INITIATED;
+			} else {
+				printf("Error rate of %f within tolerance.\n",
+					errorRate);
+				runState = BB84Util::KEYEX_COMPLETE;
 			}
 			break;
 		}

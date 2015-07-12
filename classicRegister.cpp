@@ -2,6 +2,7 @@
  * classicRegister.cpp
  */
 
+#include <math.h>
 #include <sys/types.h>
 #include <vector>
 
@@ -43,7 +44,7 @@ void ClassicRegister::setValue(int regValue) {
 	int i;
 	for ( i = 0; i < this->bitValue.size() 
 			; i++ ) {
-		this->bitValue.at(i) = (regValue >> i) % 2;
+		this->bitValue.at(i) = abs((regValue >> i) % 2);
 	}
 }
 
