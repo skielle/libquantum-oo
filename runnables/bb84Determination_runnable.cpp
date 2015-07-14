@@ -115,5 +115,5 @@ void BB84Determination_Runnable::Run() {
 		}
 	}
 	BB84Util::privacyAmplification(rawKey);
-	terminate();
+	sys->stopServer();
 }

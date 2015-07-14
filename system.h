@@ -55,6 +55,7 @@ class System {
 		int getListenerPort();
 		void setListenerPort(int port);
 		void runServer();
+		void stopServer();
 		void setAlgorithm(shared_ptr<iRunnable> a);
 		void runAlgorithm();
 		int addRegister(shared_ptr<iRegister> reg, 

@@ -112,5 +112,5 @@ void BB84Generation_Runnable::Run() {
 		}
 	}
 	BB84Util::privacyAmplification(rawKey);
-	terminate();
+	sys->stopServer();
 }

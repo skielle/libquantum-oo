@@ -101,6 +101,7 @@ void BB84Util::privacyAmplification(ClassicRegister rawKey) {
 	for ( i = 0; i < sizeof(finalKey); i++ ) {
 		printf("%02x", finalKey[i] & 0xff);
 	}
+	printf("\n");
 }
 
 }

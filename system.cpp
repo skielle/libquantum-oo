@@ -44,6 +44,10 @@ void System::runServer() {
 	this->server->Run();
 }
 
+void System::stopServer() {
+	this->server->Stop();
+}
+
 void System::setAlgorithm(shared_ptr<iRunnable> a) {
 	this->algorithm = a;
 }
