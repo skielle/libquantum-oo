@@ -1,7 +1,7 @@
 /*
  * bb84Determination_runnable.cpp
  */
-
+#include <string>
 #include <unistd.h>
 
 #include "bb84Determination_runnable.h"
@@ -114,5 +114,6 @@ void BB84Determination_Runnable::Run() {
 			break;
 		}
 	}
-	rawKey.print();
+	BB84Util::privacyAmplification(rawKey);
+	terminate();
 }

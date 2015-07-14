@@ -46,6 +46,8 @@ class BB84Util {
 			ClassicRegister rawKey);
 		static float checkErrorBits(ClassicRegister rawKey, 
 			ClassicRegister errorBits);
+		static void privacyAmplification(
+			ClassicRegister rawKey);
 };
 }
 #endif

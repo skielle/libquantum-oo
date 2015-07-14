@@ -2,7 +2,10 @@
  * bb84Util.cpp
  */
 
+#include <iostream>
 #include <memory>
+#include <openssl/sha.h>
+#include <string.h>
 
 #include "bb84Util.h"
 #include "classicRegister.h"
@@ -83,6 +86,21 @@ float BB84Util::checkErrorBits(ClassicRegister rawKey,
 		j++;
 	}
 	return (float)failures/(float)BB84Util::KEY_LENGTH;
+}
+
+void BB84Util::privacyAmplification(ClassicRegister rawKey) {
+	char buffer [BB84Util::KEY_LENGTH+1];
+	unsigned char finalKey[SHA512_DIGEST_LENGTH];
+	int i;
+	for ( i = 0; i < BB84Util::KEY_LENGTH; i++ ) {
+		sprintf(&buffer[i], "%i", rawKey.getBit(i));
+	}
+
+	SHA512(reinterpret_cast<const unsigned char*>(buffer),
+		 sizeof(buffer), finalKey);
+	for ( i = 0; i < sizeof(finalKey); i++ ) {
+		printf("%02x", finalKey[i] & 0xff);
+	}
 }
 
 }

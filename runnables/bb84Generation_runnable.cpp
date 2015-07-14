@@ -1,7 +1,7 @@
 /*
  * bb84Generation_runnable.cpp
  */
-
+#include <string>
 #include <unistd.h>
 
 #include "bb84Generation_runnable.h"
@@ -32,7 +32,7 @@ void BB84Generation_Runnable::Run() {
 	QuantumChannel::ChannelService_client csc("127.0.0.1", 50085);
 
 	while ( runState != BB84Util::KEYEX_COMPLETE ) {
-sleep(1);
+		sleep(1);
 		switch ( runState ) { 
 		case BB84Util::KEYEX_INITIATED:
 			//TODO: wait for client connecting in
@@ -111,5 +111,6 @@ sleep(1);
 			break;
 		}
 	}
-	rawKey.print();
+	BB84Util::privacyAmplification(rawKey);
+	terminate();
 }
