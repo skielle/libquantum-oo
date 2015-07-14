@@ -19,16 +19,28 @@ using namespace std;
 using namespace Quantum;
 
 namespace QuantumChannel {
-void ChannelListener::Run(int port) {
-	string serverAddr = "0.0.0.0:" + to_string(port);
+int ChannelListener::getPort() {
+	return this->port;
+}
+
+void ChannelListener::setPort(int inPort) {
+	this->port = inPort;
+}
+
+void ChannelListener::Run() {
+	string serverAddr = "0.0.0.0:" + to_string(this->port);
 	ChannelService service;
 	grpc::ServerBuilder builder;
 
 	builder.AddListeningPort(serverAddr, 
 		grpc::InsecureServerCredentials());
 	builder.RegisterService(&service);
-	unique_ptr<grpc::Server> server(builder.BuildAndStart());
+	this->server = builder.BuildAndStart();
 	cout<<"Server running on "<<serverAddr<<endl;
-	server->Wait();
+	this->server->Wait();
+}
+
+void ChannelListener::Stop() {
+	this->server->Shutdown();
 }
 }

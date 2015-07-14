@@ -18,7 +18,7 @@ int main() {
 	shared_ptr<iRunnable> a (new EchoRunnable() );
 
 	mySys->setAlgorithm(a);
-	mySys->runServer();
+	mySys->RunSystem();
 	
 	return 0;
 }

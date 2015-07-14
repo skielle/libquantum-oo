@@ -25,18 +25,23 @@ unsigned long System::memman(long change) {
 	return System::mem;
 }
 
-System::System () {
+System::System () :
+	server(new QuantumChannel::ChannelListener)
+{
 	shared_ptr<iRunnable> a ( new EchoRunnable() );
 	this->algorithm = a;
+	this->server->setPort(50051);
 }
 
-void System::runServer() {
-	QuantumChannel::ChannelListener cl;
-	thread serverThread = thread(&QuantumChannel::ChannelListener::Run, 
-		&cl, this->getListenerPort());
+void System::RunSystem() {
+	thread serverThread = thread(&System::runServer, this);
 	thread algorithmThread = thread(&System::runAlgorithm, this);
 	serverThread.join();
 	algorithmThread.join();
+}
+
+void System::runServer() {
+	this->server->Run();
 }
 
 void System::setAlgorithm(shared_ptr<iRunnable> a) {
@@ -74,11 +79,11 @@ shared_ptr<iRegister> System::getRegister(int hash) {
 }
 
 int System::getListenerPort() {
-	return this->listenerPort;
+	return this->server->getPort();
 }
 
 void System::setListenerPort(int port) {
-	this->listenerPort = port;
+	this->server->setPort(port);
 }
 
 }

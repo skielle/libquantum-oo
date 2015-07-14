@@ -13,6 +13,7 @@
 
 #include "iRegister.h"
 #include "iRunnable.h"
+#include "channelListener.h"
 
 using namespace std;
 
@@ -30,8 +31,7 @@ class System {
 		System();
 		static System* systemInstance;
 		queue<pair<SystemMessage, int>> messageQueue;
-		int listenerPort = 50051;
-
+		shared_ptr<QuantumChannel::ChannelListener> server;
 	public:
 		static long mem;
 		static long memmax;
@@ -51,6 +51,7 @@ class System {
 			return rx;
 		}
 
+		void RunSystem();
 		int getListenerPort();
 		void setListenerPort(int port);
 		void runServer();

@@ -13,7 +13,7 @@ int main() {
 	shared_ptr<iRunnable> a (new BB84Determination_Runnable() );
 	sys->setAlgorithm(a);
 
-	sys->runServer();	
+	sys->RunSystem();	
 
 	return 0;
 }
