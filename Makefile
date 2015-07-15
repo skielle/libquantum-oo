@@ -1,34 +1,33 @@
-CC=g++
-LIBS=-L/usr/local/lib -lprotobuf
-CFLAGS=-c -Wall
-C11FLAGS=-c -Wall -std=c++11
 PWD=$(shell pwd)
+
+INCS=-I$(PWD)
+LIBS=-L/usr/local/lib -lgrpc++_unsecure -lgpr -lprotobuf -lpthread -ldl -lssl
+
+CC=g++
+C_LIBFLAGS=-c -Wall
+CFLAGS= -Wall
+C11_LIBFLAGS=-c -Wall -std=c++11
+C11_FLAGS= -Wall -std=c++11
+LINK=ar
+
+O_PB=bin/quantumMessage.o
+O_PB_GRPC=bin/quantumMessage.grpc.o
+O_LIBQ=bin/lib_quantum_oo.a
 
 all:
 
 clean:
-	rm -f bin/*
+	rm *.o $(O_PB) $(O_PB_GRPC) $(O_LIBQ)
 
 all_tests: classic_test complex_test node_test error_test matrix_test register_test gate_test entangledPair_test entangledRegister_test
 
 protocol_buffers:
 	protoc --cpp_out=. quantumMessage.proto
-	$(CC) $(CFLAGS) $(LIBS) quantumMessage.pb.cc -o bin/quantumMessage.o
+	$(CC) $(C_LIBFLAGS) $(LIBS) quantumMessage.pb.cc -o $(O_PB)
 	protoc --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` \
 		 quantumMessage.proto
-	$(CC) $(C11FLAGS) $(LIBS) -g quantumMessage.grpc.pb.cc \
-		-o bin/quantumMessage.grpc.o
-
-channel_source: protocol_buffers
-	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelSource -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp channelService.cpp channelListener.cpp system.cpp error.cpp matrix.cpp node.cpp -g register.cpp gates.cpp channelSource.cpp 
-
-channel_sink: protocol_buffers
-	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelSink -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp system.cpp error.cpp matrix.cpp node.cpp -g register.cpp channelSink.cpp 
-
-channelListener_test: protocol_buffers channel_source
-	$(CC) -std=c++11 bin/quantumMessage.o bin/quantumMessage.grpc.o -o bin/channelListener_test -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl complex.cpp system.cpp error.cpp matrix.cpp node.cpp -g register.cpp channelListener.cpp channelService.cpp tests/channelListener_test.cpp
-
-channel: channel_source channel_sink
+	$(CC) $(C11_LIBFLAGS) $(LIBS) -g quantumMessage.grpc.pb.cc \
+		-o $(O_PB_GRPC) 
 
 classic_test: clean
 	$(CC) classic.cpp tests/classic_test.cpp -o bin/classic_test
@@ -66,6 +65,51 @@ entanglement_test: clean
 system_test: protocol_buffers
 	$(CC) -std=c++11 -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl bin/quantumMessage.o bin/quantumMessage.grpc.o classic.cpp complex.cpp error.cpp channelService.cpp channelListener.cpp channelService_client.cpp echoRunnable.cpp -g system.cpp matrix.cpp node.cpp classicRegister.cpp register.cpp tests/system_test.cpp -o bin/system_test
 
-bb84: protocol_buffers
-	$(CC) -std=c++11 -I$(PWD) -I$(PWD)/runnables -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl -lssl bin/quantumMessage.o bin/quantumMessage.grpc.o classic.cpp complex.cpp error.cpp channelService.cpp channelListener.cpp channelService_client.cpp echoRunnable.cpp -g system.cpp matrix.cpp node.cpp classicRegister.cpp register.cpp runnables/bb84Util.cpp runnables/bb84Determination_runnable.cpp runnables/bb84Determination.cpp -o bin/bb84Determination
-	$(CC) -std=c++11 -I$(PWD) -I$(PWD)/runnables -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl -lssl bin/quantumMessage.o bin/quantumMessage.grpc.o classic.cpp complex.cpp error.cpp channelService.cpp channelListener.cpp channelService_client.cpp echoRunnable.cpp -g system.cpp matrix.cpp node.cpp classicRegister.cpp register.cpp runnables/bb84Util.cpp runnables/bb84Generation_runnable.cpp runnables/bb84Generation.cpp -o bin/bb84Generation
+libquantum-oo: protocol_buffers
+	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		classic.cpp \
+		complex.cpp \
+		error.cpp \
+		channelService.cpp \
+		channelListener.cpp \
+		channelService_client.cpp \
+		echoRunnable.cpp \
+		system.cpp \
+		matrix.cpp \
+		node.cpp \
+		classicRegister.cpp \
+		register.cpp \
+		entangledRegister.cpp \
+		entanglement.cpp \
+		entangledPair.cpp 
+	$(LINK) rcs $(O_LIBQ) \
+		$(O_PB) $(O_PB_GRPC) \
+		classic.o \
+		complex.o \
+		error.o \
+		channelService.o \
+		channelListener.o \
+		channelService_client.o \
+		echoRunnable.o \
+		system.o \
+		matrix.o \
+		node.o \
+		classicRegister.o \
+		register.o \
+		entangledRegister.o \
+		entanglement.o \
+		entangledPair.o 
+
+bb84: libquantum-oo 
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		runnables/bb84/bb84Util.cpp \
+		runnables/bb84/bb84Determination_runnable.cpp \
+		runnables/bb84/bb84Determination.cpp \
+		-o bin/bb84Determination \
+		$(O_LIBQ)
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		runnables/bb84/bb84Util.cpp \
+		runnables/bb84/bb84Generation_runnable.cpp \
+		runnables/bb84/bb84Generation.cpp \
+		-o bin/bb84Generation \
+		$(O_LIBQ)

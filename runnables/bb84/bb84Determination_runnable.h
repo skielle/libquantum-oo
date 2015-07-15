@@ -2,7 +2,7 @@
  * bb84Determination_runnable.h
  */
 
-#include "../iRunnable.h"
+#include "iRunnable.h"
 
 using namespace Quantum;
 using namespace std;

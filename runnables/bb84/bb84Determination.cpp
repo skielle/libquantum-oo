@@ -3,7 +3,7 @@
  */
 
 #include "bb84Determination_runnable.h"
-#include "../system.h"
+#include "system.h"
 
 int main() {
 	System* sys = System::getInstance();
