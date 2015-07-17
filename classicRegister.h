@@ -36,6 +36,8 @@ class ClassicRegister : public iRegister {
 		QuantumMessage::ClassicRegisterMessage serialize();
 		static ClassicRegister& unserialize(
 			const QuantumMessage::ClassicRegisterMessage* loadMessage);
+		static ClassicRegister& Random(int width);
+		static ClassicRegister& Random(int width, float p0);
 };
 
 }

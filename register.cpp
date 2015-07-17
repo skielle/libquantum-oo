@@ -7,6 +7,8 @@
 #include <sys/types.h>
 #include <time.h>
 #include <vector>
+
+#include "classicRegister.h"
 #include "complex.h"
 #include "config.h"
 #include "defs.h"
@@ -95,6 +97,10 @@ Register::Register(MAX_UNSIGNED initval, int width) {
 	Node* n = new Node(1, initval);
 	this->node.push_back(n);
 }
+
+Register::Register(ClassicRegister *cr) {
+	Register((MAX_UNSIGNED)cr->getValue(), cr->getWidth());
+}	
 
 Register::Register(int n, int width) {
 	this->width = width;

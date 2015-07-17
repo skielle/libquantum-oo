@@ -86,4 +86,29 @@ ClassicRegister& ClassicRegister::unserialize(
 	ret->setValue(loadMessage->bitvalue());
 	return *ret;
 }
+
+ClassicRegister& ClassicRegister::Random(int width) {
+	ClassicRegister* ret = new ClassicRegister(width);
+	int i;
+	for ( i = 0; i < width; i++ ) {
+		ret->setBit( i, rand() % 2 );
+	}
+	return *ret;
+}
+
+ClassicRegister& ClassicRegister::Random(int width, float p0) {
+	ClassicRegister* ret = new ClassicRegister(width);
+	int i;
+	float cutoff = RAND_MAX * p0;
+
+	for ( i = 0; i < width; i++ ) {
+		if ( rand() < cutoff ) {
+			ret->setBit(i, 0);
+		} else {
+			ret->setBit(i, 1);
+		}
+	}
+	return *ret;
+}
+
 }

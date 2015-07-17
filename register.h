@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <vector>
 
+#include "classicRegister.h"
 #include "config.h"
 #include "defs.h"
 #include "error.h"
@@ -33,6 +34,7 @@ class Register : public iRegister {
 		Register(Matrix *m, int width);
 		Register(MAX_UNSIGNED initval, int width);
 		Register(int n, int width);
+		Register(ClassicRegister *cr);
 		Register();
 
 		int getWidth();
