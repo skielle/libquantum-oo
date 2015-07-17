@@ -4,10 +4,10 @@ INCS=-I$(PWD)
 LIBS=-L/usr/local/lib -lgrpc++_unsecure -lgpr -lprotobuf -lpthread -ldl -lssl
 
 CC=g++
-C_LIBFLAGS=-c -Wall
-CFLAGS= -Wall
-C11_LIBFLAGS=-c -Wall -std=c++11
-C11_FLAGS= -Wall -std=c++11
+C_LIBFLAGS=-c 
+CFLAGS= 
+C11_LIBFLAGS=-c -std=c++11
+C11_FLAGS=-std=c++11
 LINK=ar
 
 O_PB=bin/quantumMessage.o
@@ -70,6 +70,7 @@ libquantum-oo: protocol_buffers
 		classic.cpp \
 		complex.cpp \
 		error.cpp \
+		systemMessage.cpp \
 		channelService.cpp \
 		channelListener.cpp \
 		channelService_client.cpp \
@@ -87,6 +88,7 @@ libquantum-oo: protocol_buffers
 		classic.o \
 		complex.o \
 		error.o \
+		systemMessage.o \
 		channelService.o \
 		channelListener.o \
 		channelService_client.o \
