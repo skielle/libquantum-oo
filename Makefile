@@ -4,10 +4,10 @@ INCS=-I$(PWD)
 LIBS=-L/usr/local/lib -lgrpc++_unsecure -lgpr -lprotobuf -lpthread -ldl -lssl
 
 CC=g++
-C_LIBFLAGS=-c -Wall
-CFLAGS= -Wall
-C11_LIBFLAGS=-c -Wall -std=c++11
-C11_FLAGS= -Wall -std=c++11
+C_LIBFLAGS=-c 
+CFLAGS= 
+C11_LIBFLAGS=-c -std=c++11
+C11_FLAGS= -std=c++11
 LINK=ar
 
 O_PB=bin/quantumMessage.o
@@ -113,3 +113,18 @@ bb84: libquantum-oo
 		runnables/bb84/bb84Generation.cpp \
 		-o bin/bb84Generation \
 		$(O_LIBQ)
+
+kak06: libquantum-oo
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		runnables/kak/kakUtil.cpp \
+		runnables/kak/kakParty_runnable.cpp \
+		runnables/kak/kakFulfiller.cpp \
+		-o bin/kakFulfiller \
+		$(O_LIBQ)
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		runnables/kak/kakUtil.cpp \
+		runnables/kak/kakParty_runnable.cpp \
+		runnables/kak/kakInstigator.cpp \
+		-o bin/kakInstigator \
+		$(O_LIBQ)
+	
