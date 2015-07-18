@@ -33,7 +33,7 @@ void KAKParty_Runnable::Run() {
 	Register r = Register((MAX_UNSIGNED)0, KAKUtil::REGISTER_SIZE);
 	ClassicRegister cr = ClassicRegister(KAKUtil::REGISTER_SIZE);
 
-	float psi = 1;
+	float psi = (rand() / RAND_MAX) * pi;
 
 	ClassicRegister rawKey = ClassicRegister(KAKUtil::KEY_LENGTH);
 
