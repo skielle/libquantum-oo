@@ -98,8 +98,8 @@ Register::Register(MAX_UNSIGNED initval, int width) {
 	this->node.push_back(n);
 }
 
-Register::Register(ClassicRegister *cr) {
-	Register((MAX_UNSIGNED)cr->getValue(), cr->getWidth());
+Register::Register(ClassicRegister *cr) 
+	: Register((MAX_UNSIGNED)cr->getValue(), cr->getWidth()) {
 }	
 
 Register::Register(int n, int width) {
