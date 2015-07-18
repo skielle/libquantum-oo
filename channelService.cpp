@@ -13,6 +13,7 @@
 #include "classicRegister.h"
 #include "register.h"
 #include "system.h"
+#include "systemMessage.h"
 #include "quantumMessage.grpc.pb.h"
 
 using namespace std;

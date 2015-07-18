@@ -9,6 +9,7 @@
 #include "echoRunnable.h"
 #include "gates.cpp"
 #include "system.h"
+#include "systemMessage.h"
 #include "register.h"
 
 namespace Quantum {

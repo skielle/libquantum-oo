@@ -12,6 +12,7 @@
 #include "gates.cpp"
 #include "register.h"
 #include "system.h"
+#include "systemMessage.h"
 
 using namespace std;
 using namespace Quantum;

@@ -11,18 +11,14 @@
 #include <utility>
 #include <vector>
 
+#include "channelListener.h"
 #include "iRegister.h"
 #include "iRunnable.h"
-#include "channelListener.h"
+#include "systemMessage.h"
 
 using namespace std;
 
 namespace Quantum {
-
-enum class SystemMessage {
-	REGISTER_RECIEVED = 1,
-	CLASSIC_REGISTER_RECIEVED = 2
-};
 
 class System {
 	private:
