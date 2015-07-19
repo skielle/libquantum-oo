@@ -102,18 +102,32 @@ libquantum-oo: protocol_buffers
 		entanglement.o \
 		entangledPair.o 
 
-bb84: libquantum-oo 
+bb84-classic: libquantum-oo 
 	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
-		runnables/bb84/bb84Util.cpp \
-		runnables/bb84/bb84Determination_runnable.cpp \
-		runnables/bb84/bb84Determination.cpp \
-		-o bin/bb84Determination \
+		runnables/bb84-classic/bb84Util.cpp \
+		runnables/bb84-classic/bb84Determination_runnable.cpp \
+		runnables/bb84-classic/bb84Determination.cpp \
+		-o bin/bb84-classic_Determination \
 		$(O_LIBQ)
 	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
-		runnables/bb84/bb84Util.cpp \
-		runnables/bb84/bb84Generation_runnable.cpp \
-		runnables/bb84/bb84Generation.cpp \
-		-o bin/bb84Generation \
+		runnables/bb84-classic/bb84Util.cpp \
+		runnables/bb84-classic/bb84Generation_runnable.cpp \
+		runnables/bb84-classic/bb84Generation.cpp \
+		-o bin/bb84-classic_Generation \
+		$(O_LIBQ)
+
+bb84-abcl98: libquantum-oo 
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		runnables/bb84-abcl98/bb84Util.cpp \
+		runnables/bb84-abcl98/bb84Determination_runnable.cpp \
+		runnables/bb84-abcl98/bb84Determination.cpp \
+		-o bin/bb84-abcl98_Determination \
+		$(O_LIBQ)
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		runnables/bb84-abcl98/bb84Util.cpp \
+		runnables/bb84-abcl98/bb84Generation_runnable.cpp \
+		runnables/bb84-abcl98/bb84Generation.cpp \
+		-o bin/bb84-abcl98_Generation \
 		$(O_LIBQ)
 
 kak06: libquantum-oo

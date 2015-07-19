@@ -85,7 +85,7 @@ float BB84Util::checkErrorBits(ClassicRegister rawKey,
 		}
 		j++;
 	}
-	return (float)failures/(float)BB84Util::KEY_LENGTH;
+	return (float)failures/(float)j;
 }
 
 void BB84Util::privacyAmplification(ClassicRegister rawKey) {

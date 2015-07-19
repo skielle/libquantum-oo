@@ -4,7 +4,7 @@ package QuantumMessage;
 
 message ClassicRegisterMessage {
 	int32 protocol_messageType = 1;
-	int32 bitValue = 2;
+	repeated int32 bitValue = 2;
 	int32 width = 3;
 }
 

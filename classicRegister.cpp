@@ -75,15 +75,25 @@ void ClassicRegister::print() {
 }
 
 QuantumMessage::ClassicRegisterMessage ClassicRegister::serialize() {
+	int i;
+	
 	QuantumMessage::ClassicRegisterMessage saveMessage;
-	saveMessage.set_bitvalue(this->getValue());
-	saveMessage.set_width(this->bitValue.size());
+	saveMessage.set_width(this->getWidth());
+	
+	for ( i = 0; i < this->getWidth(); i++ ) {
+		saveMessage.add_bitvalue(this->getBit(i));
+	}
+	
 	return saveMessage;
 }
 ClassicRegister& ClassicRegister::unserialize(
 	const QuantumMessage::ClassicRegisterMessage* loadMessage) {
+	int i;
 	ClassicRegister* ret = new ClassicRegister(loadMessage->width());
-	ret->setValue(loadMessage->bitvalue());
+
+	for ( i = 0; i < loadMessage->bitvalue_size(); i++ ) {
+		ret->setBit(i, loadMessage->bitvalue(i));
+	}
 	return *ret;
 }
 
