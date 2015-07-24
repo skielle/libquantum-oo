@@ -56,8 +56,11 @@ register_test: clean
 gate_test: clean
 	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp -g gates.cpp tests/gate_test.cpp -o bin/gate_test
 
-entangledRegister_test: clean protocol_buffers
-	$(CC) $(LIBS) bin/quantumMessage.o -g complex.cpp error.cpp system.cpp matrix.cpp node.cpp gates.cpp -g register.cpp -g entangledRegister.cpp entanglement.cpp entangledPair.cpp tests/entangledRegister_test.cpp -o bin/entangledRegister_test
+entangledRegister_test: libquantum-oo 
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		tests/entangledRegister_test.cpp \
+		-o bin/entangledRegister_test \
+		$(O_LIBQ)
 
 entanglement_test: clean
 	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp entangledRegister.cpp entanglement.cpp entangledPair.cpp tests/entanglement_test.cpp -o bin/entanglement_test
