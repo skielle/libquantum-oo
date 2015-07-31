@@ -14,6 +14,7 @@
 #include "channelListener.h"
 #include "iRegister.h"
 #include "iRunnable.h"
+#include "iEvil.h"
 #include "systemMessage.h"
 
 using namespace std;
@@ -35,6 +36,8 @@ class System {
 		static unsigned long memman(long change);
 		static System* getInstance();
 
+		shared_ptr<iEvil> eve;
+		
 		bool isMessageQueueEmpty();
 		SystemMessage getMessageType();
 		template<class messageType> 

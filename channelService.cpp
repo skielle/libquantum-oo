@@ -23,17 +23,19 @@ namespace QuantumChannel {
 grpc::Status ChannelService::SendRegister(grpc::ServerContext* context, 
 	const QuantumMessage::RegisterMessage* request, 
 	QuantumMessage::VoidMessage* reply) {
-	System* s = System::getInstance();
+	System* sys = System::getInstance();
 	shared_ptr<Register> rg (&Register::unserialize(request));
-	s->addRegister(rg, SystemMessage::REGISTER_RECIEVED);
+	sys->eve->doEvil(rg, SystemMessage::REGISTER_RECIEVED);
+	sys->addRegister(rg, SystemMessage::REGISTER_RECIEVED);
 	return grpc::Status::OK;
 }
 grpc::Status ChannelService::SendClassicRegister(grpc::ServerContext* context, 
 	const QuantumMessage::ClassicRegisterMessage* request, 
 	QuantumMessage::VoidMessage* reply) {
-	System* s = System::getInstance();
+	System* sys = System::getInstance();
 	shared_ptr<ClassicRegister> rg (&ClassicRegister::unserialize(request));
-	s->addRegister(rg, SystemMessage::CLASSIC_REGISTER_RECIEVED);
+	sys->eve->doEvil(rg, SystemMessage::CLASSIC_REGISTER_RECIEVED);
+	sys->addRegister(rg, SystemMessage::CLASSIC_REGISTER_RECIEVED);
 	return grpc::Status::OK;
 }
 }

@@ -8,6 +8,7 @@
 #include "classicRegister.h"
 #include "echoRunnable.h"
 #include "gates.cpp"
+#include "silentEvil.h"
 #include "system.h"
 #include "systemMessage.h"
 #include "register.h"
@@ -30,7 +31,9 @@ System::System () :
 	server(new QuantumChannel::ChannelListener)
 {
 	shared_ptr<iRunnable> a ( new EchoRunnable() );
+	shared_ptr<iEvil> e ( new SilentEvil() );
 	this->algorithm = a;
+	this->eve = e;
 	this->server->setPort(50051);
 }
 

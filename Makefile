@@ -6,8 +6,8 @@ LIBS=-L/usr/local/lib -lgrpc++_unsecure -lgpr -lprotobuf -lpthread -ldl -lssl
 CC=g++
 C_LIBFLAGS=-c 
 CFLAGS= 
-C11_LIBFLAGS=-c -std=c++11
-C11_FLAGS=-std=c++11
+C11_LIBFLAGS=-g -c -std=c++11
+C11_FLAGS=-g -std=c++11
 LINK=ar
 
 O_PB=bin/quantumMessage.o
@@ -78,6 +78,7 @@ libquantum-oo: protocol_buffers
 		channelListener.cpp \
 		channelService_client.cpp \
 		echoRunnable.cpp \
+		silentEvil.cpp \
 		system.cpp \
 		matrix.cpp \
 		node.cpp \
@@ -96,6 +97,7 @@ libquantum-oo: protocol_buffers
 		channelListener.o \
 		channelService_client.o \
 		echoRunnable.o \
+		silentEvil.o \
 		system.o \
 		matrix.o \
 		node.o \
