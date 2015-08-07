@@ -15,7 +15,8 @@ class Entanglement {
 		EntangledRegister* beit;
 		EntangledPair* entanglements;
 	public:
-		static Entanglement createEntanglement(MAX_UNSIGNED init, int width);
+		static Entanglement createEntanglement(MAX_UNSIGNED init, 
+			int width);
 		EntangledRegister* getAleph();
 		EntangledRegister* getBeit();
 
@@ -24,6 +25,8 @@ class Entanglement {
 		bool isEntangled( int target);
 
 		void measured(bool isAleph, int target, int result);
+	friend EntangledRegister* EntangledRegister::unserialize(
+	        const QuantumMessage::EntangledRegisterMessage* loadMessage);
 };
 }
 #endif		

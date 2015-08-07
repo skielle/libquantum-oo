@@ -16,7 +16,7 @@ int main() {
 	EntangledRegister* a = e.getAleph();
 	EntangledRegister* b = e.getBeit();
 
-	EntangledPair* ab0 = new EntangledPair(1/sqrt(2), 0, 0, 1/sqrt(2));
+	EntangledPair* ab0 = new EntangledPair(1/sqrt(2), .5, 0, .5);
 
 	Matrix m = Matrix(2, 2);
 
@@ -28,19 +28,47 @@ int main() {
 	RotateX* rx = new RotateX();
 	rx->setPsi(2* pi / 4);
 
-	a->EntangledRegister::applyMatrix(0, &m);
-	b->EntangledRegister::applyMatrix(0, &m);
+	a->EntangledRegister::applyMatrix(1, &m);
+	b->EntangledRegister::applyMatrix(1, &m);
 
 	e.entangle(0, *ab0);
+	e.entangle(1, *ab0);
+	e.entangle(2, *ab0);
 
+	a->EntangledRegister::applyGate(rx, 1);
+	a->EntangledRegister::applyGate(rx, 1);
 	a->EntangledRegister::applyGate(rx, 0);
+	a->EntangledRegister::applyGate(rx, 2);
 
 	a->print();
 	b->print();
 
-	a->EntangledRegister::measure(0, false);
+	QuantumMessage::EntangledRegisterMessage erm = a->serialize();
+	EntangledRegister* c = EntangledRegister::unserialize(&erm);
+
+//	a->EntangledRegister::measure(0, false);
+
+	
+
 	a->print();
 	b->print();
+
+	printf("C: ------ \n");
+	c->print();
+	printf("Is aleph? %s\n", (c->getAleph())?"true":"false");
+	printf("EntangledPairs:\n");
+	for ( int i = 0; i < c->getWidth(); i++ ) {
+		printf("a%i : %s\n", i, (a->isEntangled(i))?"true":"false");
+		printf("c%i : %s\n", i, (c->isEntangled(i))?"true":"false");
+	}
+
+	printf("OpHistory:\n");
+	for ( int i = 0; i < c->getWidth(); i++ ) {
+		printf("%i: \n",i);
+		for ( int j = 0; j < c->getOpHistory(i)->size(); j++ ) {
+			c->getOpHistory(i)->at(j).print();
+		}
+	}
 
 	return 0;
 }

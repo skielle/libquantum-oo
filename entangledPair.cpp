@@ -43,7 +43,37 @@ void EntangledPair::setEntanglements(COMPLEX_FLOAT a_00, COMPLEX_FLOAT a_01,
 			this->_isNull = false;
 	}
 }
+
 bool EntangledPair::isNull() {
 	return this->_isNull;
+}
+
+QuantumMessage::EntangledPairMessage EntangledPair::serialize() {
+	QuantumMessage::EntangledPairMessage saveMessage;
+
+	saveMessage.set__isnull(this->isNull());
+
+	if ( !(this->isNull()) ) {
+		saveMessage.mutable_amplitudes()->CopyFrom(
+			this->entanglementAmplitudes->serialize());
+	}
+
+	return saveMessage;
+}
+
+EntangledPair& EntangledPair::unserialize(
+	const QuantumMessage::EntangledPairMessage* loadMessage) {
+	
+	EntangledPair* ep = new EntangledPair();
+	if ( !loadMessage->_isnull() ) {
+		QuantumMessage::MatrixMessage mmAmps = 
+			loadMessage->amplitudes();
+		Matrix mAmps = Matrix::unserialize(&mmAmps);
+		ep->entanglementAmplitudes = &mAmps;
+		ep->_isNull = false;
+	}
+	
+	
+	return *ep;
 }
 }

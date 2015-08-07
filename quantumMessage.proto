@@ -22,10 +22,17 @@ message EntangledMeasurementMessage {
 	bool aleph = 1;
 	RegisterAddressMessage target = 2;
 	int32 result = 3;
-	repeated MatrixMessage opHistory = 4;
+	EntangledOpHistoryMessage opHistory = 4;
 }
 
-message EntanglementMessage {
+message EntangledRegisterMessage {
+	int32 protocol_messageType = 1;
+	MatrixMessage m = 2;
+	int32 Width = 3;
+	
+	bool aleph = 4;
+	repeated EntangledPairMessage pairs = 5;
+	repeated EntangledOpHistoryMessage opHistory = 6;
 }
 
 message MatrixMessage {
@@ -47,10 +54,14 @@ message EntangledPairMessage {
 	bool _isNull = 2;
 }
 
+message EntangledOpHistoryMessage {
+	repeated MatrixMessage operations = 1;
+}
+
 service QuantumChannel {
 	rpc SendMatrix(MatrixMessage) returns (VoidMessage) {}
 	rpc SendRegister(RegisterMessage) returns (VoidMessage) {}
-	rpc SendEntangledRegister(EntanglementMessage) returns (VoidMessage) {}
+	rpc SendEntangledRegister(EntangledRegisterMessage) returns (VoidMessage) {}
 	rpc SendClassicRegister(ClassicRegisterMessage) returns (VoidMessage) {}
 	rpc EventEntanglePair(EntangledPairMessage) returns (VoidMessage) {}
 	rpc EventDisentanglePair(RegisterAddressMessage) returns (VoidMessage) {}

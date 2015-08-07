@@ -1,6 +1,7 @@
 /*
  * entanglement.cpp
  */
+#include <memory>
 #include <stdio.h>
 #include "complex.h"
 #include "defs.h"
@@ -16,9 +17,11 @@ Entanglement Entanglement::createEntanglement(MAX_UNSIGNED init, int width) {
 	for ( int i = 0; i < width; i++ ) {
 		e.entanglements[i] = EntangledPair();
 	}
-	e.aleph = new EntangledRegister(init, width, &e);
+	e.aleph = new EntangledRegister(init, width, 
+		make_shared<Entanglement>(e));
 	e.aleph->setAleph(true);
-	e.beit = new EntangledRegister(init, width, &e);
+	e.beit = new EntangledRegister(init, width,
+		make_shared<Entanglement>(e));
 	e.beit->setAleph(false);
 
 	return e;

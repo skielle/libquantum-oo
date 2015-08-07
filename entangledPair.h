@@ -28,6 +28,10 @@ class EntangledPair {
 		void setEntanglements(COMPLEX_FLOAT a_00, COMPLEX_FLOAT a_01, 
 			COMPLEX_FLOAT a_10, COMPLEX_FLOAT a_11);
 		bool isNull();
+		QuantumMessage::EntangledPairMessage serialize();
+		static EntangledPair& unserialize(
+			const QuantumMessage::EntangledPairMessage* 
+			loadMessage);
 };
 }
 #endif
