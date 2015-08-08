@@ -25,7 +25,7 @@ class Entanglement {
 		bool isEntangled( int target);
 
 		void measured(bool isAleph, int target, int result);
-	friend EntangledRegister* EntangledRegister::unserialize(
+	friend EntangledRegister& EntangledRegister::unserialize(
 	        const QuantumMessage::EntangledRegisterMessage* loadMessage);
 };
 }

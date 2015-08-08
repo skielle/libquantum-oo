@@ -20,6 +20,7 @@ class SystemMessage {
 		static const int DEFAULT_MESSAGE = 0;
 		static const int CLASSIC_REGISTER_RECIEVED = 1;
 		static const int REGISTER_RECIEVED = 2;
+		static const int ENTANGLED_REGISTER_RECIEVED = 3;
  
 		//Default constructor
 		SystemMessage();

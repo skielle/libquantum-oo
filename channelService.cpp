@@ -11,6 +11,7 @@
 #include <grpc++/status.h>
 #include "channelService.h"
 #include "classicRegister.h"
+#include "entangledRegister.h"
 #include "register.h"
 #include "system.h"
 #include "systemMessage.h"
@@ -36,6 +37,15 @@ grpc::Status ChannelService::SendClassicRegister(grpc::ServerContext* context,
 	shared_ptr<ClassicRegister> rg (&ClassicRegister::unserialize(request));
 	sys->eve->doEvil(rg, SystemMessage::CLASSIC_REGISTER_RECIEVED);
 	sys->addRegister(rg, SystemMessage::CLASSIC_REGISTER_RECIEVED);
+	return grpc::Status::OK;
+}
+grpc::Status ChannelService::SendEntangledRegister(grpc::ServerContext* context, 
+	const QuantumMessage::EntangledRegisterMessage* request, 
+	QuantumMessage::VoidMessage* reply) {
+	System* sys = System::getInstance();
+	shared_ptr<EntangledRegister> rg (&EntangledRegister::unserialize(request));
+	sys->eve->doEvil(rg, SystemMessage::ENTANGLED_REGISTER_RECIEVED);
+	sys->addRegister(rg, SystemMessage::ENTANGLED_REGISTER_RECIEVED);
 	return grpc::Status::OK;
 }
 }

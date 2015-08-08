@@ -149,3 +149,15 @@ kak06: libquantum-oo
 		-o bin/kakInstigator \
 		$(O_LIBQ)
 	
+demo-entanglement: libquantum-oo
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		runnables/demo-entanglement/sink.cpp \
+		runnables/demo-entanglement/sink_runnable.cpp \
+		-o bin/demo-entanglement_sink \
+		$(O_LIBQ)
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		runnables/demo-entanglement/source.cpp \
+		runnables/demo-entanglement/source_runnable.cpp \
+		-o bin/demo-entanglement_source \
+		$(O_LIBQ)
+	

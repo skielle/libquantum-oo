@@ -44,7 +44,7 @@ int main() {
 	b->print();
 
 	QuantumMessage::EntangledRegisterMessage erm = a->serialize();
-	EntangledRegister* c = EntangledRegister::unserialize(&erm);
+	EntangledRegister c = EntangledRegister::unserialize(&erm);
 
 //	a->EntangledRegister::measure(0, false);
 
@@ -54,19 +54,19 @@ int main() {
 	b->print();
 
 	printf("C: ------ \n");
-	c->print();
-	printf("Is aleph? %s\n", (c->getAleph())?"true":"false");
+	c.print();
+	printf("Is aleph? %s\n", (c.getAleph())?"true":"false");
 	printf("EntangledPairs:\n");
-	for ( int i = 0; i < c->getWidth(); i++ ) {
+	for ( int i = 0; i < c.getWidth(); i++ ) {
 		printf("a%i : %s\n", i, (a->isEntangled(i))?"true":"false");
-		printf("c%i : %s\n", i, (c->isEntangled(i))?"true":"false");
+		printf("c%i : %s\n", i, (c.isEntangled(i))?"true":"false");
 	}
 
 	printf("OpHistory:\n");
-	for ( int i = 0; i < c->getWidth(); i++ ) {
+	for ( int i = 0; i < c.getWidth(); i++ ) {
 		printf("%i: \n",i);
-		for ( int j = 0; j < c->getOpHistory(i)->size(); j++ ) {
-			c->getOpHistory(i)->at(j).print();
+		for ( int j = 0; j < c.getOpHistory(i)->size(); j++ ) {
+			c.getOpHistory(i)->at(j).print();
 		}
 	}
 

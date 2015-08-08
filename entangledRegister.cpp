@@ -171,7 +171,7 @@ QuantumMessage::EntangledRegisterMessage EntangledRegister::serialize() {
 	return saveMessage;
 }
 
-EntangledRegister* EntangledRegister::unserialize(
+EntangledRegister& EntangledRegister::unserialize(
 	const QuantumMessage::EntangledRegisterMessage* loadMessage) {
 
 	int i, j;
@@ -210,7 +210,7 @@ EntangledRegister* EntangledRegister::unserialize(
 		e.beit = ret;
 	}
 
-	return ret;
+	return *ret;
 }
 
 }
