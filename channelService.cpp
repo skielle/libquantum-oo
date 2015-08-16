@@ -12,7 +12,9 @@
 #include "channelService.h"
 #include "classicRegister.h"
 #include "entangledRegister.h"
+#include "entanglement.h"
 #include "register.h"
+#include "stub__networkRegister.h"
 #include "system.h"
 #include "systemMessage.h"
 #include "quantumMessage.grpc.pb.h"
@@ -44,6 +46,12 @@ grpc::Status ChannelService::SendEntangledRegister(grpc::ServerContext* context,
 	QuantumMessage::VoidMessage* reply) {
 	System* sys = System::getInstance();
 	shared_ptr<EntangledRegister> rg (&EntangledRegister::unserialize(request));
+	if ( rg->isAleph() ) {
+		rg->getEntanglement()->isBeit__stub = true;
+	} else {
+		rg->getEntanglement()->isAleph__stub = true;
+	}
+//	rg->getEntanglement()->setBeit = new stub__NetworkRegister(rg->getEntanglement());
 	sys->eve->doEvil(rg, SystemMessage::ENTANGLED_REGISTER_RECIEVED);
 	sys->addRegister(rg, SystemMessage::ENTANGLED_REGISTER_RECIEVED);
 	return grpc::Status::OK;

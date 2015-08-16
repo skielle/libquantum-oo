@@ -85,6 +85,7 @@ libquantum-oo: protocol_buffers
 		classicRegister.cpp \
 		register.cpp \
 		entangledRegister.cpp \
+		stub__networkRegister.cpp \
 		entanglement.cpp \
 		entangledPair.cpp 
 	$(LINK) rcs $(O_LIBQ) \
@@ -104,6 +105,7 @@ libquantum-oo: protocol_buffers
 		classicRegister.o \
 		register.o \
 		entangledRegister.o \
+		stub__networkRegister.o \
 		entanglement.o \
 		entangledPair.o 
 

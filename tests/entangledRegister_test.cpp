@@ -55,7 +55,7 @@ int main() {
 
 	printf("C: ------ \n");
 	c.print();
-	printf("Is aleph? %s\n", (c.getAleph())?"true":"false");
+	printf("Is aleph? %s\n", (c.isAleph())?"true":"false");
 	printf("EntangledPairs:\n");
 	for ( int i = 0; i < c.getWidth(); i++ ) {
 		printf("a%i : %s\n", i, (a->isEntangled(i))?"true":"false");

@@ -17,6 +17,7 @@ using namespace std;
 
 namespace QuantumChannel {
 class ChannelService final : public QuantumMessage::QuantumChannel::Service {
+	public:
 	grpc::Status SendRegister(grpc::ServerContext* context, 
 		const QuantumMessage::RegisterMessage* request, 
 		QuantumMessage::VoidMessage* reply) override;

@@ -2,23 +2,23 @@
  * stub__networkRegister.cpp
  */
 
-#include stub__networkRegister.h
+#include "entangledRegister.h"
+#include "entanglement.h"
+#include "error.h"
+#include "stub__networkRegister.h"
 
 namespace Quantum {
-stub_NetworkRegister::stub_NetworkRegister(MAX_UNSIGNED init, int width,
-			Entanglement* ent) {
+stub__NetworkRegister::stub__NetworkRegister(shared_ptr<Entanglement> _ent) {
+	this->ent = _ent;
 }
 
-vector<Matrix>* stub_NetworkRegister::getOpHistory(int target) {
+void stub__NetworkRegister::setAleph(bool aleph) {
 }
 
-void stub_NetworkRegister::setAleph(bool aleph) {
+bool stub__NetworkRegister::isAleph() {
 }
 
-bool stub_NetworkRegister::getAleph() {
-}
-
-void stub_NetworkRegister::pairMeasured(int target, int result) {
+void stub__NetworkRegister::pairMeasured(int target, int result) {
 }
 
 }

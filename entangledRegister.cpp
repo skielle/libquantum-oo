@@ -44,7 +44,7 @@ void EntangledRegister::apply2x2Matrix(int target, Matrix *m) {
 int EntangledRegister::measure(int target, bool preserve) {
 	int result = Register::measure(target, preserve);
 
-	this->ent->measured(this->aleph, target, result);
+	this->ent->measured(this->isAleph(), target, result);
 
 	return result;
 }
@@ -53,12 +53,12 @@ vector<Matrix>* EntangledRegister::getOpHistory(int target) {
 	return this->opHistory[target];
 }
 
-bool EntangledRegister::getAleph() {
-	return this->aleph;
+bool EntangledRegister::isAleph() {
+	return this->_isAleph;
 }
 
 void EntangledRegister::setAleph(bool aleph) {
-	this->aleph = aleph;
+	this->_isAleph = aleph;
 } 
 
 bool EntangledRegister::isEntangled(int target) {
@@ -80,7 +80,7 @@ void EntangledRegister::updateAmplitudes(int target, int result) {
 	int i;
 	float p0, p1;
 
-	if ( !this->aleph ) {
+	if ( !this->isAleph() ) {
 		p0 = Complex::probability(
 			this->ent->getEntanglement(target).get(result, 0) );
 		p1 = Complex::probability(
@@ -129,7 +129,7 @@ void EntangledRegister::replay(int target) {
 void EntangledRegister::playAltHistory(int target) {
 	int i;
 	vector<Matrix>* altHistory;
-	if ( this->aleph ) {
+	if ( this->isAleph() ) {
 		altHistory = this->ent->getBeit()->getOpHistory(target);
 	} else {
 		altHistory = this->ent->getAleph()->getOpHistory(target);
@@ -146,7 +146,7 @@ QuantumMessage::EntangledRegisterMessage EntangledRegister::serialize() {
 	saveMessage.mutable_m()->CopyFrom(this->toMatrix().serialize());
 	saveMessage.set_width(this->width);
 
-	saveMessage.set_aleph(this->getAleph());
+	saveMessage.set_aleph(this->isAleph());
 
 	for ( i = 0; i < this->width; i++ ) {
 		//add entangled pairs

@@ -24,15 +24,34 @@ Entanglement Entanglement::createEntanglement(MAX_UNSIGNED init, int width) {
 		make_shared<Entanglement>(e));
 	e.beit->setAleph(false);
 
+	e.isAleph__stub = false;
+	e.isBeit__stub = false;
+
 	return e;
 }
 
 EntangledRegister* Entanglement::getAleph() {
+	if ( this->isAleph__stub ) {
+		Error::error(QUANTUM_REMOTEOP);
+	}
 	return this->aleph;
 }
 
 EntangledRegister* Entanglement::getBeit() {
+	if ( this->isBeit__stub ) {
+		Error::error(QUANTUM_REMOTEOP);
+	}
 	return this->beit;
+}
+
+void Entanglement::makeAlephRemote() {
+	this->isAleph__stub = true;
+	//this->aleph = new stub__NetworkRegister(shared_from_this());
+}
+
+void Entanglement::makeBeitRemote() {
+	this->isBeit__stub = true;
+	//this->beit = new stub__NetworkRegister(shared_from_this());
 }
 
 void Entanglement::entangle(int target, EntangledPair entanglementData) {

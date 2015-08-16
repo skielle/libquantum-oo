@@ -19,7 +19,7 @@ class EntangledRegister: public Register {
 	protected:
 		shared_ptr<Entanglement> ent;
 		vector<Matrix>** opHistory;
-		bool aleph;
+		bool _isAleph;
 
 		void revert(int target);
 		void replay(int target);
@@ -36,7 +36,7 @@ class EntangledRegister: public Register {
 		int measure(int target, bool preserve);
 		vector<Matrix>* getOpHistory(int target);
 		void setAleph(bool aleph);
-		bool getAleph();
+		bool isAleph();
 		bool isEntangled(int target);
 
 		shared_ptr<Entanglement> getEntanglement();

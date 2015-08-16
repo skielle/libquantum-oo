@@ -5,18 +5,20 @@
 #ifndef __QUANTUM_STUB__NETWORKREGISTER_H
 #define __QUANTUM_STUB__NETWORKREGISTER_H
 
+#include <memory>
+
+#include "entangledRegister.h"
+
 namespace Quantum {
-class stub__networkRegister {
+class stub__NetworkRegister {
 	protected:
-		Entanglement* ent;
-		bool aleph;
+		shared_ptr<Entanglement> ent;
+		bool _isAleph;
 
 	public:
-		stub_NetworkRegister(MAX_UNSIGNED init, int width,
-			Entanglement* ent);
-		vector<Matrix>* getOpHistory(int target);
+		stub__NetworkRegister(shared_ptr<Entanglement> ent);
 		void setAleph(bool aleph);
-		bool getAleph();
+		bool isAleph();
 
 		void pairMeasured(int target, int result);
 };
