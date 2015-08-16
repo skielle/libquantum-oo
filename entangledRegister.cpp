@@ -171,12 +171,12 @@ QuantumMessage::EntangledRegisterMessage EntangledRegister::serialize() {
 	return saveMessage;
 }
 
-EntangledRegister& EntangledRegister::unserialize(
+shared_ptr<EntangledRegister> EntangledRegister::unserialize(
 	const QuantumMessage::EntangledRegisterMessage* loadMessage) {
 
 	int i, j;
 	QuantumMessage::MatrixMessage mMessage = loadMessage->m();
-	EntangledRegister* ret;
+	shared_ptr<EntangledRegister> ret;
 
 	Matrix m = Matrix::unserialize(&mMessage);
 	Entanglement e = Entanglement::createEntanglement(
@@ -191,8 +191,9 @@ EntangledRegister& EntangledRegister::unserialize(
 
 	
 
-	ret = new EntangledRegister(&m, loadMessage->width(), 
-		make_shared<Entanglement>(e));
+	ret = shared_ptr<EntangledRegister>(
+		new EntangledRegister(&m, loadMessage->width(), 
+			make_shared<Entanglement>(e)));
 	ret->setAleph(loadMessage->aleph());
 
 	for ( i = 0; i < loadMessage->width(); i++ ) {
@@ -205,12 +206,12 @@ EntangledRegister& EntangledRegister::unserialize(
 	}
 
 	if ( loadMessage->aleph() ) {
-		e.aleph = ret;
+		e.setAleph(ret);
 	} else {
-		e.beit = ret;
+		e.setBeit(ret);
 	}
 
-	return *ret;
+	return ret;
 }
 
 }

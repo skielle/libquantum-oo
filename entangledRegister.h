@@ -43,7 +43,7 @@ class EntangledRegister: public Register {
 		void pairMeasured(int target, int result);
 
 		QuantumMessage::EntangledRegisterMessage serialize();
-		static EntangledRegister& unserialize(
+		static shared_ptr<EntangledRegister> unserialize(
 			const QuantumMessage::EntangledRegisterMessage* 
 			loadMessage);
 };

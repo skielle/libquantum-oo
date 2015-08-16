@@ -45,7 +45,7 @@ grpc::Status ChannelService::SendEntangledRegister(grpc::ServerContext* context,
 	const QuantumMessage::EntangledRegisterMessage* request, 
 	QuantumMessage::VoidMessage* reply) {
 	System* sys = System::getInstance();
-	shared_ptr<EntangledRegister> rg (&EntangledRegister::unserialize(request));
+	shared_ptr<EntangledRegister> rg = EntangledRegister::unserialize(request);
 	if ( rg->isAleph() ) {
 		rg->getEntanglement()->isBeit__stub = true;
 	} else {

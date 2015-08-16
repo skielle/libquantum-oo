@@ -17,11 +17,13 @@ Entanglement Entanglement::createEntanglement(MAX_UNSIGNED init, int width) {
 	for ( int i = 0; i < width; i++ ) {
 		e.entanglements[i] = EntangledPair();
 	}
-	e.aleph = new EntangledRegister(init, width, 
-		make_shared<Entanglement>(e));
+	e.aleph = shared_ptr<EntangledRegister> (
+		new EntangledRegister(init, width, 
+			make_shared<Entanglement>(e)));
 	e.aleph->setAleph(true);
-	e.beit = new EntangledRegister(init, width,
-		make_shared<Entanglement>(e));
+	e.beit = shared_ptr<EntangledRegister> (
+		new EntangledRegister(init, width,
+			make_shared<Entanglement>(e)));
 	e.beit->setAleph(false);
 
 	e.isAleph__stub = false;
@@ -30,18 +32,26 @@ Entanglement Entanglement::createEntanglement(MAX_UNSIGNED init, int width) {
 	return e;
 }
 
-EntangledRegister* Entanglement::getAleph() {
+shared_ptr<EntangledRegister> Entanglement::getAleph() {
 	if ( this->isAleph__stub ) {
 		Error::error(QUANTUM_REMOTEOP);
 	}
 	return this->aleph;
 }
 
-EntangledRegister* Entanglement::getBeit() {
+shared_ptr<EntangledRegister> Entanglement::getBeit() {
 	if ( this->isBeit__stub ) {
 		Error::error(QUANTUM_REMOTEOP);
 	}
 	return this->beit;
+}
+
+void Entanglement::setAleph(shared_ptr<EntangledRegister> _aleph) {
+	this->aleph = _aleph;
+}
+
+void Entanglement::setBeit(shared_ptr<EntangledRegister> _beit) {
+	this->beit = _beit;
 }
 
 void Entanglement::makeAlephRemote() {

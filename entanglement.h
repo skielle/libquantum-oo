@@ -18,22 +18,22 @@ using namespace std;
 namespace Quantum {
 class Entanglement: public enable_shared_from_this<Entanglement> {
 	protected:
-		EntangledRegister* aleph;
-		EntangledRegister* beit;
+		shared_ptr<EntangledRegister> aleph;
+		shared_ptr<EntangledRegister> beit;
 		bool isAleph__stub = false;
 		bool isBeit__stub = false;
 		EntangledPair* entanglements;
 
-		void setAleph(EntangledRegister* _aleph);
-		void setBeit(EntangledRegister* _beit);
+		void setAleph(shared_ptr<EntangledRegister> _aleph);
+		void setBeit(shared_ptr<EntangledRegister> _beit);
 
 		void makeAlephRemote();
 		void makeBeitRemote();
 	public:
 		static Entanglement createEntanglement(MAX_UNSIGNED init, 
 			int width);
-		EntangledRegister* getAleph();
-		EntangledRegister* getBeit();
+		shared_ptr<EntangledRegister> getAleph();
+		shared_ptr<EntangledRegister> getBeit();
 		EntangledPair getEntanglement(int target);
 		bool isEntangled( int target);
 
@@ -41,7 +41,7 @@ class Entanglement: public enable_shared_from_this<Entanglement> {
 		void entangle(int target, EntangledPair entanglementData);
 		void measured(bool isAleph, int target, int result);
 
-	friend EntangledRegister& EntangledRegister::unserialize(
+	friend shared_ptr<EntangledRegister> EntangledRegister::unserialize(
 	        const QuantumMessage::EntangledRegisterMessage* loadMessage);
 	friend grpc::Status 
 		QuantumChannel::ChannelService::SendEntangledRegister(
