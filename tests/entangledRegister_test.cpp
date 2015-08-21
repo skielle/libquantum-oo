@@ -46,9 +46,7 @@ int main() {
 	QuantumMessage::EntangledRegisterMessage erm = a->serialize();
 	shared_ptr<EntangledRegister> c = EntangledRegister::unserialize(&erm);
 
-//	a->EntangledRegister::measure(0, false);
-
-	
+	a->EntangledRegister::measure(0, false);
 
 	a->print();
 	b->print();

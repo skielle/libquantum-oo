@@ -31,8 +31,8 @@ void Sink_Runnable::Run() {
 		SystemMessage::ENTANGLED_REGISTER_RECIEVED ) {
 		EntangledRegister quBitReg = *(sys->getMessage<EntangledRegister>());
 		quBitReg.print();
+		quBitReg.measure(1, true);
 	}
-
 
 	//sys->stopServer();
 }

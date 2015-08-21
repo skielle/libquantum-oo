@@ -13,12 +13,19 @@ int main() {
 	r.print();
 
 	RotateX* rx = new RotateX();
-	rx->setPsi(pi / 2);
-	r.applyGate(rx, 0);
-	printf("Rotation by pi/2:\n");
-	r.print();
 
-	SigmaX* sx = new SigmaX();
+	rx->setPsi( -1 * pi / 4 );
+	r.applyGate(rx, 0);
+
+	rx->setPsi( pi / 2 );
+
+	for ( int i = 1; i <= 4; i++) {
+		r.applyGate(rx, 0);
+		printf("Rotation by %i pi/2:\n", i);
+		r.print();
+	}
+
+/*	SigmaX* sx = new SigmaX();
 	r.applyGate(sx, 0);
 	printf("Sigma X\n");
 	r.print();
@@ -61,6 +68,6 @@ int main() {
 	r.applyGate(sx, 0);
 	r.applyGate(sy, 0);
 	r.print();
-
+*/
 	return 0;
 }

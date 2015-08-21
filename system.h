@@ -40,6 +40,7 @@ class System {
 		
 		bool isMessageQueueEmpty();
 		SystemMessage getMessageType();
+		int getMessageAddress();
 		template<class messageType> 
 		shared_ptr<messageType> getMessage() {
 			shared_ptr<messageType> rx = 

@@ -6,10 +6,11 @@
 
 #include <memory.h>
 
-#include "channelService.h"
 #include "channelService_client.h"
+#include "channelService.h"
 #include "entangledRegister.h"
 #include "entangledPair.h"
+#include "quantumMessage.pb.h"
 #include "register.h"
 #include "stub__networkRegister.h"
 
@@ -27,8 +28,17 @@ class Entanglement: public enable_shared_from_this<Entanglement> {
 		void setAleph(shared_ptr<EntangledRegister> _aleph);
 		void setBeit(shared_ptr<EntangledRegister> _beit);
 
-		void makeAlephRemote();
-		void makeBeitRemote();
+		void makeAlephRemote(int css);
+		void makeBeitRemote(int css);
+		void makeAlephRemote(
+			QuantumChannel::ChannelService_client* csc);
+		void makeBeitRemote(
+			QuantumChannel::ChannelService_client* csc);
+
+		QuantumMessage::EntangledMeasurementMessage 
+		createMeasurementMessage(
+			bool _isAleph, int target, int result, 
+			vector<Matrix>* targetOpHistory);
 	public:
 		static Entanglement createEntanglement(MAX_UNSIGNED init, 
 			int width);
@@ -47,7 +57,10 @@ class Entanglement: public enable_shared_from_this<Entanglement> {
 		QuantumChannel::ChannelService::SendEntangledRegister(
 		grpc::ServerContext* context,
         	const QuantumMessage::EntangledRegisterMessage* request,
-        	QuantumMessage::VoidMessage* reply); 
+        	QuantumMessage::VoidMessage* reply);
+	friend bool 
+		QuantumChannel::ChannelService_client::SendEntangledRegister(
+		EntangledRegister r);
 };
 }
 #endif		

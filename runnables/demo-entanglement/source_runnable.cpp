@@ -23,8 +23,8 @@ void Source_Runnable::Run() {
 	QuantumChannel::ChannelService_client csc("127.0.0.1", 50100);
 
 	Entanglement e = Entanglement::createEntanglement((MAX_UNSIGNED) 0, 4);
-	EntangledRegister* a = e.getAleph();
-	EntangledRegister* b = e.getBeit();
+	shared_ptr<EntangledRegister> a = e.getAleph();
+	shared_ptr<EntangledRegister> b = e.getBeit();
 
 	EntangledPair* ab0 = new EntangledPair(1/sqrt(2), .5, 0, .5);
 
@@ -40,5 +40,6 @@ void Source_Runnable::Run() {
 
 	csc.SendEntangledRegister(*b);
 
+	a->measure(1, true);
 //	sys->stopServer();
 }

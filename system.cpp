@@ -75,6 +75,10 @@ SystemMessage System::getMessageType() {
 	return this->messageQueue.front().first;
 }
 
+int System::getMessageAddress() {
+	return this->messageQueue.front().second;
+}
+
 int System::addRegister(shared_ptr<iRegister> reg, SystemMessage message) {
 	registers.push_back(reg);
 	messageQueue.push(

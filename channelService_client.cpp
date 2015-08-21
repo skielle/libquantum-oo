@@ -17,6 +17,7 @@
 #include "entangledRegister.h"
 #include "register.h"
 #include "channelService_client.h"
+#include "entanglement.h"
 
 using namespace std;
 using namespace Quantum;
@@ -53,11 +54,26 @@ bool ChannelService_client::SendClassicRegister(ClassicRegister r) {
 
 bool ChannelService_client::SendEntangledRegister(EntangledRegister r) {
 	QuantumMessage::EntangledRegisterMessage rm;
-	rm = r.serialize();
 	QuantumMessage::VoidMessage rc;
 	grpc::ClientContext ctx;
 
-	grpc::Status status = stub_->SendEntangledRegister(&ctx, rm, &rc);
+	rm = r.serialize();
+	if ( r.isAleph() ) {
+		r.getEntanglement()->makeAlephRemote(this);
+	} else {
+		r.getEntanglement()->makeBeitRemote(this);
+	}
 
+	grpc::Status status = stub_->SendEntangledRegister(&ctx, rm, &rc);
+}
+
+bool ChannelService_client::EventPairMeasureFinish(
+	QuantumMessage::EntangledMeasurementMessage em) {
+
+	QuantumMessage::VoidMessage rc;
+	grpc::ClientContext ctx;
+
+	grpc::Status status = 
+		stub_->EventPairMeasureFinish(&ctx, em, &rc);
 }
 }

@@ -65,6 +65,6 @@ service QuantumChannel {
 	rpc SendClassicRegister(ClassicRegisterMessage) returns (VoidMessage) {}
 	rpc EventEntanglePair(EntangledPairMessage) returns (VoidMessage) {}
 	rpc EventDisentanglePair(RegisterAddressMessage) returns (VoidMessage) {}
-	rpc EventPairMessureStart(RegisterAddressMessage) returns (VoidMessage) {}
-	rpc EventPairMessureFinish(EntangledMeasurementMessage) returns (VoidMessage) {}
+	rpc EventPairMeasureStart(RegisterAddressMessage) returns (VoidMessage) {}
+	rpc EventPairMeasureFinish(EntangledMeasurementMessage) returns (VoidMessage) {}
 }

@@ -10,6 +10,7 @@
 #include <grpc++/server_context.h>
 #include <grpc++/status.h>
 #include "channelService.h"
+#include "channelService_client.h"
 #include "classicRegister.h"
 #include "entangledRegister.h"
 #include "entanglement.h"
@@ -47,13 +48,24 @@ grpc::Status ChannelService::SendEntangledRegister(grpc::ServerContext* context,
 	System* sys = System::getInstance();
 	shared_ptr<EntangledRegister> rg = EntangledRegister::unserialize(request);
 	if ( rg->isAleph() ) {
-		rg->getEntanglement()->isBeit__stub = true;
+		rg->getEntanglement()->makeBeitRemote(0);
 	} else {
-		rg->getEntanglement()->isAleph__stub = true;
+		rg->getEntanglement()->makeAlephRemote(0);
 	}
-//	rg->getEntanglement()->setBeit = new stub__NetworkRegister(rg->getEntanglement());
 	sys->eve->doEvil(rg, SystemMessage::ENTANGLED_REGISTER_RECIEVED);
 	sys->addRegister(rg, SystemMessage::ENTANGLED_REGISTER_RECIEVED);
 	return grpc::Status::OK;
 }
+
+grpc::Status ChannelService::EventPairMeasureFinish(
+	grpc::ServerContext* context,
+	const QuantumMessage::EntangledMeasurementMessage* request,
+	QuantumMessage::VoidMessage* reply) {
+	System* sys = System::getInstance();
+	
+	printf("ENTANGLEMENT MEASUREMENT MESSAGE RECIEVED\n");
+
+	return grpc::Status::OK;
+}
+
 }

@@ -28,6 +28,8 @@ class ChannelService_client {
 		bool SendRegister(Register r);
 		bool SendClassicRegister(ClassicRegister r);
 		bool SendEntangledRegister(EntangledRegister r);
+		bool EventPairMeasureFinish(
+			QuantumMessage::EntangledMeasurementMessage em);
 };
 }
 #endif
