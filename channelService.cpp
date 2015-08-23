@@ -47,10 +47,14 @@ grpc::Status ChannelService::SendEntangledRegister(grpc::ServerContext* context,
 	QuantumMessage::VoidMessage* reply) {
 	System* sys = System::getInstance();
 	shared_ptr<EntangledRegister> rg = EntangledRegister::unserialize(request);
+	shared_ptr<QuantumChannel::ChannelService_client>
+		 csc( new QuantumChannel::ChannelService_client(
+			"127.0.0.1", 50101) );
+
 	if ( rg->isAleph() ) {
-		rg->getEntanglement()->makeBeitRemote(0);
+		rg->getEntanglement()->makeBeitRemote(csc);
 	} else {
-		rg->getEntanglement()->makeAlephRemote(0);
+		rg->getEntanglement()->makeAlephRemote(csc);
 	}
 	sys->eve->doEvil(rg, SystemMessage::ENTANGLED_REGISTER_RECIEVED);
 	sys->addRegister(rg, SystemMessage::ENTANGLED_REGISTER_RECIEVED);

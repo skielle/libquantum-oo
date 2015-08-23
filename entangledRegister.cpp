@@ -3,12 +3,14 @@
  */
 #include <stdio.h>
 #include <math.h>
+#include "channelService_client.h"
 #include "complex.h"
 #include "entanglement.h"
 #include "entangledPair.h"
 #include "entangledRegister.h"
 #include "matrix.h"
 #include "register.h"
+#include "system.h"
 #include "config.h"
 
 namespace Quantum {
@@ -143,6 +145,9 @@ void EntangledRegister::playAltHistory(int target) {
 QuantumMessage::EntangledRegisterMessage EntangledRegister::serialize() {
 	int i, j;
 	QuantumMessage::EntangledRegisterMessage saveMessage;
+
+	System* sys = System::getInstance();
+
 	saveMessage.mutable_m()->CopyFrom(this->toMatrix().serialize());
 	saveMessage.set_width(this->width);
 
@@ -167,6 +172,10 @@ QuantumMessage::EntangledRegisterMessage EntangledRegister::serialize() {
 				this->opHistory[i]->at(j).serialize());
 		}
 	}
+
+	QuantumMessage::InetAddr* saveCB = saveMessage.mutable_callback_addr();
+	saveCB->set_ipaddress("127.0.0.1");
+	saveCB->set_port(sys->getListenerPort());
 
 	return saveMessage;
 }
@@ -207,8 +216,24 @@ shared_ptr<EntangledRegister> EntangledRegister::unserialize(
 
 	if ( loadMessage->aleph() ) {
 		e.setAleph(ret);
+		if ( loadMessage->has_callback_addr() ) {
+			e.beit__stub = 
+				shared_ptr<
+					QuantumChannel::ChannelService_client> 
+				(new QuantumChannel::ChannelService_client(
+				loadMessage->callback_addr().ipaddress(),
+				loadMessage->callback_addr().port() ) );
+		}
 	} else {
 		e.setBeit(ret);
+		if ( loadMessage->has_callback_addr() ) {
+			e.aleph__stub = 
+				shared_ptr<
+					QuantumChannel::ChannelService_client>
+				(new QuantumChannel::ChannelService_client(
+				loadMessage->callback_addr().ipaddress(),
+				loadMessage->callback_addr().port() ) );
+		}
 	}
 
 	return ret;

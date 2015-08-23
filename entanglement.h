@@ -23,6 +23,8 @@ class Entanglement: public enable_shared_from_this<Entanglement> {
 		shared_ptr<EntangledRegister> beit;
 		bool isAleph__stub = false;
 		bool isBeit__stub = false;
+		shared_ptr<QuantumChannel::ChannelService_client> aleph__stub;
+		shared_ptr<QuantumChannel::ChannelService_client> beit__stub;
 		EntangledPair* entanglements;
 
 		void setAleph(shared_ptr<EntangledRegister> _aleph);
@@ -31,9 +33,9 @@ class Entanglement: public enable_shared_from_this<Entanglement> {
 		void makeAlephRemote(int css);
 		void makeBeitRemote(int css);
 		void makeAlephRemote(
-			QuantumChannel::ChannelService_client* csc);
+			shared_ptr<QuantumChannel::ChannelService_client> csc);
 		void makeBeitRemote(
-			QuantumChannel::ChannelService_client* csc);
+			shared_ptr<QuantumChannel::ChannelService_client> csc);
 
 		QuantumMessage::EntangledMeasurementMessage 
 		createMeasurementMessage(

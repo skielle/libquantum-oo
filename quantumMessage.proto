@@ -33,6 +33,8 @@ message EntangledRegisterMessage {
 	bool aleph = 4;
 	repeated EntangledPairMessage pairs = 5;
 	repeated EntangledOpHistoryMessage opHistory = 6;
+
+	InetAddr callback_addr = 7;
 }
 
 message MatrixMessage {
@@ -56,6 +58,12 @@ message EntangledPairMessage {
 
 message EntangledOpHistoryMessage {
 	repeated MatrixMessage operations = 1;
+}
+
+message InetAddr {
+	string ipAddress = 1;
+	int32 port = 2;
+	int32 stackAddr = 3;
 }
 
 service QuantumChannel {

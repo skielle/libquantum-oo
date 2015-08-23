@@ -5,6 +5,7 @@
 #ifndef __QUANTUM_CHANNEL_SERVICE_CLIENT_H
 #define __QUANTUM_CHANNEL_SERVICE_CLIENT_H
 
+#include <memory>
 #include <string>
 
 #include <grpc/grpc.h>
@@ -19,7 +20,8 @@ using namespace std;
 using namespace Quantum;
 
 namespace QuantumChannel {
-class ChannelService_client {
+class ChannelService_client :
+	public std::enable_shared_from_this<ChannelService_client> {
 	private:
 		unique_ptr<QuantumMessage::QuantumChannel::Stub> stub_;
 	public:

@@ -62,13 +62,19 @@ void Entanglement::makeBeitRemote(int css) {
 	this->isBeit__stub = true;
 }
 
-void Entanglement::makeAlephRemote(QuantumChannel::ChannelService_client* csc) {
+void Entanglement::makeAlephRemote(
+	shared_ptr<QuantumChannel::ChannelService_client> csc) {
 	this->isAleph__stub = true;
+printf("Makin' aleph remote\n");
+	this->aleph__stub = csc;
 	//this->aleph = new stub__NetworkRegister(shared_from_this());
 }
 
-void Entanglement::makeBeitRemote(QuantumChannel::ChannelService_client* csc) {
+void Entanglement::makeBeitRemote(
+	shared_ptr<QuantumChannel::ChannelService_client> csc) {
+printf("Makin' beit remote\n");
 	this->isBeit__stub = true;
+	this->beit__stub = csc;
 	//this->beit = new stub__NetworkRegister(shared_from_this());
 }
 
@@ -94,9 +100,8 @@ void Entanglement::measured(bool isAleph, int target, int result){
 			pairMeasuredMessage = createMeasurementMessage(
 				false, target, result, 
 				aleph->getOpHistory(target));
-			QuantumChannel::ChannelService_client
-				csc("127.0.0.1", 50100);
-			csc.EventPairMeasureFinish(pairMeasuredMessage);
+			this->beit__stub->EventPairMeasureFinish(
+				pairMeasuredMessage);
 		} else {
 			this->beit->pairMeasured(target, result);
 		}
@@ -107,9 +112,8 @@ void Entanglement::measured(bool isAleph, int target, int result){
 			pairMeasuredMessage = createMeasurementMessage(
 				true, target, result, 
 				beit->getOpHistory(target));
-			QuantumChannel::ChannelService_client
-				csc("127.0.0.1", 50100);
-			csc.EventPairMeasureFinish(pairMeasuredMessage);
+			this->aleph__stub->EventPairMeasureFinish(
+				pairMeasuredMessage);
 		} else {
 			this->aleph->pairMeasured(target, result);
 		}

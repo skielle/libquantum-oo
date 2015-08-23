@@ -57,11 +57,13 @@ bool ChannelService_client::SendEntangledRegister(EntangledRegister r) {
 	QuantumMessage::VoidMessage rc;
 	grpc::ClientContext ctx;
 
+	shared_ptr<ChannelService_client> csc (this);
+
 	rm = r.serialize();
 	if ( r.isAleph() ) {
-		r.getEntanglement()->makeAlephRemote(this);
+		r.getEntanglement()->makeAlephRemote(shared_from_this());
 	} else {
-		r.getEntanglement()->makeBeitRemote(this);
+		r.getEntanglement()->makeBeitRemote(shared_from_this());
 	}
 
 	grpc::Status status = stub_->SendEntangledRegister(&ctx, rm, &rc);
