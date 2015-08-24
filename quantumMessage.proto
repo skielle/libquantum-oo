@@ -69,7 +69,8 @@ message InetAddr {
 service QuantumChannel {
 	rpc SendMatrix(MatrixMessage) returns (VoidMessage) {}
 	rpc SendRegister(RegisterMessage) returns (VoidMessage) {}
-	rpc SendEntangledRegister(EntangledRegisterMessage) returns (VoidMessage) {}
+	rpc SendEntangledRegister(EntangledRegisterMessage) returns 
+		(InetAddr) {}
 	rpc SendClassicRegister(ClassicRegisterMessage) returns (VoidMessage) {}
 	rpc EventEntanglePair(EntangledPairMessage) returns (VoidMessage) {}
 	rpc EventDisentanglePair(RegisterAddressMessage) returns (VoidMessage) {}

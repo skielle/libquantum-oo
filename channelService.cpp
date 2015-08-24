@@ -44,8 +44,10 @@ grpc::Status ChannelService::SendClassicRegister(grpc::ServerContext* context,
 }
 grpc::Status ChannelService::SendEntangledRegister(grpc::ServerContext* context, 
 	const QuantumMessage::EntangledRegisterMessage* request, 
-	QuantumMessage::VoidMessage* reply) {
+	QuantumMessage::InetAddr* reply) {
 	System* sys = System::getInstance();
+	int stackAddress;
+
 	shared_ptr<EntangledRegister> rg = EntangledRegister::unserialize(request);
 	shared_ptr<QuantumChannel::ChannelService_client>
 		 csc( new QuantumChannel::ChannelService_client(
@@ -57,7 +59,9 @@ grpc::Status ChannelService::SendEntangledRegister(grpc::ServerContext* context,
 		rg->getEntanglement()->makeAlephRemote(csc);
 	}
 	sys->eve->doEvil(rg, SystemMessage::ENTANGLED_REGISTER_RECIEVED);
-	sys->addRegister(rg, SystemMessage::ENTANGLED_REGISTER_RECIEVED);
+	stackAddress = sys->addRegister(
+			rg, SystemMessage::ENTANGLED_REGISTER_RECIEVED);
+	reply->set_stackaddr(stackAddress);
 	return grpc::Status::OK;
 }
 
@@ -68,6 +72,11 @@ grpc::Status ChannelService::EventPairMeasureFinish(
 	System* sys = System::getInstance();
 	
 	printf("ENTANGLEMENT MEASUREMENT MESSAGE RECIEVED\n");
+
+	//get the hash address of the measured bit from the event message
+	//get the isAleph from the event message
+	//check that the hash address is an entangled register and isAleph is remote
+	//call the pair measured method for ^isAleph
 
 	return grpc::Status::OK;
 }

@@ -59,7 +59,7 @@ class Entanglement: public enable_shared_from_this<Entanglement> {
 		QuantumChannel::ChannelService::SendEntangledRegister(
 		grpc::ServerContext* context,
         	const QuantumMessage::EntangledRegisterMessage* request,
-        	QuantumMessage::VoidMessage* reply);
+        	QuantumMessage::InetAddr* reply);
 	friend bool 
 		QuantumChannel::ChannelService_client::SendEntangledRegister(
 		EntangledRegister r);

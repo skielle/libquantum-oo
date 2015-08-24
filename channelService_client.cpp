@@ -54,7 +54,7 @@ bool ChannelService_client::SendClassicRegister(ClassicRegister r) {
 
 bool ChannelService_client::SendEntangledRegister(EntangledRegister r) {
 	QuantumMessage::EntangledRegisterMessage rm;
-	QuantumMessage::VoidMessage rc;
+	QuantumMessage::InetAddr rha;
 	grpc::ClientContext ctx;
 
 	shared_ptr<ChannelService_client> csc (this);
@@ -66,13 +66,16 @@ bool ChannelService_client::SendEntangledRegister(EntangledRegister r) {
 		r.getEntanglement()->makeBeitRemote(shared_from_this());
 	}
 
-	grpc::Status status = stub_->SendEntangledRegister(&ctx, rm, &rc);
+	grpc::Status status = stub_->SendEntangledRegister(&ctx, rm, &rha);
+
+	printf("Remote stack address: %i\n", rha.stackaddr());
 }
 
 bool ChannelService_client::EventPairMeasureFinish(
 	QuantumMessage::EntangledMeasurementMessage em) {
 
 	QuantumMessage::VoidMessage rc;
+
 	grpc::ClientContext ctx;
 
 	grpc::Status status = 
