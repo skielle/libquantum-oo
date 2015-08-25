@@ -16,6 +16,7 @@
 #include "quantumMessage.grpc.pb.h"
 #include "entangledRegister.h"
 #include "register.h"
+#include "system.h"
 #include "channelService_client.h"
 #include "entanglement.h"
 
@@ -56,10 +57,17 @@ bool ChannelService_client::SendEntangledRegister(EntangledRegister r) {
 	QuantumMessage::EntangledRegisterMessage rm;
 	QuantumMessage::InetAddr rha;
 	grpc::ClientContext ctx;
+	System* sys = System::getInstance();
 
 	shared_ptr<ChannelService_client> csc (this);
 
 	rm = r.serialize();
+
+	QuantumMessage::InetAddr* callback = rm.mutable_callback_addr();
+	callback->set_ipaddress("127.0.0.1");
+	callback->set_port(sys->getListenerPort());
+	callback->set_stackaddr(999); 
+
 	if ( r.isAleph() ) {
 		r.getEntanglement()->makeAlephRemote(shared_from_this());
 	} else {

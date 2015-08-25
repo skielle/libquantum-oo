@@ -39,7 +39,8 @@ void Source_Runnable::Run() {
 	a->EntangledRegister::applyGate(rx, 1);
 
 	csc.SendEntangledRegister(*b);
-
+sleep(10);
 	a->measure(1, true);
+	a->print();
 //	sys->stopServer();
 }

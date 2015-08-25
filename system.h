@@ -60,7 +60,14 @@ class System {
 		void runAlgorithm();
 		int addRegister(shared_ptr<iRegister> reg, 
 			SystemMessage message);
-		shared_ptr<iRegister> getRegister(int i);
+
+		template<class registerType>
+		shared_ptr<registerType> getRegister(int i) {
+			shared_ptr<registerType> rg =
+				dynamic_pointer_cast<registerType> (
+				this->registers.at(i) );
+			return rg;
+		}
 };
 }
 #endif

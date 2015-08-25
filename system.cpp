@@ -85,11 +85,11 @@ int System::addRegister(shared_ptr<iRegister> reg, SystemMessage message) {
 		pair<SystemMessage, int>(message, registers.size() -1));
 	return registers.size() - 1;
 }
-
+/*
 shared_ptr<iRegister> System::getRegister(int hash) {
 	return registers.at(hash);
 }
-
+*/
 int System::getListenerPort() {
 	return this->server->getPort();
 }

@@ -46,12 +46,18 @@ grpc::Status ChannelService::SendEntangledRegister(grpc::ServerContext* context,
 	const QuantumMessage::EntangledRegisterMessage* request, 
 	QuantumMessage::InetAddr* reply) {
 	System* sys = System::getInstance();
+	QuantumMessage::InetAddr callback;
 	int stackAddress;
 
-	shared_ptr<EntangledRegister> rg = EntangledRegister::unserialize(request);
+	shared_ptr<EntangledRegister> rg = 
+		EntangledRegister::unserialize(request);
+
+	callback = request->callback_addr();
+
 	shared_ptr<QuantumChannel::ChannelService_client>
 		 csc( new QuantumChannel::ChannelService_client(
-			"127.0.0.1", 50101) );
+			callback.ipaddress(), 
+			callback.port() ) );
 
 	if ( rg->isAleph() ) {
 		rg->getEntanglement()->makeBeitRemote(csc);
@@ -73,6 +79,11 @@ grpc::Status ChannelService::EventPairMeasureFinish(
 	
 	printf("ENTANGLEMENT MEASUREMENT MESSAGE RECIEVED\n");
 
+	shared_ptr<EntangledRegister> er = 
+		sys->getRegister<EntangledRegister>(1);
+
+	er->getEntanglement()->measured(true, 0, 0);
+	
 	//get the hash address of the measured bit from the event message
 	//get the isAleph from the event message
 	//check that the hash address is an entangled register and isAleph is remote

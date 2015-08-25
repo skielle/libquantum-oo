@@ -191,14 +191,17 @@ shared_ptr<EntangledRegister> EntangledRegister::unserialize(
 	Entanglement e = Entanglement::createEntanglement(
 		0, loadMessage->width());
 
+	e.entanglements = new EntangledPair[loadMessage->width()];
+
 	for ( i = 0; i < loadMessage->width(); i++ ) {
+		e.entanglements[i] = EntangledPair();
 		if ( !( loadMessage->pairs(i)._isnull() ) ) {
-			e.entangle(i, EntangledPair::unserialize(
-				&(loadMessage->pairs(i))));
+			EntangledPair entPair = EntangledPair::unserialize(
+				&(loadMessage->pairs(i)));
+			e.entanglements[i].setEntanglements(1/sqrt(2), 0, 0, 
+				1/sqrt(2));
 		}
 	}
-
-	
 
 	ret = shared_ptr<EntangledRegister>(
 		new EntangledRegister(&m, loadMessage->width(), 
