@@ -21,11 +21,15 @@ class ClassicRegister : public iRegister {
 	protected:
 		vector<int> bitValue;
 		int width;
+		int max;
 
 	public:
 		ClassicRegister(int width);
+		ClassicRegister(int width, int _max);
 
 		int getWidth();
+		void setMax(int _max);
+		int getMax();
 		void setBit(int index, int value);
 		int getBit(int index);
 

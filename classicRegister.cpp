@@ -19,16 +19,22 @@ using namespace Quantum;
 namespace Quantum {
 ClassicRegister::ClassicRegister(int width) {
 	this->bitValue = vector<int> (width,0);
+	this->max = 1;
+}
+
+ClassicRegister::ClassicRegister(int width, int _max) {
+	this->bitValue = vector<int> (width,0);
+	this->max = _max;
 }
 
 void ClassicRegister::setBit(int index, int value) {
 	if ( index > this->bitValue.size() ) {
 		Error::error(QUANTUM_EINDEXOOB);
 	}
-	if ( value == 0 ) {
-		this->bitValue.at(index) = 0;
+	if ( value < this->max ) {
+		this->bitValue.at(index) = value;
 	} else {
-		this->bitValue.at(index) = 1;
+		this->bitValue.at(index) = this->max;
 	}
 }
 
@@ -38,6 +44,14 @@ int ClassicRegister::getBit(int index) {
 
 int ClassicRegister::getWidth() {
 	return this->bitValue.size();
+}
+
+void ClassicRegister::setMax(int _max) {
+	this->max = _max;
+}
+
+int ClassicRegister::getMax() {
+	return this->max;
 }
 
 void ClassicRegister::setValue(int regValue) {
@@ -79,6 +93,7 @@ QuantumMessage::ClassicRegisterMessage ClassicRegister::serialize() {
 	
 	QuantumMessage::ClassicRegisterMessage saveMessage;
 	saveMessage.set_width(this->getWidth());
+	saveMessage.set_max(this->getMax());
 	
 	for ( i = 0; i < this->getWidth(); i++ ) {
 		saveMessage.add_bitvalue(this->getBit(i));
@@ -89,7 +104,13 @@ QuantumMessage::ClassicRegisterMessage ClassicRegister::serialize() {
 ClassicRegister& ClassicRegister::unserialize(
 	const QuantumMessage::ClassicRegisterMessage* loadMessage) {
 	int i;
-	ClassicRegister* ret = new ClassicRegister(loadMessage->width());
+	int _max = 1;
+
+	if ( loadMessage->max() > 0 ) {
+		_max = loadMessage->max();
+	}
+
+	ClassicRegister* ret = new ClassicRegister(loadMessage->width(), _max);
 
 	for ( i = 0; i < loadMessage->bitvalue_size(); i++ ) {
 		ret->setBit(i, loadMessage->bitvalue(i));

@@ -2,6 +2,9 @@ PWD=$(shell pwd)
 
 INCS=-I$(PWD)
 LIBS=-L/usr/local/lib -lgrpc++_unsecure -lgpr -lprotobuf -lpthread -ldl -lssl
+GTK_FLAGS=$(shell pkg-config --cflags gtk+-3.0 vte-2.90)
+GTK_LIBS=$(shell pkg-config --libs gtk+-3.0 vte-2.90)
+GTK_CC=gcc
 
 CC=g++
 C_LIBFLAGS=-c 
@@ -17,7 +20,10 @@ O_LIBQ=bin/lib_quantum_oo.a
 all:
 
 clean:
-	rm *.o $(O_PB) $(O_PB_GRPC) $(O_LIBQ)
+	-rm *.o $(O_PB) $(O_PB_GRPC) $(O_LIBQ)
+
+clean-gui:
+	-rm bin/mainScreen
 
 all_tests: classic_test complex_test node_test error_test matrix_test register_test gate_test entangledPair_test entangledRegister_test
 
@@ -121,6 +127,20 @@ bb84-classic: libquantum-oo
 		-o bin/bb84-classic_Generation \
 		$(O_LIBQ)
 
+bb84-polybase: libquantum-oo 
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		runnables/bb84-polybase/bb84Util.cpp \
+		runnables/bb84-polybase/bb84Determination_runnable.cpp \
+		runnables/bb84-polybase/bb84Determination.cpp \
+		-o bin/bb84-polybase_Determination \
+		$(O_LIBQ)
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		runnables/bb84-polybase/bb84Util.cpp \
+		runnables/bb84-polybase/bb84Generation_runnable.cpp \
+		runnables/bb84-polybase/bb84Generation.cpp \
+		-o bin/bb84-polybase_Generation \
+		$(O_LIBQ)
+
 bb84-abcl98: libquantum-oo 
 	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
 		runnables/bb84-abcl98/bb84Util.cpp \
@@ -166,3 +186,6 @@ gate_test: libquantum-oo
 		tests/gate_test.cpp \
 		-o bin/gate_test \
 		$(O_LIBQ)
+
+gui: clean-gui
+	$(GTK_CC) $(GTK_FLAGS) -o bin/mainScreen -g gui/mainScreen.c $(GTK_LIBS)
