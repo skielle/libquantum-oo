@@ -5,7 +5,31 @@
 static void
 playAlgorithm (GtkWidget *widget,
 		gpointer data) {
-	g_print("PLAYING!");
+
+	char command[255] = "";
+	GtkWidget *tty1 = g_object_get_data(data, "tty1");
+	GtkWidget *mode = g_object_get_data(data, "in_mode");
+	GtkWidget *bases = g_object_get_data(data, "in_bases");
+
+	switch (gtk_combo_box_get_active(GTK_COMBO_BOX(mode)) ) {
+		case 1:
+			strcat(command, "bin/demo-measurement\r\n");
+			break;
+		case 3:
+			sprintf(command, 
+				"bin/bb84-polybase_Generation -b %s\r\n",
+				gtk_entry_get_text(GTK_ENTRY(bases)));
+		default:
+			g_print("%i: %s\n", 
+				gtk_combo_box_get_active(
+					GTK_COMBO_BOX(mode)),
+				gtk_combo_box_text_get_active_text(
+					GTK_COMBO_BOX_TEXT(mode)));
+			break;
+	}
+
+	vte_terminal_feed_child(VTE_TERMINAL(tty1), command, strlen(command));
+	gtk_widget_set_sensitive(tty1, TRUE);
 }
 
 static void
@@ -16,15 +40,16 @@ activate (GtkApplication* app,
 	GtkWidget *bases, *keyLength, *errorBits, *errorTolerance, *playButton,
 		*mode, *peerIp, *eveRate, *eveStrategy, *channelNoise, 
 		*genBias;
-	GtkWidget *windowBox, *optionGrid, *playBox;
+	GtkWidget *windowBox, *optionGrid, *playGrid, *playBox;
 	GtkWidget *baseLabel, *keyLengthLabel, *errorBitsLabel, 
 		*errorToleranceLabel, *peerIpLabel, *eveRateLabel,
 		*eveStrategyLabel, *channelNoiseLabel, *genBiasLabel;
-	GtkWidget *terminal;
+	GtkWidget *tty1;
+	GtkWidget *tty2;
 
   window = gtk_application_window_new (app);
   gtk_window_set_title (GTK_WINDOW (window), "Quantum Network Simulator");
-  gtk_window_set_default_size (GTK_WINDOW (window), 800, 800);
+  gtk_window_set_default_size (GTK_WINDOW (window), 1280, 720);
 
 	windowBox = gtk_button_box_new (GTK_ORIENTATION_VERTICAL);
 	gtk_container_add(GTK_CONTAINER(window), windowBox);
@@ -34,6 +59,10 @@ activate (GtkApplication* app,
 
 	optionGrid = gtk_grid_new ();
 	gtk_container_add(GTK_CONTAINER(playBox), optionGrid);
+
+	playGrid = gtk_grid_new ();
+	gtk_grid_set_column_spacing(GTK_GRID(playGrid), 20); 
+	gtk_container_add(GTK_CONTAINER(playBox), playGrid);
 
 	mode = gtk_combo_box_text_new ();
 	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT(mode), "Superposition Tutorial");
@@ -57,7 +86,7 @@ activate (GtkApplication* app,
 	errorBitsLabel = gtk_label_new("Number of error detection bits");
 	errorBits = gtk_entry_new ();
 	gtk_grid_attach(GTK_GRID( optionGrid ), errorBitsLabel , 0, 3, 1, 1);
-	gtk_grid_attach(GTK_GRID( optionGrid ), errorBits , 1, 3, 1, 1);
+		gtk_grid_attach(GTK_GRID( optionGrid ), errorBits , 1, 3, 1, 1);
 
 	errorToleranceLabel = gtk_label_new("Number of error bits to tolerate");
 	errorTolerance = gtk_entry_new ();
@@ -90,16 +119,16 @@ activate (GtkApplication* app,
 	gtk_grid_attach(GTK_GRID( optionGrid ), errorTolerance , 3, 4, 1, 1);
 
 	playButton = gtk_button_new_with_label("PLAY QUANTUM ALGORITHM");
-	g_signal_connect (playButton, "clicked", G_CALLBACK(playAlgorithm), NULL);
-	g_signal_connect_swapped (playButton, "clicked", G_CALLBACK(gtk_widget_destroy), window);
+	g_signal_connect (playButton, "clicked", G_CALLBACK(playAlgorithm), playButton);
+//	g_signal_connect_swapped (playButton, "clicked", G_CALLBACK(gtk_widget_destroy), window);
 	gtk_grid_attach(GTK_GRID( optionGrid ), playButton, 0, 5, 4, 1);
 
-	terminal = vte_terminal_new();
 	char *startTerm[2] = {0,0};
 	startTerm[0] = vte_get_user_shell();
 	GPid pidTerm;
 
-	vte_terminal_fork_command_full(VTE_TERMINAL(terminal),
+	tty1 = vte_terminal_new();
+	vte_terminal_fork_command_full(VTE_TERMINAL(tty1),
 		VTE_PTY_DEFAULT,
 		NULL, //"/tmp",
 		startTerm,
@@ -109,12 +138,32 @@ activate (GtkApplication* app,
 		NULL,
 		NULL,
 		NULL );
-	gtk_widget_set_size_request(terminal, 750, 400);
+	gtk_widget_set_size_request(tty1, 600, 400);
+	gtk_grid_attach(GTK_GRID (playGrid ), tty1, 0, 6, 4, 15);
+	gtk_widget_set_sensitive(tty1, FALSE);
 
-	char command[255] = "bin/demo-measurement\r\n";
-	vte_terminal_feed_child(VTE_TERMINAL(terminal), command, strlen(command));
+	tty2 = vte_terminal_new();
+	vte_terminal_fork_command_full(VTE_TERMINAL(tty2),
+		VTE_PTY_DEFAULT,
+		NULL, //"/tmp",
+		startTerm,
+		NULL,
+		(GSpawnFlags)(G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH),
+		NULL,
+		NULL,
+		NULL,
+		NULL );
+	gtk_widget_set_size_request(tty2, 600, 400);
+	gtk_grid_attach(GTK_GRID (playGrid ), tty2, 4, 6, 4, 15);
+	gtk_widget_set_sensitive(tty2, FALSE);
 
-	gtk_grid_attach(GTK_GRID (optionGrid ), terminal, 0, 6, 4, 15);
+	g_object_set_data(G_OBJECT(playButton), "tty1", VTE_TERMINAL(tty1));
+	g_object_set_data(G_OBJECT(playButton), "tty2", VTE_TERMINAL(tty2));
+	g_object_set_data(G_OBJECT(playButton), "in_mode", GTK_COMBO_BOX_TEXT(mode));
+	g_object_set_data(G_OBJECT(playButton), "in_bases", GTK_ENTRY(bases));
+	g_object_set_data(G_OBJECT(playButton), "in_keyLength", GTK_ENTRY(keyLength));
+	g_object_set_data(G_OBJECT(playButton), "in_errorBits", GTK_ENTRY(errorBits));
+	g_object_set_data(G_OBJECT(playButton), "in_errorTolerance", GTK_ENTRY(errorTolerance));
 
   gtk_widget_show_all (window);
 }
