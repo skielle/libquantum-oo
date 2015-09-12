@@ -187,5 +187,12 @@ gate_test: libquantum-oo
 		-o bin/gate_test \
 		$(O_LIBQ)
 
+demo_measurement: libquantum-oo 
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		runnables/demos/measurement.cpp \
+		runnables/demos/measurement_runnable.cpp \
+		-o bin/demo-measurement \
+		$(O_LIBQ)
+
 gui: clean-gui
 	$(GTK_CC) $(GTK_FLAGS) -o bin/mainScreen -g gui/mainScreen.c $(GTK_LIBS)

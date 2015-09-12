@@ -410,6 +410,16 @@ void Register::normalize() {
 			this->node[i]->getAmplitude() *
 			1 / (float) sqrt(totalProbability));
 	}
+
+	for ( i = 0; i < this->node.size(); i++ ) {
+		if ( (Complex::probability(this->node.at(i)->getAmplitude()) 
+				< float_zero ) &&
+			(Complex::probability(this->node.at(i)->getAmplitude())
+				 > -1 * float_zero ) ) {
+			this->node.erase(this->node.begin()+i);
+			i--;
+		}
+	}
 }
 
 void Register::addToHash(MAX_UNSIGNED a, int pos) {
@@ -489,8 +499,8 @@ void Register::print() {
 
 	this->reconstructHash();
 
-	for ( i = 0; i < this->size; i++ ) {
-		Node *n = this->node[i];
+	for ( i = 0; i < this->node.size(); i++ ) {
+		Node *n = this->node.at(i);
 		printf("% f %+fi|%lli> (%e) (|", 
 			Complex::real(n->getAmplitude()),
 			Complex::imaginary(n->getAmplitude()), n->getState(),

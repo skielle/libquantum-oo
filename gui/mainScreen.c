@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include <vte/vte.h>
+#include <string.h>
 
 static void
 playAlgorithm (GtkWidget *widget,
@@ -100,7 +101,7 @@ activate (GtkApplication* app,
 
 	vte_terminal_fork_command_full(VTE_TERMINAL(terminal),
 		VTE_PTY_DEFAULT,
-		"/tmp",
+		NULL, //"/tmp",
 		startTerm,
 		NULL,
 		(GSpawnFlags)(G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH),
@@ -109,6 +110,9 @@ activate (GtkApplication* app,
 		NULL,
 		NULL );
 	gtk_widget_set_size_request(terminal, 750, 400);
+
+	char command[255] = "bin/demo-measurement\r\n";
+	vte_terminal_feed_child(VTE_TERMINAL(terminal), command, strlen(command));
 
 	gtk_grid_attach(GTK_GRID (optionGrid ), terminal, 0, 6, 4, 15);
 
