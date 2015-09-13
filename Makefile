@@ -86,6 +86,7 @@ libquantum-oo: protocol_buffers
 		system.cpp \
 		matrix.cpp \
 		node.cpp \
+		qubit.cpp \
 		classicRegister.cpp \
 		register.cpp \
 		entangledRegister.cpp \
@@ -106,6 +107,7 @@ libquantum-oo: protocol_buffers
 		system.o \
 		matrix.o \
 		node.o \
+		qubit.o \
 		classicRegister.o \
 		register.o \
 		entangledRegister.o \
@@ -181,6 +183,12 @@ demo-entanglement: libquantum-oo
 		-o bin/demo-entanglement_source \
 		$(O_LIBQ)
 	
+qubit_test: libquantum-oo 
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		tests/qubit_test.cpp \
+		-o bin/qubit_test \
+		$(O_LIBQ)
+
 gate_test: libquantum-oo 
 	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
 		tests/gate_test.cpp \
