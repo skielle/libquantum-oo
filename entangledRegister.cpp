@@ -81,6 +81,7 @@ void EntangledRegister::pairMeasured(int target, int result) {
 void EntangledRegister::updateAmplitudes(int target, int result) {
 	int i;
 	float p0, p1;
+	Matrix* p = new Matrix(2, 2);
 
 	if ( !this->isAleph() ) {
 		p0 = Complex::probability(
@@ -94,21 +95,13 @@ void EntangledRegister::updateAmplitudes(int target, int result) {
 			this->ent->getEntanglement(target).get(1, result) );
 	}
 
-	if ( p0 + p1 > float_zero ) { 
-		for ( i = 0; i < this->size; i++ ) {
-			if ( (int)(( this->node[i]->getState() >> (target) ) 
-				% 2 ) == 0 ) {
-				this->node[i]->setAmplitude( 
-					this->node[i]->getAmplitude() *
-					 sqrt(p0) );
-			} else {
-				this->node[i]->setAmplitude(
-					this->node[i]->getAmplitude() *
-					 sqrt(p1) );
-			}
-		}
-		this->normalize();
-	}
+	p->set(0, 0, p0);
+	p->set(0, 1, 0);
+	p->set(1, 0, p1);
+	p->set(1, 1, 0);
+
+	this->qubits.at(target)->reset();
+	this->qubits.at(target)->applyMatrix(p);
 }
 
 void EntangledRegister::revert(int target) {
@@ -149,11 +142,11 @@ QuantumMessage::EntangledRegisterMessage EntangledRegister::serialize() {
 	System* sys = System::getInstance();
 
 	saveMessage.mutable_m()->CopyFrom(this->toMatrix().serialize());
-	saveMessage.set_width(this->width);
+	saveMessage.set_width(this->qubits.size());
 
 	saveMessage.set_aleph(this->isAleph());
 
-	for ( i = 0; i < this->width; i++ ) {
+	for ( i = 0; i < this->qubits.size(); i++ ) {
 		//add entangled pairs
 		QuantumMessage::EntangledPairMessage* saveEp = 
 			saveMessage.add_pairs();
@@ -162,7 +155,7 @@ QuantumMessage::EntangledRegisterMessage EntangledRegister::serialize() {
 		saveEp->CopyFrom(myEp);
 	}
 
-	for ( i = 0; i < this->width; i++ ) {
+	for ( i = 0; i < this->qubits.size(); i++ ) {
 		QuantumMessage::EntangledOpHistoryMessage* history =
 			saveMessage.add_ophistory();
 		for (j = 0; j < this->opHistory[i]->size(); j++ ) {

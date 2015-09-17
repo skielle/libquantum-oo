@@ -15,7 +15,7 @@ namespace Quantum {
 class SilentEvil : public iEvil {
 	private:
 		//the rate of measurement for quantum channels
-		float evilness = 0.1;
+		float evilness = .05;
 	public:
 		//doEvil - listen in on a message
 		virtual void doEvil(shared_ptr<iRegister> reg, 

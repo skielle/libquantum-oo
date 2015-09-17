@@ -14,7 +14,7 @@
 #include "error.h"
 #include "iRegister.h"
 #include "matrix.h"
-#include "node.h"
+#include "qubit.h"
 #include "quantumMessage.pb.h"
 
 using namespace std;
@@ -23,51 +23,32 @@ namespace Quantum {
 class Gate;
 
 class Register : public iRegister {
+	private:
+		void fromClassicRegister(ClassicRegister *cr);
+		void fromMatrix(Matrix *m);
+
 	protected:
-		int width;
-		int size;
-		int hashw;
-		vector<Node*> node;
-		int *hash;
+		vector<QuBit*> qubits;
 
 	public:
 		Register(Matrix *m, int width);
+		Register(Matrix *m);
 		Register(MAX_UNSIGNED initval, int width);
-		Register(int n, int width);
 		Register(ClassicRegister *cr);
 		Register();
 
 		int getWidth();
-		int getSize();
-		int getHashw();
-
-		void addScratch(int bits);
-		unsigned int hash64(MAX_UNSIGNED key, int width);
 
 		Register& copy();
 		Matrix toMatrix();
 		void applyGate(Gate* g, int target);
 		void applyMatrix(int target, Matrix *m);
 		void virtual apply2x2Matrix(int target, Matrix *m);
-		MAX_UNSIGNED measure();
+		int measure();
 		int measure(int target);
 		int virtual measure(int target, bool preserve);
 
-		int getState(MAX_UNSIGNED a);
-		void collapse(int target, int value);
-		void normalize();
-		void addToHash(MAX_UNSIGNED a, int pos);
-		int bitMask(MAX_UNSIGNED a, int width, int *bits);
-		
-		void reconstructHash();
-		void destroyHash();
-		void deleteRegister();
-		void deleteRegisterOnly();
-
 		void print();
-		void printExpn();
-		void printHash();
-		void printTimeop(int width, void f(Register *));
 
 		QuantumMessage::RegisterMessage serialize();
 		static Register& unserialize(
@@ -75,22 +56,6 @@ class Register : public iRegister {
 
 		//void might not be right here, we might want to drop a qureg
 		void stateCollapse(int bit, int value);
-
-		/*
-		 * Functions for manipulating multiple registers.  
-		 * Probably don't need?
-		 */
-		/*
-		 * static Register kronecker(Register *reg1, Register *reg2);
-		 * static COMPLEX_FLOAT 
-		 *	dotProduct(Register *reg1, Register *reg2);
-		 * static Register vectorAdd(Register *reg1, Register *reg2);
-		 * void vectorAddInPlace(Register *reg1, Register *reg2);
-		 * static Register 
-		 *	matrixRegister(Register A(MAX_UNSIGNED, double), 
-		 *				double t, Register *reg);
-		 * void scalarRegister(COMPLEX_FLOAT r, Register *reg);
-	 	 */
 };
 
 class Gate {

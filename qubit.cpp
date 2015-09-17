@@ -12,6 +12,10 @@ using namespace std;
 namespace Quantum {
 
 QuBit::QuBit() {
+	this->reset();
+}
+
+void QuBit::reset() {
 	this->alpha = 1;
 	this->beta = 0;
 }
@@ -33,17 +37,18 @@ void QuBit::applyMatrix(Matrix* m) {
 void QuBit::normalize() {
 }
 
-void QuBit::measure() {
+int QuBit::measure() {
 	float measurement;
-	srand(time(NULL));
 	measurement = rand() / (float)RAND_MAX;
 
 	if ( measurement < Complex::probability(this->alpha) ) {
 		this->alpha = 1;
 		this->beta = 0;
+		return 0;
 	} else {
 		this->alpha = 0;
 		this->beta = 1;
+		return 1;
 	}
 }
 

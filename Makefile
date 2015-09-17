@@ -56,9 +56,6 @@ matrix_test: clean protocol_buffers
 entangledPair_test: clean
 	$(CC) complex.cpp error.cpp system.cpp matrix.cpp -g entangledPair.cpp -g tests/entangledPair_test.cpp -o bin/entangledPair_test	
 
-register_test: clean
-	$(CC) $(LIBS) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp tests/register_test.cpp -o bin/register_test
-
 
 entangledRegister_test: libquantum-oo 
 	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
@@ -193,6 +190,12 @@ gate_test: libquantum-oo
 	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
 		tests/gate_test.cpp \
 		-o bin/gate_test \
+		$(O_LIBQ)
+
+register_test: libquantum-oo 
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		tests/register_test.cpp \
+		-o bin/register_test \
 		$(O_LIBQ)
 
 demo_measurement: libquantum-oo 

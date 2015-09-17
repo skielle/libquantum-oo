@@ -16,9 +16,10 @@ class QuBit {
 
 	public:
 		QuBit ();
+		void reset();
 		void applyMatrix(Matrix* m);
 		void normalize();
-		void measure();
+		int measure();
 		void print();
 		COMPLEX_FLOAT getAlpha();
 		COMPLEX_FLOAT getBeta();

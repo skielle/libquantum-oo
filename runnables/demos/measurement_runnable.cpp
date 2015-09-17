@@ -26,6 +26,7 @@ void Measurement_Runnable::Run() {
 
 		cout<<"Created new register:"<<endl;
 		r->print();
+		cout<<endl;
 
 		for ( int i = 0; i < bitWidth; i++ ) {
 			cout<<"Enter polarization for bit "<<i
@@ -36,12 +37,14 @@ void Measurement_Runnable::Run() {
 		}
 		cout<<"Resulting state:"<<endl;
 		r->print();
+		cout<<endl;
 
 		cout<<"Measuring:"<<endl;
 		
 		for ( int i = 0; i < bitWidth; i++ ) {
 			r->measure(i);
 			r->print();
+			cout<<endl;
 		}
 	}
 	sys->stopServer();
