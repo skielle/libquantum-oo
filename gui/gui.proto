@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package QuantumGUI;
+
+message PolarizationMessage {
+	int32 RegisterAddress = 1;
+	float Angle = 2;
+}
+
+message RegisterAddressMessage {
+	int32 RegisterAddress = 1;
+}
+
+message ResultMessage {
+	int32 RegisterAddress = 1;
+}
+
+message VoidMessage {
+}
+
+service ModelView {
+	rpc Polarize(PolarizationMessage) returns (VoidMessage) {}
+	rpc Measure(RegisterAddressMessage) returns (ResultMessage) {}
+}

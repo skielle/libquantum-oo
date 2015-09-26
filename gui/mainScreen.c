@@ -13,7 +13,7 @@ playAlgorithm (GtkWidget *widget,
 
 	switch (gtk_combo_box_get_active(GTK_COMBO_BOX(mode)) ) {
 		case 1:
-			strcat(command, "bin/demo-measurement\r\n");
+			strcat(command, "bin/demo-superposition_1\r\n");
 			break;
 		case 3:
 			sprintf(command, 
