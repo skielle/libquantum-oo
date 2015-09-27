@@ -10,64 +10,60 @@ using namespace Quantum;
 int main() {
 	Register r = Register((MAX_UNSIGNED) 0, 4);
 
-	r.print();
+	r.printSystem();
 
 	RotateX* rx = new RotateX();
-
-	rx->setPsi( -1 * pi / 4 );
-	r.applyGate(rx, 0);
 
 	rx->setPsi( pi / 2 );
 
 	for ( int i = 1; i <= 4; i++) {
 		r.applyGate(rx, 0);
 		printf("Rotation by %i pi/2:\n", i);
-		r.print();
+		r.printSystem();
 	}
 
-/*	SigmaX* sx = new SigmaX();
+	SigmaX* sx = new SigmaX();
 	r.applyGate(sx, 0);
 	printf("Sigma X\n");
-	r.print();
+	r.printSystem();
 	r.applyGate(sx, 0);
 	printf("Sigma X\n");
-	r.print();
+	r.printSystem();
 
 	SigmaY* sy = new SigmaY();
 	r.applyGate(sy, 0);
 	printf("Sigma Y\n");
-	r.print();
+	r.printSystem();
 	r.applyGate(sy, 0);
 	printf("Sigma Y\n");
-	r.print();
+	r.printSystem();
 
 	SigmaZ* sz = new SigmaZ();
 	r.applyGate(sz, 0);
 	printf("Sigma Z\n");
-	r.print();
+	r.printSystem();
 	r.applyGate(sz, 0);
 	printf("Sigma Z\n");
-	r.print();
+	r.printSystem();
 
 	printf("Sigma Y ( Sigma X )\n");
 	r.applyGate(sx, 0);
 	r.applyGate(sy, 0);
-	r.print();
+	r.printSystem();
 
 	printf("Sigma Y ( Sigma X )\n");
 	r.applyGate(sx, 0);
 	r.applyGate(sy, 0);
-	r.print();
+	r.printSystem();
 
 	printf("Sigma Y ( Sigma X )\n");
 	r.applyGate(sx, 0);
 	r.applyGate(sy, 0);
-	r.print();
+	r.printSystem();
 
 	printf("Sigma Y ( Sigma X )\n");
 	r.applyGate(sx, 0);
 	r.applyGate(sy, 0);
-	r.print();
-*/
+	r.printSystem();
 	return 0;
 }

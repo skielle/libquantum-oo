@@ -198,11 +198,18 @@ register_test: libquantum-oo
 		-o bin/register_test \
 		$(O_LIBQ)
 
-demo_measurement: libquantum-oo 
+demo_superposition_1: libquantum-oo 
 	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
-		runnables/demos/measurement.cpp \
-		runnables/demos/measurement_runnable.cpp \
-		-o bin/demo-measurement \
+		runnables/demos/superposition_1.cpp \
+		runnables/demos/superposition_1_runnable.cpp \
+		-o bin/demo-superposition_1 \
+		$(O_LIBQ)
+
+demo_superposition_2: libquantum-oo 
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		runnables/demos/superposition_2.cpp \
+		runnables/demos/superposition_2_runnable.cpp \
+		-o bin/demo-superposition_2 \
 		$(O_LIBQ)
 
 gui: clean-gui

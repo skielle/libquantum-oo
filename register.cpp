@@ -146,6 +146,33 @@ void Register::print() {
 	}
 }
 
+void Register::printSystem() {
+	int i, j;
+	int maxWidth = this->qubits.size();
+	int maxValue = Classic::ipow(2, maxWidth);
+	string output;
+
+	for ( i = 0; i < maxValue; i++ ) {
+		output = "";
+		float cumProb = 1;
+		
+		for ( j = 0; j < maxWidth; j++ ) {
+			if ( (i >> j) % 2 == 0 ) {
+				output = "0" + output;
+				cumProb *= Complex::probability(
+					this->qubits.at(j)->getAlpha());
+			} else {
+				output = "1" + output;
+				cumProb *= Complex::probability(
+					this->qubits.at(j)->getBeta());
+			}
+		}
+		if ( cumProb > float_zero ) {
+			printf("%i:\t|%s> (%f)\n", i, output.c_str(), cumProb);
+		}
+	}	
+}
+
 QuantumMessage::RegisterMessage Register::serialize() {
 	QuantumMessage::RegisterMessage saveMessage;
 

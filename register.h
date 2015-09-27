@@ -49,6 +49,7 @@ class Register : public iRegister {
 		int virtual measure(int target, bool preserve);
 
 		void print();
+		void printSystem();
 
 		QuantumMessage::RegisterMessage serialize();
 		static Register& unserialize(

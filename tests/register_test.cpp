@@ -9,7 +9,7 @@ using namespace Quantum;
 int main() {
 	srand(time(NULL));
 
-	Register s = Register((MAX_UNSIGNED) 7, 8);
+	Register s = Register((MAX_UNSIGNED) 7, 6);
 
 	Matrix m = Matrix(2, 2);
 
@@ -28,13 +28,19 @@ printf("\r\n");
 	s.applyMatrix(3, &m);
 	s.print();
 printf("\r\n");
+s.printSystem();
 
+printf("\r\n");
 	printf("Measured 3: %i\n", s.measure(3));
 	printf("Measured 2: %i\n", s.measure(2));
 	printf("Measured 1: %i\n", s.measure(1));
 	printf("Measured 0: %i\n", s.measure(0));
 printf("\r\n");
 	
+printf("\r\n");
+s.printSystem();
+
+printf("\r\n");
 	s.print();
 
 	return 0;
