@@ -22,6 +22,9 @@ clean:
 	-rm *.o $(O_PB) $(O_PB_GRPC)
 
 protocol_buffers:
+	protoc --python_out=. --grpc_out=. \
+		--plugin=protoc-gen-grpc=`which grpc_python_plugin` \
+		gui.proto
 	protoc --cpp_out=. gui.proto
 	$(CC) $(C_LIBFLAGS) $(LIBS) gui.pb.cc -o $(O_PB)
 	protoc --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` \
