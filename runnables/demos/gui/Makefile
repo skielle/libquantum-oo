@@ -13,8 +13,8 @@ C11_LIBFLAGS=-g -c -std=c++11
 C11_FLAGS=-g -std=c++11
 LINK=ar
 
-O_PB=../bin/gui.o
-O_PB_GRPC=../bin/guiService.grpc.o
+O_PB=../../../bin/gui.o
+O_PB_GRPC=../../../bin/guiService.grpc.o
 
 all:
 
@@ -32,48 +32,14 @@ protocol_buffers:
 	$(CC) $(C11_LIBFLAGS) $(LIBS) -g gui.grpc.pb.cc \
 		-o $(O_PB_GRPC) 
 
-libquantum-oo: protocol_buffers
-	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
-		classic.cpp \
-		complex.cpp \
-		error.cpp \
-		systemMessage.cpp \
-		channelService.cpp \
-		channelListener.cpp \
-		channelService_client.cpp \
-		echoRunnable.cpp \
-		silentEvil.cpp \
-		system.cpp \
-		matrix.cpp \
-		node.cpp \
-		qubit.cpp \
-		classicRegister.cpp \
-		register.cpp \
-		entangledRegister.cpp \
-		stub__networkRegister.cpp \
-		entanglement.cpp \
-		entangledPair.cpp 
-	$(LINK) rcs $(O_LIBQ) \
-		$(O_PB) $(O_PB_GRPC) \
-		classic.o \
-		complex.o \
-		error.o \
-		systemMessage.o \
-		channelService.o \
-		channelListener.o \
-		channelService_client.o \
-		echoRunnable.o \
-		silentEvil.o \
-		system.o \
-		matrix.o \
-		node.o \
-		qubit.o \
-		classicRegister.o \
-		register.o \
-		entangledRegister.o \
-		stub__networkRegister.o \
-		entanglement.o \
-		entangledPair.o 
+controllerService: protocol_buffers
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		controllerListenerService.cpp \
+		controllerListener.cpp \
+		concreteController.cpp \
+		controller.cpp \
+		-o controllerTest
+
 
 demo_superposition_1: libquantum-oo 
 	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \

@@ -18,7 +18,17 @@ message ResultMessage {
 message VoidMessage {
 }
 
-service ModelView {
+message RegisterStatusMessage {
+	repeated NodeStatusMessage nodes = 1;
+}
+
+message NodeStatusMessage {
+	int32 NodeID = 1;
+	float NodeProbability = 2;
+}
+
+service ControllerView {
 	rpc Polarize(PolarizationMessage) returns (VoidMessage) {}
 	rpc Measure(RegisterAddressMessage) returns (ResultMessage) {}
+	rpc GetRegisterStatus(VoidMessage) returns (RegisterStatusMessage) {}
 }
