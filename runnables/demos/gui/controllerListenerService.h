@@ -26,9 +26,10 @@ public QuantumGUI::ControllerView::Service {
 	private:
 		shared_ptr<iController> controller;
 	public:
-		queue<pair<string, const google::protobuf::Message*>> 
+		queue<pair<string, 
+			shared_ptr<const google::protobuf::Message>>>
 			requestQueue;
-		queue<google::protobuf::Message*>	responseQueue;
+		queue<shared_ptr<google::protobuf::Message>> responseQueue;
 
 		void setController(shared_ptr<iController> inController); 
 
