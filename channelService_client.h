@@ -9,7 +9,7 @@
 #include <string>
 
 #include <grpc/grpc.h>
-#include <grpc++/channel_interface.h>
+#include <grpc++/channel.h>
 #include <grpc++/create_channel.h>
 #include "quantumMessage.grpc.pb.h"
 #include "classicRegister.h"

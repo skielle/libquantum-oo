@@ -7,12 +7,12 @@
 #include <string>
 
 #include <grpc/grpc.h>
-#include <grpc++/channel_arguments.h>
-#include <grpc++/channel_interface.h>
+#include <grpc++/support/channel_arguments.h>
+#include <grpc++/channel.h>
 #include <grpc++/client_context.h>
 #include <grpc++/create_channel.h>
-#include <grpc++/credentials.h>
-#include <grpc++/status.h>
+#include <grpc++/security/credentials.h>
+#include <grpc++/support/status.h>
 #include "quantumMessage.grpc.pb.h"
 #include "entangledRegister.h"
 #include "register.h"
@@ -26,8 +26,8 @@ ChannelService_client::ChannelService_client(string server, int port)
 	: stub_(QuantumMessage::QuantumChannel::NewStub(
 		grpc::CreateChannel(
 			server+":"+to_string(port),
-			grpc::InsecureCredentials(),
-			grpc::ChannelArguments()
+			grpc::InsecureCredentials() //,
+	//		grpc::ChannelArguments()
 		)
 	) ) {}
 

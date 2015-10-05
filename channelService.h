@@ -10,7 +10,7 @@
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
 #include <grpc++/server_context.h>
-#include <grpc++/status.h>
+#include <grpc++/support/status.h>
 #include "quantumMessage.grpc.pb.h"
 
 using namespace std;

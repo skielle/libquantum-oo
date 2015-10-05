@@ -10,7 +10,7 @@
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
 #include <grpc++/server_builder.h>
-#include <grpc++/server_credentials.h>
+#include <grpc++/security/server_credentials.h>
 #include "channelListener.h"
 #include "channelService.h"
 #include "system.h"
