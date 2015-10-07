@@ -2,22 +2,36 @@
 from gi.repository import Gtk, Vte
 import cairo
 import math
+import time
+
+from gi.repository import GLib
+import os
+from grpc.beta import implementations
+from pprint import pprint
+import gui_pb2
 
 class Superposition_1(Gtk.Window):
 	registerSize = 4
+	initDone = 0
 
 	def __init__(self):
 		Gtk.Window.__init__(self)
+
+		self.channel = implementations.insecure_channel('localhost', 60000)
+		self.stub = gui_pb2.beta_create_ControllerView_stub(self.channel)
+
 		self.connect("delete-event", Gtk.main_quit)
 		self.set_title("Superposition 1")
 		self.resize(800, 600)
 		self.daQubits = [self.registerSize]
 		self.ePolarizations = [self.registerSize]
-		polarizations = [0.0, 90.0, 45.0, 135.0]
+		self.bPolarize = [self.registerSize]
+		self.bMeasure = [self.registerSize]
+		self.polarizations = [0.0, 0.0, 0.0, 0.0]
 
 		cVLauncher = Gtk.VBox()
 		cHLauncher = Gtk.HBox()
-		cHLauncher.set_size_request(700, 50)
+		cHLauncher.set_size_request(700, 30)
 		cHdaQubits = Gtk.HBox()
 		cHdaQubits.set_size_request(800, 100)
 		
@@ -32,26 +46,68 @@ class Superposition_1(Gtk.Window):
 
 		for i in range(self.registerSize):
 			self.ePolarizations.insert(i,Gtk.Entry())
-			self.ePolarizations[i].set_text(str(polarizations[i]))
+			self.ePolarizations[i].set_text(str(self.polarizations[i]))
 			self.ePolarizations[i].set_width_chars(5)
 			self.ePolarizations[i].connect("draw", self.updateDaQubits, i)
+			self.bPolarize.insert(i,Gtk.Button())
+			self.bPolarize[i].set_label("Polarize")
+			self.bPolarize[i].connect("clicked", self.bPolarize_exec, i)
+			self.bMeasure.insert(i,Gtk.Button())
+			self.bMeasure[i].set_label("Measure")
+			self.bMeasure[i].connect("clicked", self.bMeasure_exec, i)
 			cHLauncher.pack_start(
 				self.ePolarizations[i], True, False, 0)
+			cHLauncher.pack_start(
+				self.bPolarize[i], True, False, 0)
+			cHLauncher.pack_start(
+				self.bMeasure[i], True, False, 0)
 
+		self.daRegister = Gtk.DrawingArea()
+		self.daRegister.set_size_request(800, 100)
+		self.daRegister.connect("draw", self.exposeRegister)
+		cVLauncher.pack_start(self.daRegister, True, False, 0)
 
-		daRegister = Gtk.DrawingArea()
-		daRegister.set_size_request(800, 100)
-		daRegister.connect("draw", self.exposeRegister)
-		cVLauncher.pack_start(daRegister, True, False, 0)
+		self.vt = Vte.Terminal()
+		self.vt.set_size_request(800, 400)
+		self.vt.fork_command_full(
+			Vte.PtyFlags.DEFAULT,
+			os.environ['PWD'],
+			["/bin/bash"],
+			[],
+			GLib.SpawnFlags.DO_NOT_REAP_CHILD,
+			None,
+			None,
+		)
 
-		vt = Vte.Terminal()
-		vt.set_size_request(800, 400)
-
-		cVLauncher.pack_start(vt, True, True, 0)	
+		command = "./controllerTest\r\n"
+		self.vt.feed_child(command, len(command))
+		cVLauncher.pack_start(self.vt, True, True, 0)	
 
 		self.add(cVLauncher)
 		self.show_all()
+		time.sleep(1)
+		self.initDone = 1
+
+        def bPolarize_exec(self, widget, ra):
+		deltaAngle = float(self.ePolarizations[ra].get_text()) - self.polarizations[ra]
+		polarize = self.stub.Polarize(gui_pb2.PolarizationMessage(RegisterAddress=ra, Angle=deltaAngle), 120)
+		self.polarizations[ra] = deltaAngle + self.polarizations[ra]
+		self.exposeRegister(self, self.daRegister.get_window().cairo_create())
 	
+	def bMeasure_exec(self, widget, ra):
+		result = self.stub.Measure(gui_pb2.RegisterAddressMessage(RegisterAddress=ra), 120)
+		if result.RegisterAddress == 0 :
+			self.polarizations[ra] = 0
+			self.ePolarizations[ra].set_text("0")
+		else :
+			self.polarizations[ra] = 180
+			self.ePolarizations[ra].set_text("180")
+#			self.polarizations[ra] = 90
+#			self.ePolarizations[ra].set_text("90")
+
+		self.updateDaQubits(self, self.polarizations[ra], ra)
+		self.exposeRegister(self, self.daRegister.get_window().cairo_create())
+
 	def updateDaQubits(self, widget, user_data, i):
 		self.expose(self.daQubits[i], self.daQubits[i].get_window().cairo_create(), i)
 
@@ -81,16 +137,43 @@ class Superposition_1(Gtk.Window):
 		cr.move_to(hcenter + radius + fontSize, vcenter)
 		cr.text_path("|0>")
 		cr.move_to(hcenter - radius - 2 * fontSize, vcenter)
-		cr.text_path("|0>")
-		cr.move_to(hcenter, vcenter + radius + fontSize)
+#		cr.text_path("|0>")
+#		cr.move_to(hcenter, vcenter + radius + fontSize)
 		cr.text_path("|1>")
-		cr.move_to(hcenter, vcenter - radius - fontSize)
-		cr.text_path("|1>")
+#		cr.move_to(hcenter, vcenter - radius - fontSize)
+#		cr.text_path("|1>")
 		cr.stroke()
 
-	def exposeRegister(self, widger, cr):
-		cr.set_source_rgb(.5, .5, 1)
+	def exposeRegister(self, widget, cr):
+		registerWidth = pow(2, self.registerSize)
+		padding = 10
+		offset = 50
+		baseWidth = 800
+		drawWidth = baseWidth - offset - padding
+		zeroHeight = 80
+
+		cr.set_source_rgb(0, .6588, .4196)
 		cr.paint()
+		
+		cr.set_source_rgb(.3255, .3255, .3255)
+		cr.rectangle(50, 10, 740, 70)
+		cr.stroke()
+
+		if self.initDone == 1:
+			status = self.stub.GetRegisterStatus(gui_pb2.VoidMessage(), 120)
+			for node in status.nodes:
+				xStart = offset+node.NodeID*drawWidth/registerWidth
+				yProb = zeroHeight - node.NodeProbability * (zeroHeight - padding)
+			
+				cr.set_source_rgb(.3255, .3255, .3255)
+				cr.move_to(xStart, zeroHeight + padding)
+				cr.text_path("|" + str(node.NodeID) + ">")
+				cr.stroke()
+				
+				cr.set_source_rgb(1, .75, 0)
+				cr.move_to(xStart, zeroHeight)
+				cr.rectangle(xStart, yProb, drawWidth/registerWidth, zeroHeight - yProb)
+				cr.fill()
 
 	def getDrawAngle(angle):
 		return (angle / 180 - .5) * math.pi

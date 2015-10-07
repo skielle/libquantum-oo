@@ -173,6 +173,29 @@ void Register::printSystem() {
 	}	
 }
 
+vector<float> Register::getSystem() {
+	int i, j;
+	int maxWidth = this->qubits.size();
+	int maxValue = Classic::ipow(2, maxWidth);
+	vector<float> output(maxValue,0);
+	
+	for ( i = 0; i < maxValue; i++ ) {
+		float cumProb = 1;
+
+		for ( j = 0; j < maxWidth; j++ ) {
+			if ( (i >> j) % 2 == 0 ) {
+				cumProb *= Complex::probability(
+					this->qubits.at(j)->getAlpha());
+			} else {
+				cumProb *= Complex::probability(
+					this->qubits.at(j)->getBeta());
+			}
+		}
+		output.at(i) = cumProb;
+	}
+	return output;
+}
+
 QuantumMessage::RegisterMessage Register::serialize() {
 	QuantumMessage::RegisterMessage saveMessage;
 

@@ -50,6 +50,7 @@ class Register : public iRegister {
 
 		void print();
 		void printSystem();
+		vector<float> getSystem();
 
 		QuantumMessage::RegisterMessage serialize();
 		static Register& unserialize(

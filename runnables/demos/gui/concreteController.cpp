@@ -66,7 +66,20 @@ void ConcreteController::Process() {
 	}
 
 	if ( regm.first == "Register Status" ) {
+		shared_ptr<RegisterStatusMessage> rsMsg = 
+			make_shared<RegisterStatusMessage> ( 
+				RegisterStatusMessage() );
+		vector<float> status = this->modelRegister.getSystem();
+
+		for ( int i = 0; i < status.size(); i++ ) {
+			printf("%f\r\n", status.at(i));
+			NodeStatusMessage* saveNode = rsMsg->add_nodes();
+			saveNode->set_nodeid(i);
+			saveNode->set_nodeprobability(status.at(i));
+		}
+
 		printf("Got message type: %s\r\n", regm.first.c_str());
+		this->service->responseQueue.push(rsMsg);
 	}
 }
 

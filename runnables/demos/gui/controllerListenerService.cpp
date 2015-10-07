@@ -65,9 +65,11 @@ grpc::Status ControllerListenerService::Measure(grpc::ServerContext* context,
 			this->responseQueue.front();
 		this->responseQueue.pop();
 		
-		reply->set_registeraddress(((dynamic_pointer_cast<ResultMessage> (resm)).get())->registeraddress());
-//		reply = (dynamic_pointer_cast<ResultMessage> (resm)).get();
-printf("ll: %i\r\n", reply->registeraddress());
+		reply->set_registeraddress(
+			(
+				(dynamic_pointer_cast<ResultMessage> (resm))
+					.get()
+			)->registeraddress());
 	}
 	
 	fflush(stdout);
@@ -79,17 +81,18 @@ grpc::Status ControllerListenerService::GetRegisterStatus(
 	const QuantumGUI::VoidMessage* request,
 	QuantumGUI::RegisterStatusMessage* reply) {
 
-	shared_ptr<const VoidMessage> rmsg (request);
-	shared_ptr<const google::protobuf::Message> grmsg = 
-		dynamic_pointer_cast<const PolarizationMessage>(rmsg);
-
 	this->requestQueue.push(pair<string, 
 		shared_ptr<const google::protobuf::Message>>
-		("Register Status", grmsg));
-	//this->controller->Process();
+		("Register Status", 0));
+
+	this->controller->Process();
 	if ( !this->responseQueue.empty() ) {
-//		reply = (QuantumGUI::RegisterStatusMessage*)this->responseQueue.front();
+		shared_ptr<const google::protobuf::Message> resm =
+			const_pointer_cast<const google::protobuf::Message>
+				(this->responseQueue.front());
 		this->responseQueue.pop();
+
+		reply->CopyFrom(*(resm.get()));
 	}
 	
 	fflush(stdout);
