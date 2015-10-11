@@ -1,5 +1,5 @@
 /*
- * concreteController.cpp
+ * superpositionController.cpp
  */
 
 #include <google/protobuf/message.h>
@@ -8,24 +8,24 @@
 #include <utility>
 
 #include "controllerListener.h"
-#include "concreteController.h"
+#include "superpositionController.h"
 #include "iController.h"
 #include "register.h"
 #include "gates.cpp"
 
 namespace QuantumGUI {
-shared_ptr<ConcreteController> ConcreteController::create() {
-	return shared_ptr<ConcreteController>(new ConcreteController);
+shared_ptr<SuperpositionController> SuperpositionController::create() {
+	return shared_ptr<SuperpositionController>(new SuperpositionController);
 }
 
-void ConcreteController::Run() {
+void SuperpositionController::Run() {
 	ControllerListener cl = ControllerListener();
 	cl.setController(shared_from_this());
 	cl.setPort(60000);
 	cl.Run();
 }
 
-void ConcreteController::Process() {
+void SuperpositionController::Process() {
 	pair<string, shared_ptr<const google::protobuf::Message>> regm = 
 		this->service->requestQueue.front();
 	this->service->requestQueue.pop();
@@ -81,9 +81,34 @@ void ConcreteController::Process() {
 		printf("Got message type: %s\r\n", regm.first.c_str());
 		this->service->responseQueue.push(rsMsg);
 	}
+
+	if ( regm.first == "Find Angle" ) {
+		shared_ptr<const FindAngleMessage> mMessage =
+			dynamic_pointer_cast<const FindAngleMessage>
+			(regm.second);
+
+		//normalize
+		float pZero = sqrt( mMessage->pzero() * mMessage->pzero() / 
+			( mMessage->pzero() * mMessage->pzero() + 
+			mMessage->pone() * mMessage->pone() ) );
+
+		float angle = acos(pZero); 
+
+		this->modelRegister.print();
+
+		printf(
+		"Normalized to %f, got angle %f, converted to %f\r\n",
+			pZero, angle, angle / pi * 180 * 2);
+
+		shared_ptr<AngleMessage> mVmsg = 
+			make_shared<AngleMessage> ( AngleMessage() );
+		mVmsg->set_angle(angle / pi * 180 * 2);
+		this->service->responseQueue.push(mVmsg);
+	}
+
 }
 
-ConcreteController::ConcreteController() :
+SuperpositionController::SuperpositionController() :
 	modelRegister(Register((long long unsigned int)0, 4)){
 }
 	

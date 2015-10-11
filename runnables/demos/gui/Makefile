@@ -35,15 +35,15 @@ protocol_buffers:
 	$(CC) $(C11_LIBFLAGS) $(LIBS) -g gui.grpc.pb.cc \
 		-o $(O_PB_G_GRPC) 
 
-controllerService: protocol_buffers
+controllerServices: protocol_buffers
 	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) \
 		 $(O_PB) $(O_PB_GRPC) \
 		 $(O_PB_G) $(O_PB_G_GRPC) \
 		controllerListenerService.cpp \
 		controllerListener.cpp \
-		concreteController.cpp \
-		controller.cpp \
-		-o controllerTest \
+		superpositionController.cpp \
+		superposition.cpp \
+		-o superpositionController \
 		$(O_LIBQ) 
 
 

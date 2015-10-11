@@ -98,4 +98,31 @@ grpc::Status ControllerListenerService::GetRegisterStatus(
 	fflush(stdout);
 	return grpc::Status::OK;
 }
+
+grpc::Status ControllerListenerService::FindAngle(
+	grpc::ServerContext* context,
+	const QuantumGUI::FindAngleMessage* request,
+	QuantumGUI::AngleMessage* reply) {
+
+	shared_ptr<const FindAngleMessage> rmsg =
+		make_shared<const FindAngleMessage> (*request);
+	shared_ptr<const google::protobuf::Message> grmsg = 
+		dynamic_pointer_cast<const FindAngleMessage>(rmsg);
+
+	this->requestQueue.push(pair<string, 
+		shared_ptr<const google::protobuf::Message>>
+		("Find Angle", grmsg));
+	this->controller->Process();
+	if ( !this->responseQueue.empty() ) {
+		shared_ptr<const google::protobuf::Message> resm =
+			const_pointer_cast<const google::protobuf::Message>
+				(this->responseQueue.front());
+		this->responseQueue.pop();
+
+		reply->CopyFrom(*(resm.get()));
+	}
+	
+	fflush(stdout);
+	return grpc::Status::OK;
+}
 }

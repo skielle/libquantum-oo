@@ -10,7 +10,7 @@ from grpc.beta import implementations
 from pprint import pprint
 import gui_pb2
 
-class Superposition_1(Gtk.Window):
+class Superposition_2(Gtk.Window):
 	registerSize = 4
 	initDone = 0
 
@@ -21,22 +21,28 @@ class Superposition_1(Gtk.Window):
 		self.stub = gui_pb2.beta_create_ControllerView_stub(self.channel)
 
 		self.connect("delete-event", Gtk.main_quit)
-		self.set_title("Superposition 1")
+		self.set_title("Superposition 2")
 		self.resize(800, 600)
 		self.daQubits = [self.registerSize]
 		self.ePolarizations = [self.registerSize]
+		self.eMeasurementAngles = [self.registerSize]
 		self.bPolarize = [self.registerSize]
 		self.bMeasure = [self.registerSize]
+		self.bChangeAngle = [self.registerSize]
+
 		self.polarizations = [0.0, 0.0, 0.0, 0.0]
 		self.measurementAngles = [0.0, 0.0, 0.0, 0.0]
 
 		cVLauncher = Gtk.VBox()
 		cHLauncher = Gtk.HBox()
 		cHLauncher.set_size_request(700, 30)
+		cHma = Gtk.HBox()
+		cHma.set_size_request(700, 30)
 		cHdaQubits = Gtk.HBox()
 		cHdaQubits.set_size_request(800, 100)
 		
 		cVLauncher.pack_start(cHLauncher, True, False, 0)
+		cVLauncher.pack_start(cHma, True, False, 0)
 		cVLauncher.pack_start(cHdaQubits, True, False, 0)
 
 		for i in range(self.registerSize):
@@ -49,7 +55,6 @@ class Superposition_1(Gtk.Window):
 			self.ePolarizations.insert(i,Gtk.Entry())
 			self.ePolarizations[i].set_text(str(self.polarizations[i]))
 			self.ePolarizations[i].set_width_chars(5)
-#			self.ePolarizations[i].connect("draw", self.updateDaQubits, i)
 			self.bPolarize.insert(i,Gtk.Button())
 			self.bPolarize[i].set_label("Polarize")
 			self.bPolarize[i].connect("clicked", self.bPolarize_exec, i)
@@ -62,6 +67,19 @@ class Superposition_1(Gtk.Window):
 				self.bPolarize[i], True, False, 0)
 			cHLauncher.pack_start(
 				self.bMeasure[i], True, False, 0)
+
+		for i in range(self.registerSize):
+			self.eMeasurementAngles.insert(i,Gtk.Entry())
+			self.eMeasurementAngles[i].set_text(str(self.measurementAngles[i]))
+			self.eMeasurementAngles[i].set_width_chars(5)
+			self.bChangeAngle.insert(i,Gtk.Button())
+			self.bChangeAngle[i].set_label("Set Detector Angle")
+			self.bChangeAngle[i].connect("clicked", self.bChangeAngle_exec, i)
+
+			cHma.pack_start(
+				self.eMeasurementAngles[i], True, False, 0)
+			cHma.pack_start(
+				self.bChangeAngle[i], True, False, 0)
 
 		self.daRegister = Gtk.DrawingArea()
 		self.daRegister.set_size_request(800, 100)
@@ -95,6 +113,14 @@ class Superposition_1(Gtk.Window):
 		self.polarizations[ra] = deltaAngle + self.polarizations[ra]
 		self.updateDaQubits(self.daQubits[ra], 0, ra)
 		self.exposeRegister(self, self.daRegister.get_window().cairo_create())
+			
+	def bChangeAngle_exec(self, widget, ra):
+		deltaAngle = -1.0 * (float(self.eMeasurementAngles[ra].get_text()) - self.measurementAngles[ra])
+		polarize = self.stub.Polarize(gui_pb2.PolarizationMessage(RegisterAddress=ra, Angle=deltaAngle), 120)
+		self.measurementAngles[ra] = self.measurementAngles[ra] - deltaAngle
+		self.updateDaQubits(self.daQubits[ra], 0, ra)
+		self.exposeRegister(self, self.daRegister.get_window().cairo_create())
+		
 	
 	def bMeasure_exec(self, widget, ra):
 		result = self.stub.Measure(gui_pb2.RegisterAddressMessage(RegisterAddress=ra), 120)
@@ -107,6 +133,8 @@ class Superposition_1(Gtk.Window):
 #			self.polarizations[ra] = 90
 #			self.ePolarizations[ra].set_text("90")
 
+		self.measurementAngles[ra] = 0
+		self.eMeasurementAngles[ra].set_text("0.0")
 		self.updateDaQubits(self, self.polarizations[ra], ra)
 		self.exposeRegister(self, self.daRegister.get_window().cairo_create())
 

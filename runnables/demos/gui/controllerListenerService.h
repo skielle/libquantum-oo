@@ -42,6 +42,9 @@ public QuantumGUI::ControllerView::Service {
 		grpc::Status GetRegisterStatus(grpc::ServerContext* context, 
 			const QuantumGUI::VoidMessage* request, 
 			QuantumGUI::RegisterStatusMessage* reply) override;
+		grpc::Status FindAngle(grpc::ServerContext* context,
+			const QuantumGUI::FindAngleMessage* request,
+			QuantumGUI::AngleMessage* reply) override;
 };
 }
 

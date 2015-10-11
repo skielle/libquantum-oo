@@ -2,6 +2,8 @@
 from gi.repository import Gtk
 
 from superposition_1 import Superposition_1
+from superposition_2 import Superposition_2
+from measurement import Measurement
 
 class Launcher(Gtk.Window):
 	algorithms = [
@@ -45,6 +47,10 @@ class Launcher(Gtk.Window):
 
 		if activeAlgorithm == "1":
 			wAlgorithm = Superposition_1()
+		elif activeAlgorithm == "2":
+			wAlgorithm = Superposition_2()
+		elif activeAlgorithm == "11":
+			wAlgorithm = Measurement()
 		else:
 			wAlgorithm = Gtk.Window()
 			wAlgorithm.set_title("Algorithm")

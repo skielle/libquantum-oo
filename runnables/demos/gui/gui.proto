@@ -27,8 +27,18 @@ message NodeStatusMessage {
 	float NodeProbability = 2;
 }
 
+message FindAngleMessage {
+	float pZero = 1;
+	float pOne = 2;
+}
+
+message AngleMessage {
+	float angle = 1;
+}
+
 service ControllerView {
 	rpc Polarize(PolarizationMessage) returns (VoidMessage) {}
 	rpc Measure(RegisterAddressMessage) returns (ResultMessage) {}
 	rpc GetRegisterStatus(VoidMessage) returns (RegisterStatusMessage) {}
+	rpc FindAngle(FindAngleMessage) returns (AngleMessage) {}
 }

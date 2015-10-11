@@ -3,6 +3,7 @@ gui.grpc.pb.h
 gui.pb.cc
 gui.pb.h
 gui.pb2.py
-superposition_1.pyc
+*.pyc
 gui_pb2.py
 *.swp
+superpositionController
