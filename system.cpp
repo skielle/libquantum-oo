@@ -14,18 +14,8 @@
 #include "register.h"
 
 namespace Quantum {
-long System::mem = 0;
-long System::memmax = 0;
 
 System* System::systemInstance = 0;
-
-unsigned long System::memman(long change) {
-	System::mem += change;
-	if ( System::mem > System::memmax ) {
-		System::memmax = System::mem;
-	}
-	return System::mem;
-}
 
 System::System () :
 	server(new QuantumChannel::ChannelListener)

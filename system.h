@@ -30,10 +30,6 @@ class System {
 		queue<pair<SystemMessage, int>> messageQueue;
 		shared_ptr<QuantumChannel::ChannelListener> server;
 	public:
-		static long mem;
-		static long memmax;
-
-		static unsigned long memman(long change);
 		static System* getInstance();
 
 		shared_ptr<iEvil> eve;
