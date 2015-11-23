@@ -32,7 +32,6 @@ class Matrix {
 		void set(int x, int y, COMPLEX_FLOAT v);
 		static Matrix matrixMultiply(Matrix a, Matrix b);
 
-		void del();
 		~Matrix();
 
 		void print();
