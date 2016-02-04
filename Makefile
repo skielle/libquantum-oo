@@ -1,16 +1,16 @@
 PWD=$(shell pwd)
 
-INCS=-I$(PWD)
-LIBS=-L/usr/local/lib -lgrpc++_unsecure -lgpr -lprotobuf -lpthread -ldl -lssl
+INCS=-I$(PWD)/includes
+LIBS=-L/usr/local/lib -L$(PWD)/src -lcrypto -lgrpc_unsecure -lgrpc++_unsecure -lgpr -lprotobuf -lpthread -ldl -lssl
 GTK_FLAGS=$(shell pkg-config --cflags gtk+-3.0 vte-2.90)
 GTK_LIBS=$(shell pkg-config --libs gtk+-3.0 vte-2.90)
 GTK_CC=gcc
 
 CC=g++
 C_LIBFLAGS=-c 
-CFLAGS= 
-C11_LIBFLAGS=-g -c -std=c++11
-C11_FLAGS=-g -std=c++11
+CFLAGS=-Wall -g -std=c++11
+C11_LIBFLAGS=-g -c -std=c++11 -fext-numeric-literals
+C11_FLAGS=-g -std=c++11 -fext-numeric-literals
 LINK=ar
 
 O_PB=bin/quantumMessage.o
@@ -21,6 +21,28 @@ all:
 
 clean:
 	-rm *.o $(O_PB) $(O_PB_GRPC) $(O_LIBQ)
+
+test_matrix:
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
+	src/error.cpp \
+	src/matrix.cpp \
+	tests/test_matrix.cpp \
+	-o bin/test_matrix
+
+test_stateVector:
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
+	src/error.cpp \
+	src/matrix.cpp \
+	src/stateVector.cpp \
+	tests/test_stateVector.cpp \
+	-o bin/test_stateVector
+
+test_qubitMap:
+	$(CC) $(CFLAGS) -c $(INCS) $(LIBS) \
+	src/error.cpp \
+	src/matrix.cpp \
+	src/stateVector.cpp \
+	src/qubitMap.cpp 
 
 clean-gui:
 	-rm bin/mainScreen
@@ -50,8 +72,11 @@ node_test: clean
 error_test: clean
 	$(CC) error.cpp tests/error_test.cpp -o bin/error_test
 
-matrix_test: clean protocol_buffers
-	$(CC) $(LIBS) bin/quantumMessage.o complex.cpp error.cpp system.cpp matrix.cpp tests/matrix_test.cpp -o bin/matrix_test
+_matrix_test: libquantum-oo 
+	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
+		tests/matrix_test.cpp \
+		-o bin/matrix_test \
+		$(O_LIBQ)
 
 entangledPair_test: clean
 	$(CC) complex.cpp error.cpp system.cpp matrix.cpp -g entangledPair.cpp -g tests/entangledPair_test.cpp -o bin/entangledPair_test	
