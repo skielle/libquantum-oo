@@ -25,5 +25,20 @@ int main() {
 
 	d->print();
 
+	Matrix CNOT = Matrix(4,4);
+	CNOT.set(0, 0, 1);
+	CNOT.set(1, 1, 1);
+	CNOT.set(2, 3, 1);
+	CNOT.set(3, 2, 1);
+
+	vector< shared_ptr<Qubit> > inputs;
+	inputs.push_back(d);
+	inputs.push_back(c);
+
+	c->v->applyOperation(CNOT, inputs);
+
+	c->print();
+	d->print();
+
 	return 0;
 }

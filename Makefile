@@ -8,7 +8,7 @@ GTK_CC=gcc
 
 CC=g++
 C_LIBFLAGS=-c 
-CFLAGS=-Wall -g -std=c++11
+CFLAGS=-Wall -Wno-sign-compare -g -std=c++11
 C11_LIBFLAGS=-g -c -std=c++11 -fext-numeric-literals
 C11_FLAGS=-g -std=c++11 -fext-numeric-literals
 LINK=ar
@@ -38,11 +38,50 @@ test_stateVector:
 	-o bin/test_stateVector
 
 test_qubitMap:
-	$(CC) $(CFLAGS) -c $(INCS) $(LIBS) \
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
 	src/error.cpp \
 	src/matrix.cpp \
 	src/stateVector.cpp \
-	src/qubitMap.cpp 
+	src/qubitMap.cpp \
+	tests/test_qubitMap.cpp \
+	-o bin/test_qubitMap 
+
+test_qubit:
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
+	src/error.cpp \
+	src/matrix.cpp \
+	src/stateVector.cpp \
+	src/qubitMap.cpp \
+	src/qubit.cpp \
+	tests/test_qubit.cpp \
+	-o bin/test_qubit 
+
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
+	src/error.cpp \
+	src/matrix.cpp \
+	src/stateVector.cpp \
+	src/qubitMap.cpp \
+	src/qubit.cpp \
+	tests/test_two_qubits.cpp \
+	-o bin/test_two_qubits 
+
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
+	src/error.cpp \
+	src/matrix.cpp \
+	src/stateVector.cpp \
+	src/qubitMap.cpp \
+	src/qubit.cpp \
+	tests/test_syndrome.cpp \
+	-o bin/test_syndrome
+
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
+	src/error.cpp \
+	src/matrix.cpp \
+	src/stateVector.cpp \
+	src/qubitMap.cpp \
+	src/qubit.cpp \
+	tests/test_two_qubit_syndrome.cpp \
+	-o bin/test_two_qubit_syndrome
 
 clean-gui:
 	-rm bin/mainScreen

@@ -11,6 +11,28 @@ using namespace Quantum;
 
 int main() {
 //	fstream output("/tmp/pb.mx.s", ios::out | ios::trunc | ios::binary);
+
+	Matrix A = Matrix(1, 2);
+	Matrix B = Matrix(1, 2);
+
+	A.set(0, 0, sqrt(.5));
+	A.set(0, 1, -sqrt(.5));
+	B.set(0, 0, 1);
+	B.set(0, 1, 0);
+	Matrix AB = Matrix::matrixTensor(B, A);
+
+	AB.print();
+	
+	Matrix CNOT = Matrix(4,4);
+	CNOT.set(0, 0, 1);
+	CNOT.set(1, 1, 1);
+	CNOT.set(2, 3, 1);
+	CNOT.set(3, 2, 1);
+
+	CNOT.print();
+
+	Matrix::matrixMultiply(CNOT, AB).print();
+
 	Matrix m = Matrix(2, 2);
 	Matrix n = Matrix(1, 2);
 	Matrix ident = Matrix(2, 2);

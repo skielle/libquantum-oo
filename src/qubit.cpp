@@ -8,25 +8,40 @@
 #include "matrix.h"
 #include "qubit.h"
 #include "qubitMap.h"
-#include "qubitMapEntry.h"
 
 using namespace std;
 
 namespace Quantum {
+
 Qubit::Qubit() {
-	this->qme = QubitMap::createQubit();
+	this->v = make_shared<StateVector>(1);
+	this->position = 0;
+
+	this->v->setIndex(QubitMap::getInstance()->getNewIndex());
+}
+
+shared_ptr<Qubit> Qubit::create() {
+	shared_ptr<Qubit> m (new Qubit);
+
+        QubitMap::getInstance()->mapEntries.push_back(m);
+	return m;
 }
 
 void Qubit::applyMatrix(Matrix m) {
-	this->qme->mapVector->applyOperation(m, this->qme->position);
+	this->v->applyOperation(m, this->position);
 }
 
 int Qubit::measure() {
-	return -1;
+	return this->v->measure(this->position);
+}
+
+int Qubit::measure(int forceValue) {
+	return this->v->measure(this->position, forceValue);
 }
 
 void Qubit::print() {
-	this->qme->mapVector->print();
+	printf("Position: %i\r\n", this->position);
+	this->v->print();
 }
 
 complex<double> Qubit::getAlpha() {

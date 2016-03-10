@@ -8,20 +8,22 @@
 #include <memory>
 #include <vector>
 
-#include "qubitMapEntry.h"
-#include "stateVector.h"
-
 using namespace std;
 
 namespace Quantum {
+class Qubit;
+
 class QubitMap {
 	private:
-		vector< shared_ptr<QubitMapEntry> > mapEntries;
 		QubitMap();
 		static QubitMap* mapInstance;
+		int vectorIndex;
 	public:
+		vector< shared_ptr<Qubit> > mapEntries;
+
+		int getNewIndex();
 		static QubitMap* getInstance();
-		static shared_ptr<QubitMapEntry> createQubit();
+	//	static shared_ptr<Qubit> createQubit();
 };
 }
 #endif

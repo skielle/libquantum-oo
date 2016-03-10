@@ -77,7 +77,7 @@ Matrix Matrix::matrixTensor(Matrix a, Matrix b) {
 				for ( n = 0; n < a.getCols(); n++ ) {
 					c.set( i * a.getRows() + m,
 						j * a.getCols() + n,
-						b.get(i, j) * a.get(m, n) );
+						b.get(j, i) * a.get(n, m) );
 				}
 			}
 		}
