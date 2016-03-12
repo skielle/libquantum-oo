@@ -12,18 +12,19 @@
 #include <grpc++/server_context.h>
 #include <grpc++/support/status.h>
 #include "quantumMessage.grpc.pb.h"
+#include "quantumMessage.pb.h"
 
 using namespace std;
 
 namespace QuantumChannel {
 class ChannelService final : public QuantumMessage::QuantumChannel::Service {
 	public:
-	grpc::Status SendRegister(grpc::ServerContext* context, 
-		const QuantumMessage::RegisterMessage* request, 
+
+	grpc::Status SendQubit(grpc::ServerContext* context,
+		const QuantumMessage::QubitMessage* request,
 		QuantumMessage::VoidMessage* reply) override;
-	grpc::Status SendClassicRegister(grpc::ServerContext* context, 
-		const QuantumMessage::ClassicRegisterMessage* request, 
-		QuantumMessage::VoidMessage* reply) override;
+
+/*
 	grpc::Status SendEntangledRegister(grpc::ServerContext* context, 
 		const QuantumMessage::EntangledRegisterMessage* request, 
 		QuantumMessage::InetAddr* reply) override;
@@ -31,6 +32,7 @@ class ChannelService final : public QuantumMessage::QuantumChannel::Service {
 		grpc::ServerContext* context, 
 		const QuantumMessage::EntangledMeasurementMessage* request, 
 		QuantumMessage::VoidMessage* reply) override;
+*/
 };
 }
 

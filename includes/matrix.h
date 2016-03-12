@@ -5,7 +5,7 @@
 #include <string.h>
 #include <vector>
 //#include "config.h"
-//#include "quantumMessage.pb.h"
+#include "quantumMessage.pb.h"
 
 #ifndef __QUANTUM_MATRIX_H
 #define __QUANTUM_MATRIX_H
@@ -39,9 +39,9 @@ class Matrix {
 
 		void print();
 
-//		QuantumMessage::MatrixMessage serialize();
-//		static Matrix unserialize(
-//			const QuantumMessage::MatrixMessage* loadMessage);
+		QuantumMessage::MatrixMessage serialize();
+		static Matrix unserialize(
+			const QuantumMessage::MatrixMessage* loadMessage);
 };
 }
 #endif

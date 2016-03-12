@@ -6,14 +6,12 @@
 #include <memory>
 #include <string>
 #include <thread>
-
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
 #include <grpc++/server_builder.h>
 #include <grpc++/security/server_credentials.h>
 #include "channelListener.h"
 #include "channelService.h"
-#include "system.h"
 
 using namespace std;
 using namespace Quantum;

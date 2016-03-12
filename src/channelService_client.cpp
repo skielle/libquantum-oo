@@ -14,10 +14,9 @@
 #include <grpc++/security/credentials.h>
 #include <grpc++/support/status.h>
 #include "quantumMessage.grpc.pb.h"
-#include "entangledRegister.h"
-#include "register.h"
+#include "quantumMessage.pb.h"
+#include "qubit.h"
 #include "channelService_client.h"
-#include "entanglement.h"
 
 using namespace std;
 using namespace Quantum;
@@ -31,54 +30,15 @@ ChannelService_client::ChannelService_client(string server, int port)
 		)
 	) ) {}
 
-bool ChannelService_client::SendRegister(Register r) {
-	QuantumMessage::RegisterMessage rm;
-	rm = r.serialize();
+bool ChannelService_client::SendQubit(shared_ptr<Qubit> q) {
+	QuantumMessage::QubitMessage qm;
+	qm = q->serialize();
 	QuantumMessage::VoidMessage rc;
 	grpc::ClientContext ctx;
 
-	grpc::Status status = stub_->SendRegister(&ctx, rm, &rc);
+	grpc::Status status = stub_->SendQubit(&ctx, qm, &rc);
 
 	return status.ok();
 }
 
-bool ChannelService_client::SendClassicRegister(ClassicRegister r) {
-	QuantumMessage::ClassicRegisterMessage rm;
-	rm = r.serialize();
-	QuantumMessage::VoidMessage rc;
-	grpc::ClientContext ctx;
-
-	grpc::Status status = stub_->SendClassicRegister(&ctx, rm, &rc);
-
-}
-
-bool ChannelService_client::SendEntangledRegister(EntangledRegister r) {
-	QuantumMessage::EntangledRegisterMessage rm;
-	QuantumMessage::InetAddr rha;
-	grpc::ClientContext ctx;
-
-	shared_ptr<ChannelService_client> csc (this);
-
-	rm = r.serialize();
-	if ( r.isAleph() ) {
-		r.getEntanglement()->makeAlephRemote(shared_from_this());
-	} else {
-		r.getEntanglement()->makeBeitRemote(shared_from_this());
-	}
-
-	grpc::Status status = stub_->SendEntangledRegister(&ctx, rm, &rha);
-
-	printf("Remote stack address: %i\n", rha.stackaddr());
-}
-
-bool ChannelService_client::EventPairMeasureFinish(
-	QuantumMessage::EntangledMeasurementMessage em) {
-
-	QuantumMessage::VoidMessage rc;
-
-	grpc::ClientContext ctx;
-
-	grpc::Status status = 
-		stub_->EventPairMeasureFinish(&ctx, em, &rc);
-}
 }

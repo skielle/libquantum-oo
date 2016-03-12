@@ -9,129 +9,105 @@ GTK_CC=gcc
 CC=g++
 C_LIBFLAGS=-c 
 CFLAGS=-Wall -Wno-sign-compare -g -std=c++11
-C11_LIBFLAGS=-g -c -std=c++11 -fext-numeric-literals
-C11_FLAGS=-g -std=c++11 -fext-numeric-literals
+C11_LIBFLAGS=-c -std=c++11 -fext-numeric-literals
+C11_FLAGS=-std=c++11 -fext-numeric-literals
 LINK=ar
 
 O_PB=bin/quantumMessage.o
 O_PB_GRPC=bin/quantumMessage.grpc.o
-O_LIBQ=bin/lib_quantum_oo.a
+O_QOOSIM=bin/lib_qoosim.a
+
+SOURCES=$(wildcard src/*.cpp)
+OBJECTS=$(patsubst %.cpp, %.o, $(SOURCES))
 
 all:
 
 clean:
-	-rm *.o $(O_PB) $(O_PB_GRPC) $(O_LIBQ)
+	-rm src/*.o bin/* $(O_PB) $(O_PB_GRPC) $(O_LIBQ)
 
-test_matrix:
+protocol_buffers: clean
+	cd resources; protoc --cpp_out=. quantumMessage.proto
+	mv resources/*.h includes
+	mv resources/*.cc src
+	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) src/quantumMessage.pb.cc -o $(O_PB)
+	cd resources; protoc --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` \
+		quantumMessage.proto
+	mv resources/*.h includes
+	mv resources/*.cc src
+	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) src/quantumMessage.grpc.pb.cc \
+		-o $(O_PB_GRPC)
+
+$(OBJECTS): src/%.o :src/%.cpp
+	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) \
+		-c $< \
+		-o $@
+
+lib_qoosim: protocol_buffers $(OBJECTS)
+	$(LINK) rcs $(O_QOOSIM) \
+		src/error.o \
+		src/matrix.o \
+		src/stateVector.o \
+		src/qubitMap.o \
+		src/qubit.o \
+		src/channelListener.o \
+		src/channelService.o \
+		src/channelService_client.o
+
+test_matrix: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
-	src/error.cpp \
-	src/matrix.cpp \
 	tests/test_matrix.cpp \
+ 	$(O_QOOSIM) \
 	-o bin/test_matrix
 
-test_stateVector:
+test_stateVector: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
-	src/error.cpp \
-	src/matrix.cpp \
-	src/stateVector.cpp \
 	tests/test_stateVector.cpp \
+ 	$(O_QOOSIM) \
 	-o bin/test_stateVector
 
-test_qubitMap:
+test_qubitMap: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
-	src/error.cpp \
-	src/matrix.cpp \
-	src/stateVector.cpp \
-	src/qubitMap.cpp \
 	tests/test_qubitMap.cpp \
+ 	$(O_QOOSIM) \
 	-o bin/test_qubitMap 
 
-test_qubit:
+test_qubit: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
-	src/error.cpp \
-	src/matrix.cpp \
-	src/stateVector.cpp \
-	src/qubitMap.cpp \
-	src/qubit.cpp \
 	tests/test_qubit.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_qubit 
 
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
-	src/error.cpp \
-	src/matrix.cpp \
-	src/stateVector.cpp \
-	src/qubitMap.cpp \
-	src/qubit.cpp \
 	tests/test_two_qubits.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_two_qubits 
 
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
-	src/error.cpp \
-	src/matrix.cpp \
-	src/stateVector.cpp \
-	src/qubitMap.cpp \
-	src/qubit.cpp \
 	tests/test_syndrome.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_syndrome
 
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
-	src/error.cpp \
-	src/matrix.cpp \
-	src/stateVector.cpp \
-	src/qubitMap.cpp \
-	src/qubit.cpp \
 	tests/test_two_qubit_syndrome.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_two_qubit_syndrome
 
-clean-gui:
-	-rm bin/mainScreen
+test_channel: clean lib_qoosim
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
+	tests/test_listener.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
+	-o bin/test_listener
 
-all_tests: classic_test complex_test node_test error_test matrix_test register_test gate_test entangledPair_test entangledRegister_test
-
-protocol_buffers:
-	protoc --cpp_out=. quantumMessage.proto
-	$(CC) $(C_LIBFLAGS) $(LIBS) quantumMessage.pb.cc -o $(O_PB)
-	protoc --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` \
-		 quantumMessage.proto
-	$(CC) $(C11_LIBFLAGS) $(LIBS) -g quantumMessage.grpc.pb.cc \
-		-o $(O_PB_GRPC) 
-
-classic_test: clean
-	$(CC) classic.cpp tests/classic_test.cpp -o bin/classic_test
-
-classic_register_test: clean protocol_buffers
-	$(CC) $(LIBS) bin/quantumMessage.o classic.cpp error.cpp -g classicRegister.cpp tests/classicRegister_test.cpp -o bin/classicRegister_test
-
-complex_test: clean
-	$(CC) complex.cpp tests/complex_test.cpp -o bin/complex_test
-
-node_test: clean
-	$(CC) complex.cpp node.cpp tests/node_test.cpp -o bin/node_test
-
-error_test: clean
-	$(CC) error.cpp tests/error_test.cpp -o bin/error_test
-
-_matrix_test: libquantum-oo 
-	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
-		tests/matrix_test.cpp \
-		-o bin/matrix_test \
-		$(O_LIBQ)
-
-entangledPair_test: clean
-	$(CC) complex.cpp error.cpp system.cpp matrix.cpp -g entangledPair.cpp -g tests/entangledPair_test.cpp -o bin/entangledPair_test	
-
-
-entangledRegister_test: libquantum-oo 
-	$(CC) $(C11_FLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \
-		tests/entangledRegister_test.cpp \
-		-o bin/entangledRegister_test \
-		$(O_LIBQ)
-
-entanglement_test: clean
-	$(CC) complex.cpp error.cpp system.cpp matrix.cpp node.cpp register.cpp entangledRegister.cpp entanglement.cpp entangledPair.cpp tests/entanglement_test.cpp -o bin/entanglement_test
-
-system_test: protocol_buffers
-	$(CC) -std=c++11 -L/usr/local/lib -lgrpc++_unsecure -lgrpc -lgpr -lprotobuf -lpthread -ldl bin/quantumMessage.o bin/quantumMessage.grpc.o classic.cpp complex.cpp error.cpp channelService.cpp channelListener.cpp channelService_client.cpp echoRunnable.cpp -g system.cpp matrix.cpp node.cpp classicRegister.cpp register.cpp tests/system_test.cpp -o bin/system_test
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
+	tests/test_client.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
+	-o bin/test_client
 
 libquantum-oo: protocol_buffers
 	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \

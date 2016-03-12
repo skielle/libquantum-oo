@@ -51,4 +51,20 @@ complex<double> Qubit::getAlpha() {
 complex<double> Qubit::getBeta() {
 	return -1.0;
 }
+
+QuantumMessage::QubitMessage Qubit::serialize() {
+	QuantumMessage::QubitMessage saveMessage;
+
+//	saveMessage.mutable_m()->CopyFrom(this->v->qsv());
+	saveMessage.set_position(this->position);
+
+	return saveMessage;	
+}
+
+Qubit& Qubit::unserialize(const QuantumMessage::QubitMessage* loadMessage) {
+	Qubit* q = new Qubit;
+	q->position = loadMessage->position();
+
+	return *q;
+}
 }

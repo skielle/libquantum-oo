@@ -12,9 +12,8 @@
 #include <grpc++/channel.h>
 #include <grpc++/create_channel.h>
 #include "quantumMessage.grpc.pb.h"
-#include "classicRegister.h"
-#include "entangledRegister.h"
-#include "register.h"
+#include "quantumMessage.pb.h"
+#include "qubit.h"
 
 using namespace std;
 using namespace Quantum;
@@ -27,11 +26,7 @@ class ChannelService_client :
 	public:
 		ChannelService_client(string server, int port);
 
-		bool SendRegister(Register r);
-		bool SendClassicRegister(ClassicRegister r);
-		bool SendEntangledRegister(EntangledRegister r);
-		bool EventPairMeasureFinish(
-			QuantumMessage::EntangledMeasurementMessage em);
+		bool SendQubit(shared_ptr<Qubit> q);
 };
 }
 #endif

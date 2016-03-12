@@ -7,6 +7,7 @@
 
 #include "matrix.h"
 #include "stateVector.h"
+#include "quantumMessage.pb.h"
 
 #ifndef __QUANTUM_BIT_H
 #define __QUANTUM_BIT_H
@@ -30,6 +31,10 @@ class Qubit {
 
 		complex<double> getAlpha();
 		complex<double> getBeta();
+
+		QuantumMessage::QubitMessage serialize();
+		static Qubit& unserialize(
+			const QuantumMessage::QubitMessage* loadMessage);
 };
 }
 #endif

@@ -11,7 +11,7 @@
 
 #include "error.h"
 #include "matrix.h"
-//#include "quantumMessage.pb.h"
+#include "quantumMessage.pb.h"
 //#include "system.h"
 
 using namespace std;
@@ -174,7 +174,6 @@ void Matrix::print() {
 	printf("\n");
 }
 
-/**************** Serialization functions
 QuantumMessage::MatrixMessage Matrix::serialize() {
 	int i;
 	string serializedMessage;
@@ -186,8 +185,8 @@ QuantumMessage::MatrixMessage Matrix::serialize() {
 	for ( i = 0; i < this->getRows() * this->getCols(); i++ ) {
 		QuantumMessage::ComplexMessage* saveT = saveMessage.add_t();
 
-		saveT->set_real(Complex::real(this->t->at(i)));
-		saveT->set_imaginary(Complex::imaginary(this->t->at(i)));
+		saveT->set_real(this->t->at(i).real());
+		saveT->set_imaginary(this->t->at(i).imag());
 	}
 
 	return saveMessage;
@@ -200,12 +199,12 @@ Matrix Matrix::unserialize(const QuantumMessage::MatrixMessage* loadMessage) {
 
 	for ( i = 0; i < loadMessage->t_size(); i++ ) {
 		QuantumMessage::ComplexMessage cMessage = loadMessage->t(i);
+	
+		complex<double> c (cMessage.real(), cMessage.imaginary());
 
-		m.set(i % m.getCols(), i / m.getCols(), 
-			 cMessage.real() + cMessage.imaginary() * IMAGINARY);
+		m.set(i % m.getCols(), i / m.getCols(), c);
 	}
 
 	return m;
 }
-*/
 }
