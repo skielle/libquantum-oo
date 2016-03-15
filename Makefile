@@ -23,7 +23,7 @@ OBJECTS=$(patsubst %.cpp, %.o, $(SOURCES))
 all:
 
 clean:
-	-rm src/*.o bin/* $(O_PB) $(O_PB_GRPC) $(O_LIBQ)
+	-rm src/*.o bin/* src/*.pb.cc includes/*.pb.h $(O_PB) $(O_PB_GRPC) $(O_LIBQ)
 
 protocol_buffers: clean
 	cd resources; protoc --cpp_out=. quantumMessage.proto
@@ -44,6 +44,7 @@ $(OBJECTS): src/%.o :src/%.cpp
 
 lib_qoosim: protocol_buffers $(OBJECTS)
 	$(LINK) rcs $(O_QOOSIM) \
+		src/complex.o \
 		src/error.o \
 		src/matrix.o \
 		src/stateVector.o \
@@ -51,7 +52,9 @@ lib_qoosim: protocol_buffers $(OBJECTS)
 		src/qubit.o \
 		src/channelListener.o \
 		src/channelService.o \
-		src/channelService_client.o
+		src/channelService_client.o \
+		src/remoteVectorMap.o
+		
 
 test_matrix: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \

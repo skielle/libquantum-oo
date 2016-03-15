@@ -4,6 +4,7 @@
 
 #include <complex>
 #include <memory>
+#include <string>
 
 #include "matrix.h"
 #include "stateVector.h"
@@ -18,6 +19,7 @@ namespace Quantum {
 class Qubit {
 	private:
 		Qubit();
+		Qubit(bool isRemote);
 		
 	public:
 		shared_ptr<StateVector> v;
@@ -25,6 +27,7 @@ class Qubit {
 
 		static shared_ptr<Qubit> create();
 		void applyMatrix(Matrix m);
+		void init();
 		int measure();
 		int measure(int forceValue);
 		void print();

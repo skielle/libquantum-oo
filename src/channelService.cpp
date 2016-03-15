@@ -11,6 +11,7 @@
 #include <grpc++/support/status.h>
 #include "channelService.h"
 #include "channelService_client.h"
+#include "remoteVectorMap.h"
 #include "qubit.h"
 
 using namespace std;
@@ -20,13 +21,27 @@ namespace QuantumChannel {
 grpc::Status ChannelService::SendQubit(grpc::ServerContext* context, 
 	const QuantumMessage::QubitMessage* request, 
 	QuantumMessage::VoidMessage* reply) {
+	int localIndex = 0;
+	string remoteSystem = context->peer().data();
 
 	printf("QUBIT RECIEVED\r\n");
-	printf("PEER: %s\n", context->peer().data());
+	printf("PEER: %s\n", remoteSystem.c_str());
 
+//unserialize the qubit
 	shared_ptr<Qubit> q (&Qubit::unserialize(request));
 
-	printf("Qubit position: %i\r\n", q->position);
+//localize indexes for the qubit
+	printf("Remote system: %s\r\nRemote index: %i\r\n", 
+		remoteSystem.c_str(), q->v->getIndex());
+	localIndex = RemoteVectorMap::getInstance()->getLocalIndex(
+		remoteSystem, q->v->getIndex());
+	printf("Local index: %i\r\n", localIndex);
+	q->v->setIndex(localIndex);
+
+//apply any catch-up operations on the qubit
+
+//store the qubit in the system register?
+	q->print();
 
 	return grpc::Status::OK;
 }

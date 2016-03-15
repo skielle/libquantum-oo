@@ -5,7 +5,8 @@ package QuantumMessage;
 message QubitMessage {
 	int32 protocol_messageType = 1;
 	int32 position = 2;
-	MatrixMessage m = 3;
+	int32 vectorIndex = 3;
+	MatrixMessage m = 4;
 }
 
 message MatrixMessage {
@@ -22,9 +23,9 @@ message ComplexMessage {
 message VoidMessage {
 }
 
-
 service QuantumChannel {
 	rpc SendMatrix(MatrixMessage) returns (VoidMessage) {}
+	rpc SendCallbackPort(int32) returns(VoidMessage) {}
 	rpc SendQubit(QubitMessage) returns (VoidMessage) {}
 	rpc EventPairMeasureStart(QubitMessage) returns (VoidMessage) {}
 	rpc EventPairMeasureFinish(QubitMessage) returns (VoidMessage) {}

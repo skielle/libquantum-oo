@@ -16,6 +16,7 @@ class StateVector: public enable_shared_from_this<StateVector> {
 	public:
 		StateVector();
 		StateVector(int bitWidth);
+		StateVector(Matrix m);
 		void setIndex(int newIndex);
 		int getIndex();
 		void applyOperation(Matrix operation, int position);
@@ -36,6 +37,7 @@ class StateVector: public enable_shared_from_this<StateVector> {
 		static bool isBitSet(int index, int position);
 		void swapBits(int position1, int position2);
 		vector<int> generateRowMap(vector<int> inputs);
+		Matrix toMatrix();
 };
 }
 

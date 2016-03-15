@@ -38,4 +38,5 @@ int main() {
 	L2->print();
 
 	csc.SendQubit(L2);
+	csc.SendQubit(L1);
 }

@@ -19,6 +19,10 @@ StateVector::StateVector() : StateVector(1) {
 StateVector::StateVector(int bitWidth) 
 	: qsv(1, pow(2, bitWidth)) {
 	this->qsv.set(0, 0, 1);
+}
+
+StateVector::StateVector(Matrix m) 
+	: qsv(m) {
 } 
 
 void StateVector::setIndex(int newIndex) {
@@ -252,6 +256,10 @@ int StateVector::measure(int position, int forceResult) {
 
 	this->reduce();
 	return forceResult;
+}
+
+Matrix StateVector::toMatrix() {
+	return this->qsv;
 }
 
 }

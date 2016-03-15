@@ -14,6 +14,16 @@ using namespace std;
 namespace Quantum {
 
 Qubit::Qubit() {
+	this->init();
+}
+
+Qubit::Qubit(bool isRemote) {
+	if ( !isRemote ) {
+		this->init();
+	}
+}
+
+void Qubit::init() {
 	this->v = make_shared<StateVector>(1);
 	this->position = 0;
 
@@ -55,15 +65,21 @@ complex<double> Qubit::getBeta() {
 QuantumMessage::QubitMessage Qubit::serialize() {
 	QuantumMessage::QubitMessage saveMessage;
 
-//	saveMessage.mutable_m()->CopyFrom(this->v->qsv());
 	saveMessage.set_position(this->position);
+	saveMessage.set_vectorindex(this->v->getIndex());
+	saveMessage.mutable_m()->CopyFrom(this->v->toMatrix().serialize());
 
 	return saveMessage;	
 }
 
 Qubit& Qubit::unserialize(const QuantumMessage::QubitMessage* loadMessage) {
-	Qubit* q = new Qubit;
+	Qubit* q = new Qubit(true);
+
 	q->position = loadMessage->position();
+
+	QuantumMessage::MatrixMessage mMessage = loadMessage->m();
+	q->v = make_shared<StateVector>(Matrix::unserialize(&mMessage));
+	q->v->setIndex(loadMessage->vectorindex());
 
 	return *q;
 }

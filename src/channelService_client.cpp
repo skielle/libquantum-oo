@@ -38,6 +38,10 @@ bool ChannelService_client::SendQubit(shared_ptr<Qubit> q) {
 
 	grpc::Status status = stub_->SendQubit(&ctx, qm, &rc);
 
+	string remoteSystem = ctx.peer().data();
+
+	printf("Server:  %s\r\n", remoteSystem.c_str());
+
 	return status.ok();
 }
 
