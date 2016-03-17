@@ -19,15 +19,12 @@
 #include "remoteVectorMap.h"
 #include "qubit.h"
 #include "remotePeer.h"
+#include "channel.h"
 
 using namespace std;
 using namespace Quantum;
 
 namespace QuantumChannel {
-
-void ChannelService::setServicePort(int port) {
-	this->servicePort = port;
-}
 
 grpc::Status ChannelService::SendCallbackPort(grpc::ServerContext* context,
 	const QuantumMessage::PortMessage* request,
@@ -47,14 +44,12 @@ grpc::Status ChannelService::SendCallbackPort(grpc::ServerContext* context,
 	int peerIndex = rpl->lookupPeerByServicePort(peerIP, peerServicePort);
 	rpl->peerList.at(peerIndex).peerClientPort = peerClientPort;
 
-	if ( rpl->peerList.at(peerIndex).peerPID == 0 ) {
-		printf("Don't know peer pid.\r\n");
+	if ( rpl->peerList.at(peerIndex).peerPID == 0 
+		&& peerServicePort != 0) {
 		QuantumChannel::ChannelService_client csc(
 			rpl->peerList.at(peerIndex).peerIP,
 			rpl->peerList.at(peerIndex).peerServicePort);
-//TODO: what if this fails		csc.SendCallbackPort(this->servicePort);
-		rpl->peerList.at(peerIndex).peerPID = -1;
-		
+			csc.SendCallbackPort();
 	}
 
 	reply->set_pid(getpid());
@@ -78,7 +73,6 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 //apply any catch-up operations on the qubit
 
 //store the qubit in the system register?
-
 	return grpc::Status::OK;
 }
 

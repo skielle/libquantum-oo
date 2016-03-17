@@ -12,23 +12,23 @@
 #include <grpc++/security/server_credentials.h>
 #include "channelListener.h"
 #include "channelService.h"
+#include "channel.h"
 
 using namespace std;
 using namespace Quantum;
 
 namespace QuantumChannel {
 int ChannelListener::getPort() {
-	return this->port;
+	return Channel::getServicePort();
 }
 
 void ChannelListener::setPort(int inPort) {
-	this->port = inPort;
+	Channel::setServicePort(inPort);
 }
 
 void ChannelListener::Run() {
-	string serverAddr = "0.0.0.0:" + to_string(this->port);
+	string serverAddr = "0.0.0.0:" + to_string(this->getPort());
 	ChannelService service;
-	service.setServicePort(this->port);
 	grpc::ServerBuilder builder;
 
 	builder.AddListeningPort(serverAddr, 

@@ -15,7 +15,6 @@ using namespace std;
 namespace QuantumChannel {
 class ChannelListener : public iRunnable {
 	private:
-		int port;
 		unique_ptr<grpc::Server> server;
 	public:
 		int getPort();

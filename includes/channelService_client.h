@@ -27,7 +27,7 @@ class ChannelService_client :
 		ChannelService_client(string server, int port);
 
 		bool SendQubit(shared_ptr<Qubit> q);
-		bool SendCallbackPort(int port);
+		bool SendCallbackPort();
 };
 }
 #endif

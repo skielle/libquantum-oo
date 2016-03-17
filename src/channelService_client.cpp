@@ -32,9 +32,9 @@ ChannelService_client::ChannelService_client(string server, int port)
 		)
 	) ) {}
 
-bool ChannelService_client::SendCallbackPort(int port) {
+bool ChannelService_client::SendCallbackPort() {
 	QuantumMessage::PortMessage portMsg;
-	portMsg.set_port(port);
+	portMsg.set_port(Channel::getServicePort());
 	QuantumMessage::PIDMessage pidMsg;
 	grpc::ClientContext ctx;
 

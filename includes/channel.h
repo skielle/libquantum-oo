@@ -13,9 +13,13 @@ using namespace std;
 
 namespace QuantumChannel {
 class Channel {
+	private:
+		static int servicePort; 
 	public:
 		static string getIPFromCtxString(string ctxData);
 		static int getPortFromCtxString(string ctxData);
+		static void setServicePort(int port);
+		static int getServicePort();
 };
 }
 
