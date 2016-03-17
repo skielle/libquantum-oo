@@ -55,7 +55,9 @@ lib_qoosim: protocol_buffers $(OBJECTS)
 		src/channelService_client.o \
 		src/remoteVectorMap.o \
 		src/remotePeer.o \
-		src/channel.o	
+		src/channel.o \
+		src/system.o \
+		src/echoRunnable.o	
 
 test_matrix: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
@@ -112,6 +114,13 @@ test_channel: clean lib_qoosim
  	$(O_QOOSIM) \
 	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_client
+
+test_system: clean lib_qoosim
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
+	tests/test_runnableEchoServer.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
+	-o bin/test_runnableEchoServer
 
 libquantum-oo: protocol_buffers
 	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \

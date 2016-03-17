@@ -12,10 +12,7 @@
 #include <vector>
 
 #include "channelListener.h"
-#include "iRegister.h"
 #include "iRunnable.h"
-#include "iEvil.h"
-#include "systemMessage.h"
 
 using namespace std;
 
@@ -24,28 +21,11 @@ namespace Quantum {
 class System {
 	private:
 		shared_ptr<iRunnable> algorithm;
-		vector<shared_ptr<iRegister>> registers;
 		System();
 		static System* systemInstance;
-		queue<pair<SystemMessage, int>> messageQueue;
 		shared_ptr<QuantumChannel::ChannelListener> server;
 	public:
 		static System* getInstance();
-
-		shared_ptr<iEvil> eve;
-		
-		bool isMessageQueueEmpty();
-		SystemMessage getMessageType();
-		int getMessageAddress();
-		template<class messageType> 
-		shared_ptr<messageType> getMessage() {
-			shared_ptr<messageType> rx = 
-				dynamic_pointer_cast<messageType> (
-				this->registers.at( 
-				this->messageQueue.front().second) );
-			this->messageQueue.pop();
-			return rx;
-		}
 
 		void RunSystem();
 		int getListenerPort();
@@ -54,9 +34,6 @@ class System {
 		void stopServer();
 		void setAlgorithm(shared_ptr<iRunnable> a);
 		void runAlgorithm();
-		int addRegister(shared_ptr<iRegister> reg, 
-			SystemMessage message);
-		shared_ptr<iRegister> getRegister(int i);
 };
 }
 #endif

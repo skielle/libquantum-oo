@@ -5,13 +5,8 @@
 #include <utility>
 
 #include "channelListener.h"
-#include "classicRegister.h"
 #include "echoRunnable.h"
-#include "gates.cpp"
-#include "silentEvil.h"
 #include "system.h"
-#include "systemMessage.h"
-#include "register.h"
 
 namespace Quantum {
 
@@ -21,9 +16,7 @@ System::System () :
 	server(new QuantumChannel::ChannelListener)
 {
 	shared_ptr<iRunnable> a ( new EchoRunnable() );
-	shared_ptr<iEvil> e ( new SilentEvil() );
 	this->algorithm = a;
-	this->eve = e;
 	this->server->setPort(50051);
 }
 
@@ -55,29 +48,6 @@ System* System::getInstance() {
 		System::systemInstance = new System();
 	}
 	return System::systemInstance;
-}
-
-bool System::isMessageQueueEmpty() {
-	return this->messageQueue.empty();
-}
-
-SystemMessage System::getMessageType() {
-	return this->messageQueue.front().first;
-}
-
-int System::getMessageAddress() {
-	return this->messageQueue.front().second;
-}
-
-int System::addRegister(shared_ptr<iRegister> reg, SystemMessage message) {
-	registers.push_back(reg);
-	messageQueue.push(
-		pair<SystemMessage, int>(message, registers.size() -1));
-	return registers.size() - 1;
-}
-
-shared_ptr<iRegister> System::getRegister(int hash) {
-	return registers.at(hash);
 }
 
 int System::getListenerPort() {
