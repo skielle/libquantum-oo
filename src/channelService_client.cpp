@@ -17,6 +17,8 @@
 #include "quantumMessage.pb.h"
 #include "qubit.h"
 #include "channelService_client.h"
+#include "channel.h"
+#include "remotePeer.h"
 
 using namespace std;
 using namespace Quantum;
@@ -30,6 +32,25 @@ ChannelService_client::ChannelService_client(string server, int port)
 		)
 	) ) {}
 
+bool ChannelService_client::SendCallbackPort(int port) {
+	QuantumMessage::PortMessage portMsg;
+	portMsg.set_port(port);
+	QuantumMessage::PIDMessage pidMsg;
+	grpc::ClientContext ctx;
+
+	grpc::Status status = stub_->SendCallbackPort(&ctx, portMsg, &pidMsg);
+
+	int pid = pidMsg.pid();
+
+	RemotePeerList* rpl = RemotePeerList::getInstance();
+
+	string peerIP = Channel::getIPFromCtxString(ctx.peer().data());
+	int peerPort = Channel::getPortFromCtxString(ctx.peer().data());	
+	
+
+	return status.ok();
+}
+
 bool ChannelService_client::SendQubit(shared_ptr<Qubit> q) {
 	QuantumMessage::QubitMessage qm;
 	qm = q->serialize();
@@ -40,7 +61,6 @@ bool ChannelService_client::SendQubit(shared_ptr<Qubit> q) {
 
 	string remoteSystem = ctx.peer().data();
 
-	printf("Server:  %s\r\n", remoteSystem.c_str());
 
 	return status.ok();
 }

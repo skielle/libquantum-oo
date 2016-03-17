@@ -23,9 +23,17 @@ message ComplexMessage {
 message VoidMessage {
 }
 
+message PortMessage {
+	int32 port = 1;
+}
+
+message PIDMessage {
+	int32 pid = 1;
+}
+
 service QuantumChannel {
 	rpc SendMatrix(MatrixMessage) returns (VoidMessage) {}
-	rpc SendCallbackPort(int32) returns(VoidMessage) {}
+	rpc SendCallbackPort(PortMessage) returns(PIDMessage) {}
 	rpc SendQubit(QubitMessage) returns (VoidMessage) {}
 	rpc EventPairMeasureStart(QubitMessage) returns (VoidMessage) {}
 	rpc EventPairMeasureFinish(QubitMessage) returns (VoidMessage) {}

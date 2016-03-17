@@ -28,6 +28,7 @@ void ChannelListener::setPort(int inPort) {
 void ChannelListener::Run() {
 	string serverAddr = "0.0.0.0:" + to_string(this->port);
 	ChannelService service;
+	service.setServicePort(this->port);
 	grpc::ServerBuilder builder;
 
 	builder.AddListeningPort(serverAddr, 

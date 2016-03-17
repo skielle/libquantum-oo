@@ -9,8 +9,8 @@ GTK_CC=gcc
 CC=g++
 C_LIBFLAGS=-c 
 CFLAGS=-Wall -Wno-sign-compare -g -std=c++11
-C11_LIBFLAGS=-c -std=c++11 -fext-numeric-literals
-C11_FLAGS=-std=c++11 -fext-numeric-literals
+C11_LIBFLAGS=-g -c -std=c++11 -fext-numeric-literals
+C11_FLAGS=-g -std=c++11 -fext-numeric-literals
 LINK=ar
 
 O_PB=bin/quantumMessage.o
@@ -53,8 +53,9 @@ lib_qoosim: protocol_buffers $(OBJECTS)
 		src/channelListener.o \
 		src/channelService.o \
 		src/channelService_client.o \
-		src/remoteVectorMap.o
-		
+		src/remoteVectorMap.o \
+		src/remotePeer.o \
+		src/channel.o	
 
 test_matrix: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
