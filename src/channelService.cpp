@@ -18,6 +18,7 @@
 #include "channelService_client.h"
 #include "remoteVectorMap.h"
 #include "qubit.h"
+#include "qubitMap.h"
 #include "remotePeer.h"
 #include "channel.h"
 
@@ -32,25 +33,16 @@ grpc::Status ChannelService::SendCallbackPort(grpc::ServerContext* context,
 	
 	string delim = ":";
 	string peerIP;
-	int peerClientPort;
 
 	RemotePeerList* rpl = RemotePeerList::getInstance();
 
 	int peerServicePort = request->port();
 
 	peerIP = Channel::getIPFromCtxString(context->peer().data());
-	peerClientPort = Channel::getPortFromCtxString(context->peer().data());
 
 	int peerIndex = rpl->lookupPeerByServicePort(peerIP, peerServicePort);
-	rpl->peerList.at(peerIndex).peerClientPort = peerClientPort;
 
-	if ( rpl->peerList.at(peerIndex).peerPID == 0 
-		&& peerServicePort != 0) {
-		QuantumChannel::ChannelService_client csc(
-			rpl->peerList.at(peerIndex).peerIP,
-			rpl->peerList.at(peerIndex).peerServicePort);
-			csc.SendCallbackPort();
-	}
+	rpl->peerList.at(peerIndex).peerPID = request->pid();
 
 	reply->set_pid(getpid());
 	return grpc::Status::OK;
@@ -69,6 +61,7 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 	localIndex = RemoteVectorMap::getInstance()->getLocalIndex(
 		remoteSystem, q->v->getIndex());
 	q->v->setIndex(localIndex);
+	QubitMap::getInstance()->mapEntries.push_back(q);
 
 //apply any catch-up operations on the qubit
 

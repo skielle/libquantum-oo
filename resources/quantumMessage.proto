@@ -25,6 +25,7 @@ message VoidMessage {
 
 message PortMessage {
 	int32 port = 1;
+	int32 pid = 2;
 }
 
 message PIDMessage {

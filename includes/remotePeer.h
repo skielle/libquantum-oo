@@ -15,7 +15,6 @@ namespace Quantum {
 class RemotePeerEntry {
 	public:
 		string peerIP = "";
-		int peerClientPort = 0;
 		int peerServicePort = 0;
 		int peerPID = 0;
 };
@@ -31,7 +30,6 @@ class RemotePeerList {
 		
 		int lookupPeerByPID(string ip, int pid);
 		int lookupPeerByServicePort(string ip, int port);
-		int lookupPeerByClientPort(string ip, int port);
 };
 }
 #endif

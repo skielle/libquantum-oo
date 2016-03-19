@@ -5,6 +5,8 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <grpc/grpc.h>
 #include <grpc++/support/channel_arguments.h>
@@ -35,6 +37,7 @@ ChannelService_client::ChannelService_client(string server, int port)
 bool ChannelService_client::SendCallbackPort() {
 	QuantumMessage::PortMessage portMsg;
 	portMsg.set_port(Channel::getServicePort());
+	portMsg.set_pid(getpid());
 	QuantumMessage::PIDMessage pidMsg;
 	grpc::ClientContext ctx;
 
@@ -46,7 +49,10 @@ bool ChannelService_client::SendCallbackPort() {
 
 	string peerIP = Channel::getIPFromCtxString(ctx.peer().data());
 	int peerPort = Channel::getPortFromCtxString(ctx.peer().data());	
-	
+
+	int peerID = rpl->lookupPeerByServicePort(peerIP, peerPort);
+
+	rpl->peerList.at(peerID).peerPID = pid;
 
 	return status.ok();
 }

@@ -57,7 +57,8 @@ lib_qoosim: protocol_buffers $(OBJECTS)
 		src/remotePeer.o \
 		src/channel.o \
 		src/system.o \
-		src/echoRunnable.o	
+		src/echoRunnable.o \
+		src/echoClientRunnable.o	
 
 test_matrix: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
@@ -117,10 +118,16 @@ test_channel: clean lib_qoosim
 
 test_system: clean lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
-	tests/test_runnableEchoServer.cpp \
+	tests/test_echoServerRunnable.cpp \
  	$(O_QOOSIM) \
 	$(O_PB) $(O_PB_GRPC) \
-	-o bin/test_runnableEchoServer
+	-o bin/test_echoServerRunnable
+
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
+	tests/test_echoClientRunnable.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
+	-o bin/test_echoClientRunnable
 
 libquantum-oo: protocol_buffers
 	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) $(O_PB) $(O_PB_GRPC) \

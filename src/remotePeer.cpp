@@ -63,23 +63,4 @@ int RemotePeerList::lookupPeerByServicePort(string ip, int port) {
 	}
 }
 
-int RemotePeerList::lookupPeerByClientPort(string ip, int port) {
-	int i;
-
-	for ( i = 0; i < this->peerList.size(); i++ ) {
-		if ( this->peerList.at(i).peerIP == ip &&
-			this->peerList.at(i).peerClientPort == port ) {
-			return i;
-		}
-	}
-
-	if ( i == this->peerList.size() ) {
-		RemotePeerEntry rpe;
-		rpe.peerIP = ip;
-		rpe.peerClientPort = port;
-		this->peerList.push_back(rpe);
-		return i;
-	}
-}
-
 }
