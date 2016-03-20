@@ -50,7 +50,7 @@ grpc::Status ChannelService::SendCallbackPort(grpc::ServerContext* context,
 
 grpc::Status ChannelService::SendQubit(grpc::ServerContext* context, 
 	const QuantumMessage::QubitMessage* request, 
-	QuantumMessage::VoidMessage* reply) {
+	QuantumMessage::RemoteIndexMessage* reply) {
 	int localIndex = 0;
 	string remoteSystem = context->peer().data();
 
@@ -63,6 +63,7 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 	q->v->setIndex(localIndex);
 	QubitMap::getInstance()->mapEntries.push_back(q);
 
+	reply->remoteindex() = localIndex;
 //apply any catch-up operations on the qubit
 
 //store the qubit in the system register?

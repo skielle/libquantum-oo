@@ -2,18 +2,23 @@
  * stateVector.h
  */
 
+#include <vector>
+
 #include "matrix.h"
+#include "stateVectorOperation.h"
 
 #ifndef __QUANTUM_STATE_VECTOR
 #define __QUANTUM_STATE_VECTOR
 
 namespace Quantum {
 class Qubit;
+
 class StateVector: public enable_shared_from_this<StateVector> {
 	private:
 		int index; 
 		Matrix qsv;
 	public:
+		vector<StateVectorOperation> opHistory;
 		StateVector();
 		StateVector(int bitWidth);
 		StateVector(Matrix m);
@@ -33,6 +38,7 @@ class StateVector: public enable_shared_from_this<StateVector> {
 		void print();
 		int getWidth();
 		void reduce();
+		void sync();
 		bool isEntangled(int position);
 		static bool isBitSet(int index, int position);
 		void swapBits(int position1, int position2);

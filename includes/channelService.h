@@ -25,7 +25,7 @@ class ChannelService final : public QuantumMessage::QuantumChannel::Service {
 
 	grpc::Status SendQubit(grpc::ServerContext* context,
 		const QuantumMessage::QubitMessage* request,
-		QuantumMessage::VoidMessage* reply) override;
+		QuantumMessage::RemoteIndexMessage* reply) override;
 
 /*
 	grpc::Status SendEntangledRegister(grpc::ServerContext* context, 

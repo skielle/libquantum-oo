@@ -4,11 +4,13 @@
 #include <algorithm>
 #include <math.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "matrix.h"
 #include "qubit.h"
 #include "qubitMap.h"
 #include "stateVector.h"
+#include "stateVectorOperation.h"
 
 using namespace std;
 
@@ -57,7 +59,8 @@ void StateVector::applyOperation(Matrix operation, vector<int> inputs) {
 	}
 
 	for ( i = inputs.size(); i < this->getWidth(); i++ ) {
-		expandedOperation = Matrix::matrixTensor(Matrix::identity(), expandedOperation);
+		expandedOperation = Matrix::matrixTensor(Matrix::identity(),
+			 expandedOperation);
 	}
 
 	scratch = Matrix::matrixMultiply(expandedOperation, scratch);
@@ -66,6 +69,7 @@ void StateVector::applyOperation(Matrix operation, vector<int> inputs) {
 		this->qsv.set(0, i, scratch.get(0, rowMap.at(i)));
 	}
 	this->reduce();
+	this->opHistory.push_back(StateVectorOperation(operation, inputs));
 }
 
 void StateVector::applyOperation(Matrix operation, 
@@ -123,7 +127,8 @@ vector<int> StateVector::generateRowMap(vector<int> inputs) {
 	for ( i = 0; i < this->qsv.getRows(); i++ ) {
 		rowMap.at(i) = 0;
 		for ( j = 0; j < positionMap.size(); j++ ) {
-			rowMap.at(i) += ((( i >> (zWidth - j) ) % 2) << (zWidth - positionMap.at(j)));
+			rowMap.at(i) += ((( i >> (zWidth - j) ) % 2) 
+					<< (zWidth - positionMap.at(j)));
 		}
 	}
 
@@ -256,6 +261,10 @@ int StateVector::measure(int position, int forceResult) {
 
 	this->reduce();
 	return forceResult;
+}
+
+void sync() {
+
 }
 
 Matrix StateVector::toMatrix() {

@@ -3,10 +3,10 @@ syntax = "proto3";
 package QuantumMessage;
 
 message QubitMessage {
-	int32 protocol_messageType = 1;
-	int32 position = 2;
-	int32 vectorIndex = 3;
-	MatrixMessage m = 4;
+	int32 position = 1;
+	int32 vectorIndex = 2;
+	MatrixMessage m = 3;
+	repeated StateVectorOperationMessage history = 4;
 }
 
 message MatrixMessage {
@@ -18,6 +18,17 @@ message MatrixMessage {
 message ComplexMessage {
 	float real = 1;
 	float imaginary = 2;
+}
+
+message MeasurementMessage {
+	int32 position = 1;
+	int32 vectorIndex = 2;
+	int32 result = 3;
+}
+
+message StateVectorOperationMessage {
+	MatrixMessage operation = 1;
+	repeated int32 arguments = 2;
 }
 
 message VoidMessage {
@@ -32,10 +43,14 @@ message PIDMessage {
 	int32 pid = 1;
 }
 
+message RemoteIndexMessage {
+	int32 remoteindex = 1;
+}
+
 service QuantumChannel {
 	rpc SendMatrix(MatrixMessage) returns (VoidMessage) {}
 	rpc SendCallbackPort(PortMessage) returns(PIDMessage) {}
-	rpc SendQubit(QubitMessage) returns (VoidMessage) {}
+	rpc SendQubit(QubitMessage) returns (RemoteIndexMessage) {}
 	rpc EventPairMeasureStart(QubitMessage) returns (VoidMessage) {}
 	rpc EventPairMeasureFinish(QubitMessage) returns (VoidMessage) {}
 }

@@ -44,7 +44,21 @@ int RemoteVectorMap::getLocalIndex(string remoteSystem, int remoteIndex) {
 
 	return i;
 }
-	
+
+int RemoteVectorMap::getMapEntryIfRemote(int localIndex, int position) {
+	int i = 0;
+
+	for ( i = 0; i < this->mapEntries.size(); i++ ) {
+		if ( this->mapEntries.at(i).localIndex == localIndex
+			&& this->mapEntries.at(i).position == position ) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+
 RemoteVectorMap* RemoteVectorMap::getInstance() {
 	if ( RemoteVectorMap::mapInstance == 0 ) {
 		RemoteVectorMap::mapInstance = new RemoteVectorMap();

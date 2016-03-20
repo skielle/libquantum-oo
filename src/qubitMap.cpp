@@ -19,12 +19,12 @@ QubitMap* QubitMap::mapInstance = 0;
 
 QubitMap::QubitMap() {
 	this->mapEntries = vector< shared_ptr<Qubit> >();
-	this->vectorIndex = 0;
+	this->mapIndex = 0;
 	srand(time(NULL));
 }
 
 int QubitMap::getNewIndex() {
-	return this->vectorIndex++;
+	return this->mapIndex++;
 }
 
 QubitMap* QubitMap::getInstance() {

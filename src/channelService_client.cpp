@@ -59,15 +59,21 @@ bool ChannelService_client::SendCallbackPort() {
 
 bool ChannelService_client::SendQubit(shared_ptr<Qubit> q) {
 	QuantumMessage::QubitMessage qm;
-	qm = q->serialize();
-	QuantumMessage::VoidMessage rc;
+	QuantumMessage::RemoteIndexMessage rc;
 	grpc::ClientContext ctx;
 
+	qm = q->serialize();
+	
 	grpc::Status status = stub_->SendQubit(&ctx, qm, &rc);
 
 	string remoteSystem = ctx.peer().data();
+	int remoteIndex = rc.remoteindex();
+	int localIndex = qm.vectorindex();
+	int position = qm.position();
 
-
+	printf("Sent qubit position %i, vector %i to system %s, vector %i.\r\n",
+		position, localIndex, remoteSystem.c_str(), remoteIndex);
+	
 	return status.ok();
 }
 

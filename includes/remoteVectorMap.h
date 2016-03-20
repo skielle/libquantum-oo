@@ -16,9 +16,10 @@ using namespace std;
 namespace Quantum {
 class RemoteVectorMapEntry {
 	public:
+		int localIndex;
+		int position;
 		string remoteSystem;
 		int remoteIndex;
-		int localIndex;
 };
 
 class RemoteVectorMap {
@@ -29,7 +30,7 @@ class RemoteVectorMap {
 		vector<RemoteVectorMapEntry> mapEntries;
 
 		int getLocalIndex(string remoteSystem, int remoteIndex);
-		
+		int getMapEntryIfRemote(int localIndex, int position);
 		static RemoteVectorMap* getInstance();
 };
 }
