@@ -21,6 +21,7 @@
 #include "channelService_client.h"
 #include "channel.h"
 #include "remotePeer.h"
+#include "__stub_remoteQubit.h"
 
 using namespace std;
 using namespace Quantum;
@@ -33,6 +34,24 @@ ChannelService_client::ChannelService_client(string server, int port)
 	//		grpc::ChannelArguments()
 		)
 	) ) {}
+
+bool ChannelService_client::SendMeasurementMessage(
+	int localIndex, int position, int result) {
+	QuantumMessage::MeasurementMessage measurement;
+	QuantumMessage::VoidMessage rc;
+	grpc::ClientContext ctx;
+
+	measurement.set_vectorindex(localIndex);
+	measurement.set_position(position);
+	measurement.set_pid(getpid());
+	measurement.set_result(result);
+
+	grpc::Status status = 
+		stub_->SendMeasurementMessage(
+				&ctx, measurement, &rc);
+
+	return status.ok();
+}
 
 bool ChannelService_client::SendCallbackPort() {
 	QuantumMessage::PortMessage portMsg;
@@ -63,16 +82,21 @@ bool ChannelService_client::SendQubit(shared_ptr<Qubit> q) {
 	grpc::ClientContext ctx;
 
 	qm = q->serialize();
+	qm.set_pid(getpid());
 	
 	grpc::Status status = stub_->SendQubit(&ctx, qm, &rc);
 
-	string remoteSystem = ctx.peer().data();
-	int remoteIndex = rc.remoteindex();
-	int localIndex = qm.vectorindex();
-	int position = qm.position();
+	q->v->remoteQubits.at(q->position).remoteSystem =
+		Channel::getIPFromCtxString(ctx.peer().data());
+	q->v->remoteQubits.at(q->position).remotePort =
+		Channel::getPortFromCtxString(ctx.peer().data());
+	q->v->remoteQubits.at(q->position).remotePID = rc.remotepid();
+	q->v->remoteQubits.at(q->position).remoteIndex = rc.remoteindex();
 
 	printf("Sent qubit position %i, vector %i to system %s, vector %i.\r\n",
-		position, localIndex, remoteSystem.c_str(), remoteIndex);
+		q->position, q->v->getIndex(),
+		q->v->remoteQubits.at(q->position).remoteSystem.c_str(),
+		q->v->remoteQubits.at(q->position).remoteIndex);
 	
 	return status.ok();
 }

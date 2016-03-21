@@ -26,6 +26,8 @@ class ChannelService_client :
 	public:
 		ChannelService_client(string server, int port);
 
+		bool SendMeasurementMessage(
+			int localIndex, int position, int result);
 		bool SendQubit(shared_ptr<Qubit> q);
 		bool SendCallbackPort();
 };

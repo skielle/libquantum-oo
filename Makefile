@@ -53,12 +53,12 @@ lib_qoosim: protocol_buffers $(OBJECTS)
 		src/channelListener.o \
 		src/channelService.o \
 		src/channelService_client.o \
-		src/remoteVectorMap.o \
 		src/remotePeer.o \
 		src/channel.o \
 		src/system.o \
 		src/echoRunnable.o \
-		src/echoClientRunnable.o	
+		src/echoClientRunnable.o \
+		src/stateVectorOperation.o
 
 test_matrix: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \

@@ -28,16 +28,10 @@ void EchoRunnable::Run() {
 	while ( true ) {
 		sleep(10);
 		printf("RUNNING RUNNABLE...\r\n");
-		printf("Peer List (%i): \r\n", rpl->peerList.size());
-		for ( i = 0; i < rpl->peerList.size(); i++ ) {
-			printf("Peer PID: %i\r\n", rpl->peerList.at(i).peerPID);
-			printf("Peer IP: %s\r\n", rpl->peerList.at(i).peerIP.c_str());
-			printf("Peer Service Port: %i\r\n", rpl->peerList.at(i).peerServicePort);
-		}
-		printf("Qubit List: \r\n");
-		for ( i = 0; i < qm->mapEntries.size(); i++ ) {
-			printf("Qubit: %i in vector %i\r\n", qm->mapEntries.at(i)->position, qm->mapEntries.at(i)->v->getIndex());
-			qm->mapEntries.at(i)->print();
+		for ( i = 0; i < qm->numQubits(); i++ ) {
+			shared_ptr<Qubit> q = qm->getQubit(i);
+			printf("Qubit: %i in vector %i\r\n", q->position, q->v->getIndex());
+			q->print();
 		}
 	}
 }

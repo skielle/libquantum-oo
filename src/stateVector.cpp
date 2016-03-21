@@ -2,13 +2,16 @@
  * stateVector.cpp
  */
 #include <algorithm>
+#include <complex.h>
 #include <math.h>
 #include <stdlib.h>
 #include <vector>
 
+#include "channelService_client.h"
 #include "matrix.h"
 #include "qubit.h"
 #include "qubitMap.h"
+#include "remotePeer.h"
 #include "stateVector.h"
 #include "stateVectorOperation.h"
 
@@ -19,12 +22,12 @@ StateVector::StateVector() : StateVector(1) {
 }
 
 StateVector::StateVector(int bitWidth) 
-	: qsv(1, pow(2, bitWidth)) {
+	: qsv(1, pow(2, bitWidth)), remoteQubits(bitWidth) {
 	this->qsv.set(0, 0, 1);
 }
 
 StateVector::StateVector(Matrix m) 
-	: qsv(m) {
+	: qsv(m), remoteQubits(log(m.getRows())/log(2)) {
 } 
 
 void StateVector::setIndex(int newIndex) {
@@ -39,6 +42,10 @@ void StateVector::applyOperation(Matrix operation, int input1) {
 	vector<int> inputs(1);
 	inputs.at(0) = input1;
 	this->applyOperation(operation, inputs);
+}
+
+void StateVector::resize(int newSize) {
+	this->remoteQubits.resize(newSize);
 }
 
 void StateVector::applyOperation(Matrix operation, int input1, int input2) {
@@ -86,12 +93,12 @@ void StateVector::applyOperation(Matrix operation,
 			Matrix temp = Matrix::matrixTensor( 
 					inputs.at(i)->v->qsv, this->qsv);
 
-			for ( j = 0; j < m->mapEntries.size(); j++ ) {
+			for ( j = 0; j < m->numQubits(); j++ ) {
 				if ( inputIndex 
-					== m->mapEntries.at(j)->v->index ) {
-					m->mapEntries.at(j)->position =+ 
+					== m->getQubit(j)->v->index ) {
+					m->getQubit(j)->position =+ 
 						this->getWidth();
-					m->mapEntries.at(j)->v = 
+					m->getQubit(j)->v = 
 						shared_from_this();
 				}
 			}
@@ -104,6 +111,7 @@ void StateVector::applyOperation(Matrix operation,
 		inputPositions.at(i) = inputs.at(i)->position;
 	}
 	this->applyOperation(operation, inputPositions);
+	this->resize(this->getWidth());
 }
 
 vector<int> StateVector::generateRowMap(vector<int> inputs) {
@@ -186,18 +194,17 @@ void StateVector::reduce() {
 			this->qsv = scratch;
 			this->qsv.setRows(this->qsv.getRows() / 2);
 
-			for ( j = 0; j < m->mapEntries.size(); j++ ) {
-				if ( m->mapEntries.at(j)->v->index 
+			for ( j = 0; j < m->numQubits(); j++ ) {
+				if ( m->getQubit(j)->v->index 
 					== this->index && 
-					m->mapEntries.at(j)->position == i ) {
-					m->mapEntries.erase(
-						m->mapEntries.begin()+j);
+					m->getQubit(j)->position == i ) {
+					m->deleteQubit(j);
 					Qubit::create();
 				}
-				if ( m->mapEntries.at(j)->v->index
+				if ( m->getQubit(j)->v->index
 					== this->index && 
-					m->mapEntries.at(j)->position > i ) {
-					m->mapEntries.at(j)->position--;
+					m->getQubit(j)->position > i ) {
+					m->getQubit(j)->position--;
 				} 
 			}
 		}
@@ -214,11 +221,12 @@ double StateVector::getAlpha(int position) {
 
 	for ( i = 0; i < this->qsv.getRows(); i++ ) {
 		if ( !isBitSet(i, position) ) {
-			alpha += abs(this->qsv.get(0, i));
+			alpha += pow(real(qsv.get(0, i)), 2) +
+				pow(imag(qsv.get(0, i)), 2);
 		}
 	}
 
-	return sqrt(alpha);
+	return alpha;
 }	
 
 double StateVector::getBeta(int position) {
@@ -227,7 +235,8 @@ double StateVector::getBeta(int position) {
 
 	for ( i = 0; i < this->qsv.getRows(); i++ ) {
 		if ( isBitSet(i, position) ) {
-			beta += abs(this->qsv.get(0, i));
+			beta +=	pow(real(qsv.get(0, i)), 2) +
+				pow(imag(qsv.get(0, i)), 2);
 		}
 	}
 
@@ -246,20 +255,45 @@ int StateVector::measure(int position) {
 }
 
 int StateVector::measure(int position, int forceResult) {
+	this->measure(position, forceResult, true);
+}
+
+int StateVector::measure(int position, int forceResult, 
+	bool propagate) {
 	int i;
-	int zWidth = this->getWidth() - 1;
-	
+	vector<int> peersNotified;
+
 	if ( forceResult != 0 ) {
 		forceResult = 1;
 	}
 
 	for ( i = 0; i < this->qsv.getRows(); i++ ) {
-		if ( ( i >> ( zWidth - position ) ) % 2 != forceResult ) {
+		if ( forceResult == 0 && this->isBitSet(i, position) ) {
+			this->qsv.set(0, i, 0);
+		}
+		if ( forceResult == 1 && !this->isBitSet(i, position) ) {
 			this->qsv.set(0, i, 0);
 		}
 	}
 
-	this->reduce();
+	if ( propagate ) {
+		for ( i = 0; i < this->getWidth(); i++ ) {
+			if ( this->remoteQubits.at(i).remoteSystem 
+				!= "" ) {
+				QuantumChannel::ChannelService_client
+				csc(this->remoteQubits.at(i)
+					.remoteSystem,
+					this->remoteQubits.at(i)
+					.remotePort);
+
+ 				csc.SendMeasurementMessage(
+					this->getIndex(), 
+					position, forceResult);
+			}
+		}
+	}
+	
+//	this->reduce();
 	return forceResult;
 }
 

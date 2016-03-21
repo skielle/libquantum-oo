@@ -7,6 +7,7 @@ message QubitMessage {
 	int32 vectorIndex = 2;
 	MatrixMessage m = 3;
 	repeated StateVectorOperationMessage history = 4;
+	int32 pid = 5;
 }
 
 message MatrixMessage {
@@ -23,7 +24,8 @@ message ComplexMessage {
 message MeasurementMessage {
 	int32 position = 1;
 	int32 vectorIndex = 2;
-	int32 result = 3;
+	int32 pid = 3;
+	int32 result = 4;
 }
 
 message StateVectorOperationMessage {
@@ -45,12 +47,12 @@ message PIDMessage {
 
 message RemoteIndexMessage {
 	int32 remoteindex = 1;
+	int32 remotepid = 2;
 }
 
 service QuantumChannel {
 	rpc SendMatrix(MatrixMessage) returns (VoidMessage) {}
 	rpc SendCallbackPort(PortMessage) returns(PIDMessage) {}
 	rpc SendQubit(QubitMessage) returns (RemoteIndexMessage) {}
-	rpc EventPairMeasureStart(QubitMessage) returns (VoidMessage) {}
-	rpc EventPairMeasureFinish(QubitMessage) returns (VoidMessage) {}
+	rpc SendMeasurementMessage(MeasurementMessage) returns (VoidMessage) {}
 }

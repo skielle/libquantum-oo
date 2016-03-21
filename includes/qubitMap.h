@@ -17,9 +17,21 @@ class QubitMap {
 	private:
 		QubitMap();
 		static QubitMap* mapInstance;
-		int vectorIndex;
+		int mapIndex;
+		vector< shared_ptr<Qubit> > qubitEntries;
+		vector< shared_ptr<StateVector> > stateVectorEntries; 
 	public:
-		vector< shared_ptr<Qubit> > mapEntries;
+		void addQubit(Qubit q);
+		void addQubit(shared_ptr<Qubit> q);
+		int numQubits();
+		shared_ptr<Qubit> getQubit(int i);
+		void deleteQubit(int i);
+
+		void addStateVector(StateVector v);
+		void addStateVector(shared_ptr<StateVector> v);
+		int numStateVectors();
+		shared_ptr<StateVector> getStateVector(int i);
+		void deleteStateVector(int i);
 
 		int getNewIndex();
 		static QubitMap* getInstance();

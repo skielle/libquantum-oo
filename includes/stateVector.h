@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "matrix.h"
+#include "__stub_remoteQubit.h"
 #include "stateVectorOperation.h"
 
 #ifndef __QUANTUM_STATE_VECTOR
@@ -19,11 +20,13 @@ class StateVector: public enable_shared_from_this<StateVector> {
 		Matrix qsv;
 	public:
 		vector<StateVectorOperation> opHistory;
+		vector<RemoteQubit> remoteQubits;
 		StateVector();
 		StateVector(int bitWidth);
 		StateVector(Matrix m);
 		void setIndex(int newIndex);
 		int getIndex();
+		void resize(int newSize);
 		void applyOperation(Matrix operation, int position);
 		void applyOperation(Matrix operation, int input1, int input2);
 		void applyOperation(Matrix operation, vector<int> inputs);
@@ -34,6 +37,8 @@ class StateVector: public enable_shared_from_this<StateVector> {
 		double getBeta(int position);
 		int measure(int position);
 		int measure(int position, int forceResult);
+		int measure(int position, int forceResult,
+			bool propagate);
 		void updateSystemsTable();
 		void print();
 		int getWidth();

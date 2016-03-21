@@ -28,12 +28,13 @@ void Qubit::init() {
 	this->position = 0;
 
 	this->v->setIndex(QubitMap::getInstance()->getNewIndex());
+	QubitMap::getInstance()->addStateVector(this->v);
 }
 
 shared_ptr<Qubit> Qubit::create() {
 	shared_ptr<Qubit> m (new Qubit);
 
-        QubitMap::getInstance()->mapEntries.push_back(m);
+        QubitMap::getInstance()->addQubit(m);
 	return m;
 }
 

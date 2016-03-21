@@ -18,9 +18,49 @@ namespace Quantum {
 QubitMap* QubitMap::mapInstance = 0;
 
 QubitMap::QubitMap() {
-	this->mapEntries = vector< shared_ptr<Qubit> >();
+	this->qubitEntries = vector< shared_ptr<Qubit> >();
 	this->mapIndex = 0;
 	srand(time(NULL));
+}
+
+void QubitMap::addQubit(Qubit q) {
+	this->addQubit(make_shared<Qubit>(q));
+}
+
+void QubitMap::addQubit(shared_ptr<Qubit> q) {
+	this->qubitEntries.push_back(q);
+}
+
+int QubitMap::numQubits() {
+	return this->qubitEntries.size();
+}
+
+shared_ptr<Qubit> QubitMap::getQubit(int i) {
+	return this->qubitEntries.at(i);
+}
+
+void QubitMap::deleteQubit(int i) {
+	this->qubitEntries.erase(this->qubitEntries.begin()+i);
+}	
+
+void QubitMap::addStateVector(StateVector v) {
+	this->addStateVector(make_shared<StateVector>(v));
+}
+
+void QubitMap::addStateVector(shared_ptr<StateVector> v) {
+	this->stateVectorEntries.push_back(v);
+}
+
+int QubitMap::numStateVectors() {
+	return this->stateVectorEntries.size();
+}
+
+shared_ptr<StateVector> QubitMap::getStateVector(int i) {
+	return this->stateVectorEntries.at(i);
+}
+
+void QubitMap::deleteStateVector(int i) {
+	this->stateVectorEntries.erase(this->stateVectorEntries.begin()+i);
 }
 
 int QubitMap::getNewIndex() {
