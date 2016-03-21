@@ -165,11 +165,11 @@ void StateVector::reduce() {
 		return;
 	}
 
-	for ( i = 0; i < this->getWidth(); i++ ) {
+	for ( i = this->getWidth() - 1; i >= 0; i-- ) {
 		firstValueFound = -1;
 		isBitEntangled = false;
 		for (j = 0; j < this->qsv.getRows(); j++ ) {
-			currentValue = StateVector::isBitSet(j, zWidth -i);
+			currentValue = StateVector::isBitSet(j, i);
 			if ( abs(this->qsv.get(0, j)) > DOUBLE_ZERO ) {
 				if ( firstValueFound == -1 ) {
 					firstValueFound = currentValue; 
@@ -180,26 +180,34 @@ void StateVector::reduce() {
 				}
 			}
 		}
-		if ( !isBitEntangled ) {
+		if ( !isBitEntangled && this->getWidth() > 1 ) {
 			reduceBit.at(0) = i;
 			vector<int> rowMap = generateRowMap(reduceBit);
 			Matrix scratch( this->qsv.getCols(), 
-				this->qsv.getRows() );
+				this->qsv.getRows() / 2 );
 
-			for ( k = 0; k < rowMap.size(); k++ ) {
-				scratch.set(0, rowMap.at(k), 
-					this->qsv.get(0, k));
+			int start = scratch.getRows() * firstValueFound;
+			int end = start + scratch.getRows();
+
+			for ( k = start; k < end; k++ ) {
+				scratch.set(0, k - start, 
+					this->qsv.get(0, rowMap.at(k)));
 			}
 
 			this->qsv = scratch;
-			this->qsv.setRows(this->qsv.getRows() / 2);
 
 			for ( j = 0; j < m->numQubits(); j++ ) {
 				if ( m->getQubit(j)->v->index 
 					== this->index && 
 					m->getQubit(j)->position == i ) {
 					m->deleteQubit(j);
-					Qubit::create();
+					shared_ptr<Qubit> q = Qubit::create();
+					if ( firstValueFound == 1 ) {
+						Matrix sigmaX = Matrix(2,2);
+						sigmaX.set(0, 1, 1);
+						sigmaX.set(1, 0, 1);
+						q->applyMatrix(sigmaX);
+					}
 				}
 				if ( m->getQubit(j)->v->index
 					== this->index && 
@@ -293,7 +301,7 @@ int StateVector::measure(int position, int forceResult,
 		}
 	}
 	
-//	this->reduce();
+	this->reduce();
 	return forceResult;
 }
 

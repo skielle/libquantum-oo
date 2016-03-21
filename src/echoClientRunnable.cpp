@@ -61,5 +61,10 @@ void EchoClientRunnable::Run() {
 		Q.at(i)->print();
 	}
 
+	printf("Qubits known: \r\n");
+	for ( i = 0; i < QubitMap::getInstance()->numQubits(); i++ ) {
+		QubitMap::getInstance()->getQubit(i)->print();
+	}
+
 }
 }
