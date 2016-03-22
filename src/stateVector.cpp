@@ -302,7 +302,24 @@ int StateVector::measure(int position, int forceResult,
 	}
 	
 	this->reduce();
+	this->normalize();
 	return forceResult;
+}
+
+void StateVector::normalize() {
+	int i;
+
+	double total;
+
+	for ( i = 0; i < this->qsv.getRows(); i++ ) {
+		total += abs(this->qsv.get(0, i));
+	}
+
+	printf("total: %f\r\n", total);
+
+	for ( i = 0; i < this->qsv.getRows(); i++ ) {
+		this->qsv.set(0, i, sqrt(pow(this->qsv.get(0, i), 2)/pow(total, 2)));
+	}
 }
 
 void sync() {

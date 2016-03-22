@@ -43,6 +43,7 @@ class StateVector: public enable_shared_from_this<StateVector> {
 		void print();
 		int getWidth();
 		void reduce();
+		void normalize();
 		void sync();
 		bool isEntangled(int position);
 		static bool isBitSet(int index, int position);
