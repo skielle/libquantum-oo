@@ -60,11 +60,11 @@ void EchoClientRunnable::Run() {
 		printf("Measured %i to be %i\r\n", i, Q.at(i)->measure());
 		Q.at(i)->print();
 	}
-
-	printf("Qubits known: \r\n");
-	for ( i = 0; i < QubitMap::getInstance()->numQubits(); i++ ) {
-		QubitMap::getInstance()->getQubit(i)->print();
+	
+	printf("\r\n********** After Measurement **********\r\n\r\n");
+	for ( i = 0; i < Q.size(); i++ ) {
+		printf("Qubit at %i: \r\n", i);
+		Q.at(i)->print();
 	}
-
 }
 }

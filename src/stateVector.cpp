@@ -28,7 +28,7 @@ StateVector::StateVector(int bitWidth)
 
 StateVector::StateVector(Matrix m) 
 	: qsv(m), remoteQubits(log(m.getRows())/log(2)) {
-} 
+}
 
 void StateVector::setIndex(int newIndex) {
 	this->index = newIndex;
@@ -200,13 +200,13 @@ void StateVector::reduce() {
 				if ( m->getQubit(j)->v->index 
 					== this->index && 
 					m->getQubit(j)->position == i ) {
-					m->deleteQubit(j);
-					shared_ptr<Qubit> q = Qubit::create();
+					m->getQubit(j)->init();
+
 					if ( firstValueFound == 1 ) {
 						Matrix sigmaX = Matrix(2,2);
 						sigmaX.set(0, 1, 1);
 						sigmaX.set(1, 0, 1);
-						q->applyMatrix(sigmaX);
+						m->getQubit(j)->applyMatrix(sigmaX);
 					}
 				}
 				if ( m->getQubit(j)->v->index
