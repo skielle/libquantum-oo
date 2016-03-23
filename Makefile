@@ -1,6 +1,6 @@
 PWD=$(shell pwd)
 
-INCS=-I$(PWD)/includes
+INCS=-I$(PWD)/includes -I$(PWD)/includes/gates
 LIBS=-L/usr/local/lib -L$(PWD)/src -lcrypto -lgrpc_unsecure -lgrpc++_unsecure -lgpr -lprotobuf -lpthread -ldl -lssl
 GTK_FLAGS=$(shell pkg-config --cflags gtk+-3.0 vte-2.90)
 GTK_LIBS=$(shell pkg-config --libs gtk+-3.0 vte-2.90)
@@ -19,7 +19,7 @@ O_PB=bin/quantumMessage.o
 O_PB_GRPC=bin/quantumMessage.grpc.o
 O_QOOSIM=bin/lib_qoosim.a
 
-SOURCES=$(wildcard src/*.cpp)
+SOURCES=$(wildcard src/*.cpp src/gates/*.cpp)
 OBJECTS=$(patsubst %.cpp, %.o, $(SOURCES))
 
 RUN_SOURCES=$(wildcard runnables/src/*.cpp)
@@ -28,9 +28,12 @@ RUN_OBJECTS=$(patsubst %.cpp, %.o, $(RUN_SOURCES))
 all:
 
 clean:
-	-rm src/*.o bin/* src/*.pb.cc includes/*.pb.h $(O_PB) $(O_PB_GRPC) $(O_LIBQ)
+	-rm src/*.o bin/* src/*.pb.cc includes/*.pb.h $(O_PB) $(O_PB_GRPC) $(O_LIBQ) includes/gates.h
 
-protocol_buffers: clean
+prep:
+	cat includes/gates/*.h > includes/gates.h
+
+protocol_buffers: clean prep
 	cd resources; protoc --cpp_out=. quantumMessage.proto
 	mv resources/*.h includes
 	mv resources/*.cc src
@@ -67,6 +70,8 @@ lib_qoosim: protocol_buffers $(OBJECTS) $(RUN_OBJECTS)
 		src/channel.o \
 		src/system.o \
 		src/stateVectorOperation.o \
+		src/gates/sigmax.o \
+		src/gates/hadamard.o \
 		runnables/src/echoRunnable.o \
 		runnables/src/echoClientRunnable.o
 

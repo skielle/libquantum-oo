@@ -33,3 +33,4 @@ quantumMessage.pb.cc
 quantumMessage.pb.h
 quantumMessage.grpc.pb.cc
 quantumMessage.grpc.pb.h
+includes/gates.h

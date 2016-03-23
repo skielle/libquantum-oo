@@ -12,6 +12,7 @@
 #include "system.h"
 #include "remotePeer.h"
 #include "qubit.h"
+#include "gates.h"
 #include "qubitMap.h"
 #include "channelService_client.h"
 
@@ -21,11 +22,7 @@ namespace Quantum {
 void EchoClientRunnable::Run() {
 	int i;
 
-	Matrix hadamard = Matrix(2,2);
-	hadamard.set(0,0,1/sqrt(2));
-	hadamard.set(0,1,1/sqrt(2));
-	hadamard.set(1,0,-1/sqrt(2));
-	hadamard.set(1,1,1/sqrt(2));
+	Hadamard hadamard;
 
 	Matrix cnot = Matrix(4,4);
 	cnot.set(0, 0, 1);
