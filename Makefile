@@ -22,6 +22,9 @@ O_QOOSIM=bin/lib_qoosim.a
 SOURCES=$(wildcard src/*.cpp)
 OBJECTS=$(patsubst %.cpp, %.o, $(SOURCES))
 
+RUN_SOURCES=$(wildcard runnables/src/*.cpp)
+RUN_OBJECTS=$(patsubst %.cpp, %.o, $(RUN_SOURCES))
+
 all:
 
 clean:
@@ -40,11 +43,16 @@ protocol_buffers: clean
 		-o $(O_PB_GRPC)
 
 $(OBJECTS): src/%.o :src/%.cpp
-	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) \
+	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
 		-c $< \
 		-o $@
 
-lib_qoosim: protocol_buffers $(OBJECTS)
+$(RUN_OBJECTS): runnables/src/%.o :runnables/src/%.cpp
+	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
+		-c $< \
+		-o $@
+
+lib_qoosim: protocol_buffers $(OBJECTS) $(RUN_OBJECTS)
 	$(LINK) rcs $(O_QOOSIM) \
 		src/complex.o \
 		src/error.o \
@@ -58,9 +66,9 @@ lib_qoosim: protocol_buffers $(OBJECTS)
 		src/remotePeer.o \
 		src/channel.o \
 		src/system.o \
-		src/echoRunnable.o \
-		src/echoClientRunnable.o \
-		src/stateVectorOperation.o
+		src/stateVectorOperation.o \
+		runnables/src/echoRunnable.o \
+		runnables/src/echoClientRunnable.o
 
 test_matrix: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
@@ -119,13 +127,13 @@ test_channel: clean lib_qoosim
 	-o bin/test_client
 
 test_system: clean lib_qoosim
-	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
 	tests/test_echoServerRunnable.cpp \
  	$(O_QOOSIM) \
 	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_echoServerRunnable
 
-	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
 	tests/test_echoClientRunnable.cpp \
  	$(O_QOOSIM) \
 	$(O_PB) $(O_PB_GRPC) \
