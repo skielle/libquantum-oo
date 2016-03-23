@@ -57,14 +57,23 @@ void EchoClientRunnable::Run() {
 	sleep(10);
 
 	for ( i = 0; i < Q.size(); i+=2 ) {
-		printf("Measured %i to be %i\r\n", i, Q.at(i)->measure());
-		Q.at(i)->print();
+		try {
+			printf("Measured %i to be %i\r\n", i, 
+				Q.at(i)->measure());
+			Q.at(i)->print();
+		} catch (int e) {
+			printf("Exception (%i) occurred\r\n", e);
+		}
 	}
 	
 	printf("\r\n********** After Measurement **********\r\n\r\n");
 	for ( i = 0; i < Q.size(); i++ ) {
 		printf("Qubit at %i: \r\n", i);
-		Q.at(i)->print();
+		try {
+			Q.at(i)->print();
+		} catch (int e) {
+			printf("Exception (%i) occurred\r\n", e);
+		}
 	}
 }
 }

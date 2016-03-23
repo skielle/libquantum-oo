@@ -37,13 +37,11 @@ grpc::Status ChannelService::SendMeasurementMessage(
 	
 	QubitMap* qmap = QubitMap::getInstance();
 
-printf("%i, %i\r\n", request->position(), request->result());
 	for ( i = 0; i < qmap->numQubits(); i++ ) {
 		RemoteQubit rq = qmap->getQubit(i)->v->remoteQubits.at(
 			qmap->getQubit(i)->position);
 		if ( rq.remoteSystem != "" 
 			&& rq.remoteIndex == request->vectorindex() ) {
-printf("going to measuring towne.\r\n");
 			qmap->getQubit(i)->v->measure(request->position(), 
 				request->result(), false);
 			break;

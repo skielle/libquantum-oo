@@ -39,6 +39,19 @@ shared_ptr<Qubit> QubitMap::getQubit(int i) {
 	return this->qubitEntries.at(i);
 }
 
+int QubitMap::findQubit(int vectorIndex, int position) {
+	int i;
+	for ( i = 0; i < this->qubitEntries.size(); i++ ) {
+		if ( this->qubitEntries.at(i)->position
+			== position
+			&& this->qubitEntries.at(i)->v->getIndex()
+			== vectorIndex ) {
+			break;
+		}
+	}
+	return i;
+}
+
 void QubitMap::deleteQubit(int i) {
 	this->qubitEntries.erase(this->qubitEntries.begin()+i);
 }	

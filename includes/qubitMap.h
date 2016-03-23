@@ -25,6 +25,7 @@ class QubitMap {
 		void addQubit(shared_ptr<Qubit> q);
 		int numQubits();
 		shared_ptr<Qubit> getQubit(int i);
+		int findQubit(int vectorIndex, int position);
 		void deleteQubit(int i);
 
 		void addStateVector(StateVector v);

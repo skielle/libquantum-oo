@@ -98,6 +98,8 @@ bool ChannelService_client::SendQubit(shared_ptr<Qubit> q) {
 		q->v->remoteQubits.at(q->position).remoteSystem.c_str(),
 		q->v->remoteQubits.at(q->position).remoteIndex);
 	
+	q->dereference();
+	
 	return status.ok();
 }
 

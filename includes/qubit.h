@@ -20,7 +20,7 @@ class Qubit {
 	private:
 		Qubit();
 		Qubit(bool isRemote);
-		
+		bool deleted;		
 	public:
 		shared_ptr<StateVector> v;
 		int position;
@@ -28,9 +28,11 @@ class Qubit {
 		static shared_ptr<Qubit> create();
 		void applyMatrix(Matrix m);
 		void init();
+		void guardDeleted();
 		int measure();
 		int measure(int forceValue);
 		void print();
+		void dereference();
 
 		complex<double> getAlpha();
 		complex<double> getBeta();
