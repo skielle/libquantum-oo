@@ -86,9 +86,10 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 	shared_ptr<Qubit> q (&Qubit::unserialize(request));
 
 //localize indexes for the qubit
-	for ( i = 0; i < qm->numStateVectors(); i++ ) {
+	for ( i = 0; i < qm->numStateVectors() && localIndex == 0; i++ ) {
 		shared_ptr<StateVector> localVector = qm->getStateVector(i);
-		for (j = 0; j < localVector->remoteQubits.size(); j++ ) {
+		for (j = 0; j < localVector->remoteQubits.size() 
+			&& localIndex == 0; j++ ) {
 			if ( localVector->remoteQubits.at(j).remoteSystem 
 					== remoteSystem
 				&& localVector->remoteQubits.at(j).remotePID 
@@ -97,6 +98,8 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 					== remoteIndex ) {
 				localIndex = localVector->getIndex();
 				q->v = localVector;
+				q->v->remoteQubits.at(position).remoteSystem 
+					= "";
 //TODO:  DO CATCHUP HERE
 			}
 		}
@@ -106,19 +109,31 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 		localIndex = QubitMap::getInstance()->getNewIndex();
 		q->v->setIndex(localIndex);
 		qm->addStateVector(q->v);
+		for ( j = 0; j < q->v->remoteQubits.size(); j++ ) {
+			if ( j != position ) {
+				q->v->remoteQubits.at(j).remoteSystem 
+					= remoteSystem;
+				q->v->remoteQubits.at(j).remotePort 
+					= remotePort;
+				q->v->remoteQubits.at(j).remotePID 
+					= remotePID;
+				q->v->remoteQubits.at(j).remoteIndex 
+					= remoteIndex;
+			}
+		}
+			
 	}
-
-	q->v->remoteQubits.at(position).remoteSystem = remoteSystem;
-	q->v->remoteQubits.at(position).remotePort = remotePort;
-	q->v->remoteQubits.at(position).remotePID = remotePID;
-	q->v->remoteQubits.at(position).remoteIndex = remoteIndex;
+	
 	qm->addQubit(q);
 
 	reply->set_remoteindex(localIndex);
 	reply->set_remotepid(getpid());
+
+	/*
 	printf("Recv qubit position %i, vector %i from system %s, pid %i, vector %i\r\n",
 		position, localIndex, remoteSystem.c_str(), 
 		remotePID, remoteIndex);
+	*/
 
 	return grpc::Status::OK;
 }

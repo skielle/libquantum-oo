@@ -93,11 +93,13 @@ bool ChannelService_client::SendQubit(shared_ptr<Qubit> q) {
 	q->v->remoteQubits.at(q->position).remotePID = rc.remotepid();
 	q->v->remoteQubits.at(q->position).remoteIndex = rc.remoteindex();
 
+	/*
 	printf("Sent qubit position %i, vector %i to system %s, vector %i.\r\n",
 		q->position, q->v->getIndex(),
 		q->v->remoteQubits.at(q->position).remoteSystem.c_str(),
 		q->v->remoteQubits.at(q->position).remoteIndex);
-	
+	*/
+
 	q->dereference();
 	
 	return status.ok();

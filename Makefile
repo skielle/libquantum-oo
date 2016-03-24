@@ -28,7 +28,7 @@ RUN_OBJECTS=$(patsubst %.cpp, %.o, $(RUN_SOURCES))
 all:
 
 clean:
-	-rm src/*.o bin/* src/*.pb.cc includes/*.pb.h $(O_PB) $(O_PB_GRPC) $(O_LIBQ) includes/gates.h
+	-rm src/*.o bin/* src/*.pb.cc includes/*.pb.h $(O_PB) $(O_PB_GRPC) $(O_LIBQ) includes/gates.h runnables/src/*.o
 
 prep:
 	cat includes/gates/*.h > includes/gates.h
@@ -73,7 +73,9 @@ lib_qoosim: protocol_buffers $(OBJECTS) $(RUN_OBJECTS)
 		src/gates/sigmax.o \
 		src/gates/hadamard.o \
 		runnables/src/echoRunnable.o \
-		runnables/src/echoClientRunnable.o
+		runnables/src/echoClientRunnable.o \
+		runnables/src/bb84generator_runnable.o \
+		runnables/src/bb84determiner_runnable.o
 
 test_matrix: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
@@ -143,3 +145,16 @@ test_system: clean lib_qoosim
  	$(O_QOOSIM) \
 	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_echoClientRunnable
+
+test_bb84: clean lib_qoosim
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
+	tests/test_bb84Determiner.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
+	-o bin/test_bb84Determiner
+
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
+	tests/test_bb84Generator.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
+	-o bin/test_bb84Generator
