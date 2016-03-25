@@ -37,8 +37,6 @@ int main() {
 	L1->print();
 	L2->print();
 
-	csc.SendCallbackPort();
-	csc.SendCallbackPort();
 	csc.SendQubit(L2);
 	csc.SendQubit(L1);
 }

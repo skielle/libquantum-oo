@@ -8,6 +8,7 @@ message QubitMessage {
 	MatrixMessage m = 3;
 	repeated StateVectorOperationMessage history = 4;
 	int32 pid = 5;
+	int32 callbackPort = 6;
 }
 
 message MatrixMessage {
@@ -26,23 +27,16 @@ message MeasurementMessage {
 	int32 vectorIndex = 2;
 	int32 pid = 3;
 	int32 result = 4;
+	int32 callbackPort = 6;
 }
 
 message StateVectorOperationMessage {
 	MatrixMessage operation = 1;
 	repeated int32 arguments = 2;
+	int32 callbackPort = 6;
 }
 
 message VoidMessage {
-}
-
-message PortMessage {
-	int32 port = 1;
-	int32 pid = 2;
-}
-
-message PIDMessage {
-	int32 pid = 1;
 }
 
 message RemoteIndexMessage {
@@ -50,9 +44,14 @@ message RemoteIndexMessage {
 	int32 remotepid = 2;
 }
 
+message ClassicMessage {
+	string thedata = 1;
+	int32 callbackPort = 6;
+}
+
 service QuantumChannel {
 	rpc SendMatrix(MatrixMessage) returns (VoidMessage) {}
-	rpc SendCallbackPort(PortMessage) returns(PIDMessage) {}
 	rpc SendQubit(QubitMessage) returns (RemoteIndexMessage) {}
+	rpc SendClassicData(ClassicMessage) returns (VoidMessage) {}
 	rpc SendMeasurementMessage(MeasurementMessage) returns (VoidMessage) {}
 }

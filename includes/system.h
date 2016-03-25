@@ -13,6 +13,7 @@
 
 #include "channelListener.h"
 #include "iRunnable.h"
+#include "systemMessage.h"
 
 using namespace std;
 
@@ -24,6 +25,8 @@ class System {
 		System();
 		static System* systemInstance;
 		shared_ptr<QuantumChannel::ChannelListener> server;
+		vector<string> classicData;
+		queue< pair<SystemMessage, int> > messageQueue;
 	public:
 		static System* getInstance();
 
@@ -34,6 +37,13 @@ class System {
 		void stopServer();
 		void setAlgorithm(shared_ptr<iRunnable> a);
 		void runAlgorithm();
+
+		void addMessage(int address);
+		void addMessage(string data);
+		bool isMessageQueueEmpty();
+		int nextMessage();
+		SystemMessage nextMessageType();
+		string getClassicData(int address);
 };
 }
 #endif

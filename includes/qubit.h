@@ -9,6 +9,7 @@
 #include "matrix.h"
 #include "stateVector.h"
 #include "quantumMessage.pb.h"
+#include "remotePeer.h"
 
 #ifndef __QUANTUM_BIT_H
 #define __QUANTUM_BIT_H
@@ -24,6 +25,7 @@ class Qubit {
 	public:
 		shared_ptr<StateVector> v;
 		int position;
+		RemotePeerEntry origin;
 
 		static shared_ptr<Qubit> create();
 		void applyMatrix(Matrix m);

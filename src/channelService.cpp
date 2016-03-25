@@ -21,6 +21,7 @@
 #include "qubitMap.h"
 #include "remotePeer.h"
 #include "channel.h"
+#include "system.h"
 
 using namespace std;
 using namespace Quantum;
@@ -51,24 +52,18 @@ grpc::Status ChannelService::SendMeasurementMessage(
 	return grpc::Status::OK;
 }
 
-grpc::Status ChannelService::SendCallbackPort(grpc::ServerContext* context,
-	const QuantumMessage::PortMessage* request,
-	QuantumMessage::PIDMessage* reply) {
-	
-	RemotePeerList* rpl = RemotePeerList::getInstance();
+grpc::Status ChannelService::SendClassicData(grpc::ServerContext* context,
+	const QuantumMessage::ClassicMessage* request,
+	QuantumMessage::VoidMessage* reply) {
 
-	int peerServicePort = request->port();
-	string peerIP = Channel::getIPFromCtxString(context->peer().data());
+	System* sys = System::getInstance();
+	sys->addMessage(request->thedata());
 
-	int peerIndex = rpl->lookupPeerByServicePort(peerIP, peerServicePort);
-
-	rpl->peerList.at(peerIndex).peerPID = request->pid();
-
-	reply->set_pid(getpid());
 	return grpc::Status::OK;
-}
+}	
 
 grpc::Status ChannelService::SendQubit(grpc::ServerContext* context, 
+	
 	const QuantumMessage::QubitMessage* request, 
 	QuantumMessage::RemoteIndexMessage* reply) {
 	int i, j;
@@ -77,7 +72,7 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 
 	string remoteSystem = 
 		Channel::getIPFromCtxString(context->peer().data());
-	int remotePort = Channel::getPortFromCtxString(context->peer().data());
+	int remotePort = request->callbackport();
 	int remotePID = request->pid();
 	int remoteIndex = request->vectorindex();
 	int position = request->position();
@@ -123,11 +118,17 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 		}
 			
 	}
+
+	q->origin.peerIP = remoteSystem;
+	q->origin.peerServicePort = remotePort;
 	
 	qm->addQubit(q);
 
 	reply->set_remoteindex(localIndex);
 	reply->set_remotepid(getpid());
+
+	System* sys = System::getInstance();
+	sys->addMessage(qm->findQubit(localIndex, position));
 
 	/*
 	printf("Recv qubit position %i, vector %i from system %s, pid %i, vector %i\r\n",

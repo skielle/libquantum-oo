@@ -69,6 +69,7 @@ lib_qoosim: protocol_buffers $(OBJECTS) $(RUN_OBJECTS)
 		src/remotePeer.o \
 		src/channel.o \
 		src/system.o \
+		src/systemMessage.o \
 		src/stateVectorOperation.o \
 		src/gates/sigmax.o \
 		src/gates/hadamard.o \

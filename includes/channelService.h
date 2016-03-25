@@ -19,16 +19,16 @@ using namespace std;
 namespace QuantumChannel {
 class ChannelService final : public QuantumMessage::QuantumChannel::Service {
 	public:
-	grpc::Status SendCallbackPort(grpc::ServerContext* context,
-		const QuantumMessage::PortMessage* request,
-		QuantumMessage::PIDMessage* reply) override;
-
 	grpc::Status SendQubit(grpc::ServerContext* context,
 		const QuantumMessage::QubitMessage* request,
 		QuantumMessage::RemoteIndexMessage* reply) override;
 
 	grpc::Status SendMeasurementMessage(grpc::ServerContext* context,
 		const QuantumMessage::MeasurementMessage* request,
+		QuantumMessage::VoidMessage* reply) override;
+
+	grpc::Status SendClassicData(grpc::ServerContext* context,
+		const QuantumMessage::ClassicMessage* request,
 		QuantumMessage::VoidMessage* reply) override;
 
 /*

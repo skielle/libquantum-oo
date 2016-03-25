@@ -29,7 +29,7 @@ class ChannelService_client :
 		bool SendMeasurementMessage(
 			int localIndex, int position, int result);
 		bool SendQubit(shared_ptr<Qubit> q);
-		bool SendCallbackPort();
+		bool SendClassicData(string theData);
 };
 }
 #endif
