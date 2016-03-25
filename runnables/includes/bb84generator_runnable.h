@@ -12,7 +12,8 @@ using namespace std;
 using namespace Quantum;
 
 namespace Quantum {
-static int BB84_BURST_SIZE = 32;
+static int BB84_BURST_SIZE = 128;
+static int BB84_RAW_SIZE = 512;
 
 class BB84Generator_Runnable : public iRunnable {
 	public:

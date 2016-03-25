@@ -20,8 +20,11 @@ namespace Quantum {
 void BB84Generator_Runnable::Run() {
 	int i;
 
-	vector<int>bases(BB84_BURST_SIZE);
-	vector<int>bits(BB84_BURST_SIZE);
+	string basesChosen;
+	string validBases = "";
+	vector<int> bases(BB84_BURST_SIZE);
+	vector<int> bits(BB84_BURST_SIZE);
+	vector<int> keyMaterial;
 
 	vector< shared_ptr<Qubit> > Q(BB84_BURST_SIZE);
 
@@ -30,28 +33,53 @@ void BB84Generator_Runnable::Run() {
 	SigmaX gSigmaX;
 	Hadamard gHadamard;
 	
-	QuantumChannel::ChannelService_client csc(this->serverIP, this->serverPort);
+	System* sys = System::getInstance();
+	QuantumChannel::ChannelService_client csc(this->serverIP, 
+		this->serverPort);
 
-	for ( i = 0; i < BB84_BURST_SIZE; i++ ) {
-		bases.at(i) = round(rand() / (float)RAND_MAX);
-		bits.at(i) = round(rand() / (float)RAND_MAX);
+	while( keyMaterial.size() < BB84_RAW_SIZE ) {
+		sleep(3);
+		printf("Sending qubits...\r\n");
+		for ( i = 0; i < BB84_BURST_SIZE; i++ ) {
+			bases.at(i) = round(rand() / (float)RAND_MAX);
+			bits.at(i) = round(rand() / (float)RAND_MAX);
 
-		Q.at(i) = Qubit::create();
+			Q.at(i) = Qubit::create();
 
-		if ( bits.at(i) == 1 ) {
-			Q.at(i)->applyMatrix(gSigmaX);
+			if ( bits.at(i) == 1 ) {
+				Q.at(i)->applyMatrix(gSigmaX);
+			}
+
+			if ( bases.at(i) == 1 ) {
+				Q.at(i)->applyMatrix(gHadamard);
+			}
+			csc.SendQubit(Q.at(i));
 		}
 
-		if ( bases.at(i) == 1 ) {
-			Q.at(i)->applyMatrix(gHadamard);
+		printf("Waiting for base message...\r\n");
+		while ( sys->isMessageQueueEmpty() ) { 
+			sleep(1);
 		}
-		csc.SendQubit(Q.at(i));
 
-		if ( bases.at(i) == 0 ) {
-			printf("+%i\r\n", bits.at(i));
-		} else {
-			printf("x%i\r\n", bits.at(i));
+		printf("Processing base message...\r\n");
+		if ( sys->nextMessageType() 
+			== SystemMessage::CLASSIC_DATA_RECEIVED ) {	
+			int address = sys->nextMessage();
+			basesChosen = sys->getClassicData(address);
+
+			validBases = "";
+			for ( i = 0; i < basesChosen.length(); i++ ) {
+				if ( basesChosen.at(i) - '0' == bases.at(i) ) {
+					keyMaterial.push_back(bits.at(i));
+					validBases += "1";
+				} else {
+					validBases += "0";
+				}
+			}
+			printf("Sending matching bases...\r\n");
+			csc.SendClassicData(validBases);
 		}
+		printf("Key Material: %i\r\n", keyMaterial.size());
 	}
 }
 }
