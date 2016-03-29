@@ -75,7 +75,7 @@ void StateVector::applyOperation(Matrix operation, vector<int> inputs) {
 	for ( i = 0; i < rowMap.size(); i++ ) {
 		this->qsv.set(0, i, scratch.get(0, rowMap.at(i)));
 	}
-	this->reduce();
+//	this->reduce();
 	this->opHistory.push_back(StateVectorOperation(operation, inputs));
 }
 
@@ -180,7 +180,8 @@ void StateVector::reduce() {
 				}
 			}
 		}
-		if ( !isBitEntangled && this->getWidth() > 1 ) {
+		if ( !isBitEntangled && this->getWidth() > 1 
+			&& firstValueFound != -1 ) {
 			reduceBit.at(0) = i;
 			vector<int> rowMap = generateRowMap(reduceBit);
 			Matrix scratch( this->qsv.getCols(), 
@@ -232,6 +233,7 @@ double StateVector::getAlpha(int position) {
 			alpha += pow(real(qsv.get(0, i)), 2) +
 				pow(imag(qsv.get(0, i)), 2);
 		}
+
 	}
 
 	return alpha;
@@ -255,7 +257,9 @@ int StateVector::measure(int position) {
 	int value = 0;
 	double measurement = rand() / (float)RAND_MAX;
 
-	if ( this->getAlpha(position) < measurement ) {
+	int zPosition = this->getWidth() - 1 - position;
+
+	if ( this->getAlpha(zPosition) < measurement ) {
 		value = 1;
 	}
 
@@ -271,15 +275,17 @@ int StateVector::measure(int position, int forceResult,
 	int i;
 	vector<int> peersNotified;
 
+	int zPosition = this->getWidth() - 1 - position;
+
 	if ( forceResult != 0 ) {
 		forceResult = 1;
 	}
 
 	for ( i = 0; i < this->qsv.getRows(); i++ ) {
-		if ( forceResult == 0 && this->isBitSet(i, position) ) {
+		if ( forceResult == 0 && this->isBitSet(i, zPosition) ) {
 			this->qsv.set(0, i, 0);
 		}
-		if ( forceResult == 1 && !this->isBitSet(i, position) ) {
+		if ( forceResult == 1 && !this->isBitSet(i, zPosition) ) {
 			this->qsv.set(0, i, 0);
 		}
 	}
@@ -301,7 +307,7 @@ int StateVector::measure(int position, int forceResult,
 		}
 	}
 	
-	this->reduce();
+//	this->reduce();
 	this->normalize();
 	return forceResult;
 }
@@ -309,14 +315,14 @@ int StateVector::measure(int position, int forceResult,
 void StateVector::normalize() {
 	int i;
 
-	double total;
+	double total = 0.0;
 
 	for ( i = 0; i < this->qsv.getRows(); i++ ) {
-		total += abs(this->qsv.get(0, i));
+		total += pow(abs(this->qsv.get(0, i)),2);
 	}
 
 	for ( i = 0; i < this->qsv.getRows(); i++ ) {
-		this->qsv.set(0, i, sqrt(pow(this->qsv.get(0, i), 2)/pow(total, 2)));
+		this->qsv.set(0, i, sqrt(pow(this->qsv.get(0, i), 2)/total));
 	}
 }
 

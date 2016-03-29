@@ -13,7 +13,8 @@ using namespace Quantum;
 
 namespace Quantum {
 static int BB84_BURST_SIZE = 128;
-static int BB84_RAW_SIZE = 512;
+static int BB84_KEY_SIZE = 512;
+static int BB84_RAW_SIZE = 1024;
 
 class BB84Generator_Runnable : public iRunnable {
 	public:

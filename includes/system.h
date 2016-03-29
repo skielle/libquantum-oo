@@ -12,7 +12,9 @@
 #include <vector>
 
 #include "channelListener.h"
+#include "iEvil.h"
 #include "iRunnable.h"
+#include "qubit.h"
 #include "systemMessage.h"
 
 using namespace std;
@@ -22,6 +24,7 @@ namespace Quantum {
 class System {
 	private:
 		shared_ptr<iRunnable> algorithm;
+		shared_ptr<iEvil> evil;
 		System();
 		static System* systemInstance;
 		shared_ptr<QuantumChannel::ChannelListener> server;
@@ -37,6 +40,8 @@ class System {
 		void stopServer();
 		void setAlgorithm(shared_ptr<iRunnable> a);
 		void runAlgorithm();
+		void setEvil(shared_ptr<iEvil> e);
+		void doEvil(shared_ptr<Qubit> q);
 
 		void addMessage(int address);
 		void addMessage(string data);

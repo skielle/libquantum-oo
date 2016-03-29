@@ -35,7 +35,7 @@ void ChannelListener::Run() {
 		grpc::InsecureServerCredentials());
 	builder.RegisterService(&service);
 	this->server = builder.BuildAndStart();
-	cout<<"Server running on "<<serverAddr<<endl;
+//	cout<<"Server running on "<<serverAddr<<endl;
 	this->server->Wait();
 }
 

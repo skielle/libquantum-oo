@@ -1,6 +1,6 @@
 PWD=$(shell pwd)
 
-INCS=-I$(PWD)/includes -I$(PWD)/includes/gates
+INCS=-I$(PWD)/includes -I$(PWD)/includes/gates -I$(PWD)/includes/evils
 LIBS=-L/usr/local/lib -L$(PWD)/src -lcrypto -lgrpc_unsecure -lgrpc++_unsecure -lgpr -lprotobuf -lpthread -ldl -lssl
 GTK_FLAGS=$(shell pkg-config --cflags gtk+-3.0 vte-2.90)
 GTK_LIBS=$(shell pkg-config --libs gtk+-3.0 vte-2.90)
@@ -19,7 +19,7 @@ O_PB=bin/quantumMessage.o
 O_PB_GRPC=bin/quantumMessage.grpc.o
 O_QOOSIM=bin/lib_qoosim.a
 
-SOURCES=$(wildcard src/*.cpp src/gates/*.cpp)
+SOURCES=$(wildcard src/*.cpp src/gates/*.cpp src/evils/*.cpp)
 OBJECTS=$(patsubst %.cpp, %.o, $(SOURCES))
 
 RUN_SOURCES=$(wildcard runnables/src/*.cpp)
@@ -28,12 +28,12 @@ RUN_OBJECTS=$(patsubst %.cpp, %.o, $(RUN_SOURCES))
 all:
 
 clean:
-	-rm src/*.o bin/* src/*.pb.cc includes/*.pb.h $(O_PB) $(O_PB_GRPC) $(O_LIBQ) includes/gates.h runnables/src/*.o
+	-rm src/*.o bin/* src/*.pb.cc includes/*.pb.h $(O_PB) $(O_PB_GRPC) $(O_LIBQ) includes/gates.h runnables/src/*.o src/gates/*.o
 
 prep:
 	cat includes/gates/*.h > includes/gates.h
 
-protocol_buffers: clean prep
+protocol_buffers: prep
 	cd resources; protoc --cpp_out=. quantumMessage.proto
 	mv resources/*.h includes
 	mv resources/*.cc src
@@ -57,26 +57,10 @@ $(RUN_OBJECTS): runnables/src/%.o :runnables/src/%.cpp
 
 lib_qoosim: protocol_buffers $(OBJECTS) $(RUN_OBJECTS)
 	$(LINK) rcs $(O_QOOSIM) \
-		src/complex.o \
-		src/error.o \
-		src/matrix.o \
-		src/stateVector.o \
-		src/qubitMap.o \
-		src/qubit.o \
-		src/channelListener.o \
-		src/channelService.o \
-		src/channelService_client.o \
-		src/remotePeer.o \
-		src/channel.o \
-		src/system.o \
-		src/systemMessage.o \
-		src/stateVectorOperation.o \
-		src/gates/sigmax.o \
-		src/gates/hadamard.o \
-		runnables/src/echoRunnable.o \
-		runnables/src/echoClientRunnable.o \
-		runnables/src/bb84generator_runnable.o \
-		runnables/src/bb84determiner_runnable.o
+		src/*.o \
+		src/evils/*.o \
+		src/gates/*.o \
+		runnables/src/*.o
 
 test_matrix: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
@@ -159,3 +143,16 @@ test_bb84: clean lib_qoosim
  	$(O_QOOSIM) \
 	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_bb84Generator
+
+test_kak: clean lib_qoosim
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
+	tests/test_kakinitiator.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
+	-o bin/test_kakInitiator
+
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
+	tests/test_kakresponder.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
+	-o bin/test_kakResponder

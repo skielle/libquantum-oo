@@ -6,6 +6,7 @@
 
 #include "channelListener.h"
 #include "echoRunnable.h"
+#include "silentEvil.h"
 #include "system.h"
 
 namespace Quantum {
@@ -16,7 +17,9 @@ System::System () :
 	server(new QuantumChannel::ChannelListener)
 {
 	shared_ptr<iRunnable> a ( new EchoRunnable() );
+	shared_ptr<iEvil> e ( new SilentEvil() );
 	this->algorithm = a;
+	this->evil = e;
 	this->server->setPort(50051);
 }
 
@@ -89,6 +92,14 @@ int System::nextMessage() {
 
 string System::getClassicData(int address) {
 	return this->classicData.at(address);
+}
+
+void System::setEvil(shared_ptr<iEvil> e) {
+	this->evil = e;
+}
+
+void System::doEvil(shared_ptr<Qubit> q) {
+	this->evil->doEvil(q);
 }
 
 }

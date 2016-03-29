@@ -18,7 +18,9 @@ using namespace std;
 
 namespace Quantum {
 void BB84Generator_Runnable::Run() {
-	int i;
+	int i, runCounter;
+
+	int runs = 20;
 
 	string basesChosen;
 	string validBases = "";
@@ -37,14 +39,20 @@ void BB84Generator_Runnable::Run() {
 	QuantumChannel::ChannelService_client csc(this->serverIP, 
 		this->serverPort);
 
+	for ( runCounter = 0; runCounter < runs; runCounter++ ) {
+		keyMaterial.clear();
+		int qubitsGenerated = 0;
+		int qubitsLostToBaseMismatch = 0;
+		int qubitsLostToErrorChecking = 0;
+		int qubitsLostToReconciliation = 0;
+
 	while( keyMaterial.size() < BB84_RAW_SIZE ) {
-		sleep(3);
-		printf("Sending qubits...\r\n");
 		for ( i = 0; i < BB84_BURST_SIZE; i++ ) {
 			bases.at(i) = round(rand() / (float)RAND_MAX);
 			bits.at(i) = round(rand() / (float)RAND_MAX);
 
 			Q.at(i) = Qubit::create();
+			qubitsGenerated++;
 
 			if ( bits.at(i) == 1 ) {
 				Q.at(i)->applyMatrix(gSigmaX);
@@ -56,12 +64,9 @@ void BB84Generator_Runnable::Run() {
 			csc.SendQubit(Q.at(i));
 		}
 
-		printf("Waiting for base message...\r\n");
 		while ( sys->isMessageQueueEmpty() ) { 
-			sleep(1);
 		}
 
-		printf("Processing base message...\r\n");
 		if ( sys->nextMessageType() 
 			== SystemMessage::CLASSIC_DATA_RECEIVED ) {	
 			int address = sys->nextMessage();
@@ -73,13 +78,40 @@ void BB84Generator_Runnable::Run() {
 					keyMaterial.push_back(bits.at(i));
 					validBases += "1";
 				} else {
+					qubitsLostToBaseMismatch++;
 					validBases += "0";
 				}
 			}
-			printf("Sending matching bases...\r\n");
 			csc.SendClassicData(validBases);
 		}
-		printf("Key Material: %i\r\n", keyMaterial.size());
+	}
+
+	while ( sys->isMessageQueueEmpty() ) {
+	}
+	if ( sys->nextMessageType() == SystemMessage::CLASSIC_DATA_RECEIVED ) {
+		int rawMaterialLen = keyMaterial.size();
+		int address = sys->nextMessage();
+		int numErrors = 0;
+		string checkBits = sys->getClassicData(address);
+		int numCheckBits = checkBits.length();
+
+		for ( i = 0; i < checkBits.length(); i++ ) {
+			if ( checkBits.at(i) - '0' != 
+				keyMaterial.at(
+					rawMaterialLen - numCheckBits + i) ) {
+				numErrors++;
+			}
+		}
+		qubitsLostToErrorChecking = numCheckBits;
+		qubitsLostToReconciliation = 
+			((float)numErrors / (float)numCheckBits ) * 
+			(float)(rawMaterialLen - numCheckBits) * 2;
+
+		printf("%i,%i,%i,%i,%i\r\n", qubitsGenerated, 
+			qubitsLostToBaseMismatch,
+			qubitsLostToErrorChecking, numErrors, 
+			qubitsLostToReconciliation );
+	}
 	}
 }
 }

@@ -1,15 +1,15 @@
 /*
- * hadamard.cpp
+ * ry.cpp
  */
 
 #include "matrix.h"
-#include "hadamard.h"
+#include "ry.h"
 
 namespace Quantum {
-Hadamard::Hadamard() : Matrix(2,2) {
-	this->set(0,0,1/sqrt(2));
-	this->set(0,1,1/sqrt(2));
-	this->set(1,0,1/sqrt(2));
-	this->set(1,1,-1/sqrt(2));
+Ry::Ry(double theta) : Matrix(2,2) {
+	this->set(0,0,cos(theta/2));
+	this->set(0,1,sin(theta/2));
+	this->set(1,0,-sin(theta/2));
+	this->set(1,1,cos(theta/2));
 }
 }

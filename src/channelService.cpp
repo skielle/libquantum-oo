@@ -69,6 +69,7 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 	int i, j;
 	int localIndex = 0;
 	QubitMap* qm = QubitMap::getInstance();
+	System* sys = System::getInstance();
 
 	string remoteSystem = 
 		Channel::getIPFromCtxString(context->peer().data());
@@ -79,6 +80,7 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 
 //unserialize the qubit
 	shared_ptr<Qubit> q (&Qubit::unserialize(request));
+
 
 //localize indexes for the qubit
 	for ( i = 0; i < qm->numStateVectors() && localIndex == 0; i++ ) {
@@ -91,10 +93,10 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 					== remotePID
 				&& localVector->remoteQubits.at(j).remoteIndex 
 					== remoteIndex ) {
-				localIndex = localVector->getIndex();
-				q->v = localVector;
-				q->v->remoteQubits.at(position).remoteSystem 
-					= "";
+//				localIndex = localVector->getIndex();
+//				q->v = localVector;
+//				q->v->remoteQubits.at(position).remoteSystem 
+//					= "";
 //TODO:  DO CATCHUP HERE
 			}
 		}
@@ -123,11 +125,11 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 	q->origin.peerServicePort = remotePort;
 	
 	qm->addQubit(q);
+	sys->doEvil(q);
 
 	reply->set_remoteindex(localIndex);
 	reply->set_remotepid(getpid());
 
-	System* sys = System::getInstance();
 	sys->addMessage(qm->findQubit(localIndex, position));
 
 	/*
