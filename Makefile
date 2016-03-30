@@ -156,3 +156,10 @@ test_kak: clean lib_qoosim
  	$(O_QOOSIM) \
 	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_kakResponder
+
+test_tele: lib_qoosim
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
+	tests/test_teleportation.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
+	-o bin/test_teleportation

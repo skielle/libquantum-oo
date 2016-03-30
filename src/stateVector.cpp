@@ -75,7 +75,7 @@ void StateVector::applyOperation(Matrix operation, vector<int> inputs) {
 	for ( i = 0; i < rowMap.size(); i++ ) {
 		this->qsv.set(0, i, scratch.get(0, rowMap.at(i)));
 	}
-//	this->reduce();
+	this->reduce();
 	this->opHistory.push_back(StateVectorOperation(operation, inputs));
 }
 
@@ -182,19 +182,19 @@ void StateVector::reduce() {
 		}
 		if ( !isBitEntangled && this->getWidth() > 1 
 			&& firstValueFound != -1 ) {
-			reduceBit.at(0) = i;
+			reduceBit.at(0) = this->getWidth() - 1 - i;
 			vector<int> rowMap = generateRowMap(reduceBit);
 			Matrix scratch( this->qsv.getCols(), 
 				this->qsv.getRows() / 2 );
 
 			int start = scratch.getRows() * firstValueFound;
 			int end = start + scratch.getRows();
-
-			for ( k = start; k < end; k++ ) {
-				scratch.set(0, k - start, 
-					this->qsv.get(0, rowMap.at(k)));
+			for ( k = 0; k < this->qsv.getRows(); k++ ) {
+				if ( rowMap.at(k) >= start && rowMap.at(k) < end ) {
+					scratch.set(0, rowMap.at(k) - start, 
+						this->qsv.get(0, k));
+				}
 			}
-
 			this->qsv = scratch;
 
 			for ( j = 0; j < m->numQubits(); j++ ) {
@@ -275,7 +275,7 @@ int StateVector::measure(int position, int forceResult,
 	int i;
 	vector<int> peersNotified;
 
-	int zPosition = this->getWidth() - 1 - position;
+	int zPosition = position;
 
 	if ( forceResult != 0 ) {
 		forceResult = 1;
@@ -307,7 +307,7 @@ int StateVector::measure(int position, int forceResult,
 		}
 	}
 	
-//	this->reduce();
+	this->reduce();
 	this->normalize();
 	return forceResult;
 }
