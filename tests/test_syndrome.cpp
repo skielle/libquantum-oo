@@ -21,7 +21,7 @@ int main() {
 	shared_ptr<Qubit> A1 = Qubit::create();
 	shared_ptr<Qubit> A2 = Qubit::create();
 
-	Ry r_omega(M_PI / 180.0 * (double)(i * 5 + i));
+	Ry r_omega(M_PI / 180.0 * (double)(5 * i));
 
 	Hadamard h; 
 
@@ -49,7 +49,8 @@ int main() {
 	L2->v->applyOperation(r_omega, singleInput);
 	singleInput.at(0) = L3;
 	L3->v->applyOperation(r_omega, singleInput);
-/*	inputs.at(1) = A1;
+
+	inputs.at(1) = A1;
 	inputs.at(0) = L1;
 	L1->v->applyOperation(CNOT, inputs);
 	inputs.at(1) = A1;
@@ -63,13 +64,13 @@ int main() {
 	inputs.at(1) = A2;
 	L1->v->applyOperation(CNOT, inputs);
 	int a2_value = A2->measure();
-*/
+
 	int l1_value = L1->measure();
 	int l2_value = L2->measure();
 	int l3_value = L3->measure();
 
-	printf("%i, %i, %i, %i\r\n",
-	i*5,	l1_value, l2_value, l3_value);
+	printf("%i, %i, %i, %i, %i, %i\r\n",
+	i*5,	l1_value, l2_value, l3_value, a1_value, a2_value);
 }
 }
 	return 0;

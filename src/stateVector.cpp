@@ -157,7 +157,6 @@ void StateVector::reduce() {
 	double DOUBLE_ZERO = .000001;
 	int zWidth = this->getWidth() - 1;
 	bool isBitEntangled;
-	vector<int> reduceBit(1);
 
 	QubitMap* m = QubitMap::getInstance();
 
@@ -168,8 +167,9 @@ void StateVector::reduce() {
 	for ( i = this->getWidth() - 1; i >= 0; i-- ) {
 		firstValueFound = -1;
 		isBitEntangled = false;
+		int zI = this->getWidth() - 1 - i;
 		for (j = 0; j < this->qsv.getRows(); j++ ) {
-			currentValue = StateVector::isBitSet(j, i);
+			currentValue = StateVector::isBitSet(j, zI);
 			if ( abs(this->qsv.get(0, j)) > DOUBLE_ZERO ) {
 				if ( firstValueFound == -1 ) {
 					firstValueFound = currentValue; 
@@ -182,17 +182,19 @@ void StateVector::reduce() {
 		}
 		if ( !isBitEntangled && this->getWidth() > 1 
 			&& firstValueFound != -1 ) {
-			reduceBit.at(0) = this->getWidth() - 1 - i;
-			vector<int> rowMap = generateRowMap(reduceBit);
 			Matrix scratch( this->qsv.getCols(), 
 				this->qsv.getRows() / 2 );
 
-			int start = scratch.getRows() * firstValueFound;
-			int end = start + scratch.getRows();
+			j = 0;
 			for ( k = 0; k < this->qsv.getRows(); k++ ) {
-				if ( rowMap.at(k) >= start && rowMap.at(k) < end ) {
-					scratch.set(0, rowMap.at(k) - start, 
-						this->qsv.get(0, k));
+				if ( 
+				(firstValueFound == 1 
+					&& StateVector::isBitSet(k, zI) )
+				|| (firstValueFound == 0 
+					&& !StateVector::isBitSet(k, zI) ) 
+				) {
+					scratch.set(0, j, this->qsv.get(0, k));
+					j++;
 				}
 			}
 			this->qsv = scratch;
@@ -221,7 +223,8 @@ void StateVector::reduce() {
 }
 
 bool StateVector::isBitSet(int index, int position) {
-	return (int ( index / pow(2, (position)) ) % 2 == 1 );
+	return (int ( index / pow(2, (position)) ) 
+			% 2 == 1 );
 }
 
 double StateVector::getAlpha(int position) {
@@ -257,9 +260,7 @@ int StateVector::measure(int position) {
 	int value = 0;
 	double measurement = rand() / (float)RAND_MAX;
 
-	int zPosition = this->getWidth() - 1 - position;
-
-	if ( this->getAlpha(zPosition) < measurement ) {
+	if ( this->getAlpha(position) < measurement ) {
 		value = 1;
 	}
 
@@ -275,7 +276,7 @@ int StateVector::measure(int position, int forceResult,
 	int i;
 	vector<int> peersNotified;
 
-	int zPosition = position;
+	int zPosition = this->getWidth() - 1 - position;
 
 	if ( forceResult != 0 ) {
 		forceResult = 1;
