@@ -20,6 +20,8 @@ class StateVectorOperation {
 		static StateVectorOperation unserialize(
 			const QuantumMessage::StateVectorOperationMessage* 
 			loadMessage);
+		Matrix getOperation();
+		vector<int> getArgs();
 };		
 }
 #endif

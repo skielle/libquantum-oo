@@ -22,55 +22,39 @@ namespace Quantum {
 void EchoClientRunnable::Run() {
 	int i;
 
-	Hadamard hadamard;
-
+	Hadamard h;
+	
 	Matrix cnot = Matrix(4,4);
 	cnot.set(0, 0, 1);
 	cnot.set(1, 1, 1);
 	cnot.set(2, 3, 1);
 	cnot.set(3, 2, 1);
 
+	System* sys = System::getInstance();
 	QuantumChannel::ChannelService_client csc(this->serverIP, this->serverPort);
 	printf("ECHO CLIENT RUNNABLE\n");
 
 	sleep(5);
 
-	vector< shared_ptr<Qubit> > Q(8);
+	shared_ptr<Qubit> q1 = Qubit::create();
+	shared_ptr<Qubit> q2 = Qubit::create();
 
-	for ( i = 0; i < Q.size(); i++ ) {
-		Q.at(i) = Qubit::create();
-		if ( i % 2 == 0 ) {
-			Q.at(i)->applyMatrix(hadamard);
-		} else {
-			vector< shared_ptr<Qubit> > inputs(2);
-			inputs.at(0) = Q.at(i-1);
-			inputs.at(1) = Q.at(i);
-			Q.at(i)->v->applyOperation(cnot, inputs);
-			csc.SendQubit(Q.at(i));
-			Q.at(i-1)->print();
-		}
-	}
+	q1->applyMatrix(h);
 
-	sleep(10);
+	vector< shared_ptr<Qubit> > inputs;
+	inputs.push_back(q1);
+	inputs.push_back(q2);
 
-	for ( i = 0; i < Q.size(); i+=2 ) {
-		try {
-			printf("Measured %i to be %i\r\n", i, 
-				Q.at(i)->measure());
-			Q.at(i)->print();
-		} catch (int e) {
-			printf("Exception (%i) occurred\r\n", e);
-		}
-	}
-	
-	printf("\r\n********** After Measurement **********\r\n\r\n");
-	for ( i = 0; i < Q.size(); i++ ) {
-		printf("Qubit at %i: \r\n", i);
-		try {
-			Q.at(i)->print();
-		} catch (int e) {
-			printf("Exception (%i) occurred\r\n", e);
-		}
-	}
+	q1->v->applyOperation(cnot, inputs);
+	q1->print();
+	csc.SendQubit(q2);
+
+	sleep(5);
+
+	int q1_result = q1->measure();
+	sleep(5);
+	printf("q1: %i\r\n", q1_result);
+
+	sys->stopServer();
 }
 }

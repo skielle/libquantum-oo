@@ -118,7 +118,7 @@ test_channel: clean lib_qoosim
 	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_client
 
-test_system: clean lib_qoosim
+test_system: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
 	tests/test_echoServerRunnable.cpp \
  	$(O_QOOSIM) \

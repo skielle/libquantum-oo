@@ -32,20 +32,27 @@ grpc::Status ChannelService::SendMeasurementMessage(
 	grpc::ServerContext* context,
 	const QuantumMessage::MeasurementMessage* request,
 	QuantumMessage::VoidMessage* reply) {
-	int i;
+	int i, j;
+	bool synced = false;
 
 	string peerIP = Channel::getIPFromCtxString(context->peer().data());
 	
 	QubitMap* qmap = QubitMap::getInstance();
 
-	for ( i = 0; i < qmap->numQubits(); i++ ) {
-		RemoteQubit rq = qmap->getQubit(i)->v->remoteQubits.at(
-			qmap->getQubit(i)->position);
-		if ( rq.remoteSystem != "" 
-			&& rq.remoteIndex == request->vectorindex() ) {
-			qmap->getQubit(i)->v->measure(request->position(), 
-				request->result(), false);
-			break;
+	for ( i = 0; i < qmap->numStateVectors() && !synced; i++ ) {
+		shared_ptr<StateVector> s = qmap->getStateVector(i);
+
+		for ( j = 0; j < s->getWidth() && !synced; j++ ) {
+			RemoteQubit rq = s->remoteQubits.at(j);
+			if ( rq.remoteSystem != ""
+				&& rq.remoteIndex == request->vectorindex() ) {
+				s->qsv = Matrix::unserialize(&(request->m()));
+				s->replay();
+				s->measure(request->position(), 
+					request->result(), false);
+
+				synced = true;
+			}
 		}
 	}
 

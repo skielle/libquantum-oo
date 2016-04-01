@@ -25,9 +25,8 @@ message ComplexMessage {
 message MeasurementMessage {
 	int32 position = 1;
 	int32 vectorIndex = 2;
-	int32 pid = 3;
+	MatrixMessage m = 3;
 	int32 result = 4;
-	int32 callbackPort = 6;
 }
 
 message StateVectorOperationMessage {

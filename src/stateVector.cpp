@@ -275,6 +275,7 @@ int StateVector::measure(int position, int forceResult,
 	bool propagate) {
 	int i;
 	vector<int> peersNotified;
+	Matrix initialState = this->qsv;
 
 	int zPosition = this->getWidth() - 1 - position;
 
@@ -303,7 +304,7 @@ int StateVector::measure(int position, int forceResult,
 
  				csc.SendMeasurementMessage(
 					this->getIndex(), 
-					position, forceResult);
+					position, initialState, forceResult);
 			}
 		}
 	}
@@ -333,6 +334,18 @@ void sync() {
 
 Matrix StateVector::toMatrix() {
 	return this->qsv;
+}
+
+void StateVector::replay() {
+	int i = 0;
+
+	for ( i = 0; i < this->opHistory.size(); i++ ) {
+		this->applyOperation(
+			this->opHistory.at(i).getOperation(),
+			this->opHistory.at(i).getArgs()
+		);
+	}
+	this->opHistory.clear();
 }
 
 }

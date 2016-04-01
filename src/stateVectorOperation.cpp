@@ -47,4 +47,13 @@ StateVectorOperation StateVectorOperation::unserialize(
 
 	return historyEntry;
 }
+
+Matrix StateVectorOperation::getOperation() {
+	return this->operation;
+}
+
+vector<int> StateVectorOperation::getArgs() {
+	return this->args;
+}
+
 }

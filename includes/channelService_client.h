@@ -27,7 +27,8 @@ class ChannelService_client :
 		ChannelService_client(string server, int port);
 
 		bool SendMeasurementMessage(
-			int localIndex, int position, int result);
+			int localIndex, int position, 
+			Matrix state, int result);
 		bool SendQubit(shared_ptr<Qubit> q);
 		bool SendClassicData(string theData);
 };

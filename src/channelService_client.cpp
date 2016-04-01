@@ -36,16 +36,15 @@ ChannelService_client::ChannelService_client(string server, int port)
 	) ) {}
 
 bool ChannelService_client::SendMeasurementMessage(
-	int localIndex, int position, int result) {
+	int localIndex, int position, Matrix state, int result) {
 	QuantumMessage::MeasurementMessage measurement;
 	QuantumMessage::VoidMessage rc;
 	grpc::ClientContext ctx;
 
 	measurement.set_vectorindex(localIndex);
 	measurement.set_position(position);
-	measurement.set_pid(getpid());
+	measurement.mutable_m()->CopyFrom(state.serialize());
 	measurement.set_result(result);
-	measurement.set_callbackport(Channel::getServicePort());
 
 	grpc::Status status = 
 		stub_->SendMeasurementMessage(
