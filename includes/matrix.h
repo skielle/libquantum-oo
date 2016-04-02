@@ -21,6 +21,7 @@ class Matrix {
 	public:
 		Matrix();
 		Matrix(int cols, int rows);
+		Matrix(const Matrix &m);
 
 		void setRows(int rows);
 		void setCols(int cols);
@@ -31,6 +32,7 @@ class Matrix {
 		static Matrix inverse(Matrix m);
 		complex<double> get(int x, int y);
 		void set(int x, int y, complex<double> v);
+		void copy(const Matrix &m);
 		static Matrix matrixTensor(Matrix a, Matrix b);
 		static Matrix matrixMultiply(Matrix a, Matrix b);
 		static Matrix identity();

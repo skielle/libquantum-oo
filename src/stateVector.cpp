@@ -56,6 +56,11 @@ void StateVector::applyOperation(Matrix operation, int input1, int input2) {
 }
 
 void StateVector::applyOperation(Matrix operation, vector<int> inputs) {
+	this->applyOperation(operation, inputs, true);
+}
+
+void StateVector::applyOperation(Matrix operation, vector<int> inputs,
+	bool addToHistory) {
 	Matrix expandedOperation = operation;
 	unsigned int i; 
 	vector<int> rowMap = generateRowMap(inputs);
@@ -75,8 +80,12 @@ void StateVector::applyOperation(Matrix operation, vector<int> inputs) {
 	for ( i = 0; i < rowMap.size(); i++ ) {
 		this->qsv.set(0, i, scratch.get(0, rowMap.at(i)));
 	}
-	this->reduce();
-	this->opHistory.push_back(StateVectorOperation(operation, inputs));
+
+	if ( addToHistory ) {
+		this->reduce();
+		this->opHistory.push_back(
+			StateVectorOperation(operation, inputs));
+	}
 }
 
 void StateVector::applyOperation(Matrix operation, 
@@ -275,7 +284,7 @@ int StateVector::measure(int position, int forceResult,
 	bool propagate) {
 	int i;
 	vector<int> peersNotified;
-	Matrix initialState = this->qsv;
+	Matrix initialState(this->qsv);
 
 	int zPosition = this->getWidth() - 1 - position;
 
@@ -316,15 +325,23 @@ int StateVector::measure(int position, int forceResult,
 
 void StateVector::normalize() {
 	int i;
+	double realPart = 0.0;
+	double imagPart = 0.0;
 
 	double total = 0.0;
 
 	for ( i = 0; i < this->qsv.getRows(); i++ ) {
-		total += pow(abs(this->qsv.get(0, i)),2);
+		realPart = real(this->qsv.get(0, i));
+		imagPart = imag(this->qsv.get(0, i));
+		total += realPart*realPart + imagPart*imagPart;
 	}
 
 	for ( i = 0; i < this->qsv.getRows(); i++ ) {
-		this->qsv.set(0, i, sqrt(pow(this->qsv.get(0, i), 2)/total));
+		realPart = real(this->qsv.get(0, i));
+		imagPart = imag(this->qsv.get(0, i));
+
+		this->qsv.set(0, i, 
+			sqrt((realPart*realPart + imagPart*imagPart) / total));
 	}
 }
 
@@ -342,7 +359,8 @@ void StateVector::replay() {
 	for ( i = 0; i < this->opHistory.size(); i++ ) {
 		this->applyOperation(
 			this->opHistory.at(i).getOperation(),
-			this->opHistory.at(i).getArgs()
+			this->opHistory.at(i).getArgs(),
+			false
 		);
 	}
 	this->opHistory.clear();

@@ -11,6 +11,7 @@
 #include "remotePeer.h"
 #include "qubit.h"
 #include "qubitMap.h"
+#include "gates.h"
 
 using namespace std;
 
@@ -21,9 +22,7 @@ void EchoRunnable::Run() {
 	int i;
 	RemotePeerList* rpl = RemotePeerList::getInstance();	
 	QubitMap* qm = QubitMap::getInstance();
-
-	printf("ECHORUNNABLE\n");
-
+	
 	while ( sys->isMessageQueueEmpty() ) {
 	}
 
@@ -31,12 +30,10 @@ void EchoRunnable::Run() {
 		== SystemMessage::QUANTUM_DATA_RECEIVED ) {
 		int address = sys->nextMessage();
 
-		shared_ptr<Qubit> q = qm->getQubit(i);
-
-		for ( i = 0; i < 3; i++ ) {
-			q->print();
-			sleep(10);
-		}
+		sleep(1);
+		shared_ptr<Qubit> q2 = qm->getQubit(i);
+		sleep(5);
+		q2->print();
 	}
 
 	sys->stopServer();

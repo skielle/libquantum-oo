@@ -29,6 +29,10 @@ Matrix::Matrix(int cols, int rows) {
 	}
 }
 
+Matrix::Matrix(const Matrix &m) {
+	this->copy(m);
+}
+
 void Matrix::setRows(int rows) { this->rows = rows; }
 void Matrix::setCols(int cols) { this->cols = cols; }
 int Matrix::getRows() { return this->rows; }
@@ -172,6 +176,18 @@ void Matrix::print() {
 		printf("\n");
 	}
 	printf("\n");
+}
+
+void Matrix::copy(const Matrix &m) {
+	int i;
+	this->rows = m.rows;
+	this->cols = m.cols;
+	this->t = new vector< complex<double> > ( 
+		this->getRows() * this->getCols(), 0) ;
+
+	for ( i = 0; i < m.t->size(); i++ ) {
+		this->t->at(i) = m.t->at(i);
+	}
 }
 
 QuantumMessage::MatrixMessage Matrix::serialize() {

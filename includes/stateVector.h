@@ -33,6 +33,8 @@ class StateVector: public enable_shared_from_this<StateVector> {
 		void applyOperation(Matrix operation, int position);
 		void applyOperation(Matrix operation, int input1, int input2);
 		void applyOperation(Matrix operation, vector<int> inputs);
+		void applyOperation(Matrix operation, vector<int> inputs,
+			bool addToHistory);
 		void applyOperation(Matrix operation, 
 			vector< shared_ptr<Qubit> > inputs);
 		void getQubit(int position);

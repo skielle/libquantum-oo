@@ -46,7 +46,8 @@ grpc::Status ChannelService::SendMeasurementMessage(
 			RemoteQubit rq = s->remoteQubits.at(j);
 			if ( rq.remoteSystem != ""
 				&& rq.remoteIndex == request->vectorindex() ) {
-				s->qsv = Matrix::unserialize(&(request->m()));
+				Matrix m = Matrix::unserialize(&(request->m()));
+				s->qsv = m;
 				s->replay();
 				s->measure(request->position(), 
 					request->result(), false);
