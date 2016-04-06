@@ -49,7 +49,6 @@ void KakInitiator_Runnable::Run() {
 	for ( i = 0; i < KAK_KEY_SIZE; i++ ) {
 		//introduce a small delay to prevent resource exhaustion
 		//on localhost <----> localhost connections
-		if ( i % KAK_BURST_SIZE == 0 ) { sleep(1); }
 		//generate a random bit value {0, 1}
 		bits.push_back(round(rand() / (float)RAND_MAX));
 		//generate a random rotation value 0 < rotation <= 1
@@ -73,7 +72,6 @@ void KakInitiator_Runnable::Run() {
 
 	//receive returned qubits
 	for ( i = 0; i < KAK_KEY_SIZE; i++ ) {
-		if ( i % KAK_BURST_SIZE == 0 ) { sleep(1); }
 		//wait for the system to receive the qubit and put
 		//a message on the queue
 		while ( sys->isMessageQueueEmpty() ) { 
@@ -90,9 +88,6 @@ void KakInitiator_Runnable::Run() {
 		Ry r = Ry(-1.0*rotations.at(i));
 		//apply the counter-rotational gate
 		q.at(i)->applyMatrix(r);
-	}
-	for ( i = 0; i < KAK_KEY_SIZE; i++ ) {
-		if ( i % KAK_BURST_SIZE == 0 ) { sleep(1); }
 		//return the qubit
 		csc.SendQubit(q.at(i));
 	}
@@ -101,7 +96,6 @@ void KakInitiator_Runnable::Run() {
 	//we're going to receive the results from our peer
 	//and count how many errors were introduced
 	for ( i = 0; i < KAK_KEY_SIZE; i++ ) {
-		if ( i % KAK_BURST_SIZE == 0 ) { sleep(1); }
 		//wait for a message on the queue
 		while ( sys->isMessageQueueEmpty() ) {
 		}

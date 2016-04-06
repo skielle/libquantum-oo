@@ -35,7 +35,6 @@ void KakResponder_Runnable::Run() {
 	vector< shared_ptr<Qubit> > q;
 
 	for ( i = 0; i < KAK_KEY_SIZE; i++ ) {
-		if ( i % KAK_BURST_SIZE == 0 ) { sleep(1); }
 		rotations.push_back((rand() / (float)RAND_MAX) * M_PI / 8.0);
 		while ( sys->isMessageQueueEmpty() ) {
 		}
@@ -51,14 +50,12 @@ void KakResponder_Runnable::Run() {
 	}
 
 	for ( i = 0; i < KAK_KEY_SIZE; i++ ) {
-		if ( i % KAK_BURST_SIZE == 0 ) { sleep(1); }
 		Ry r = Ry(rotations.at(i));
 		q.at(i)->applyMatrix(r);
 		csc->SendQubit(q.at(i));
 	}
 
 	for ( i = 0; i < KAK_KEY_SIZE; i++ ) {
-		if ( i % KAK_BURST_SIZE == 0 ) { sleep(1); }
 		while ( sys->isMessageQueueEmpty() ) {
 		}
 		int address = sys->nextMessage();
@@ -66,7 +63,6 @@ void KakResponder_Runnable::Run() {
 	}
 
 	for ( i = 0; i < KAK_KEY_SIZE; i++ ) {
-		if ( i % KAK_BURST_SIZE == 0 ) { sleep(1); }
 		//counter-rotate q
 		Ry r = Ry(-1 * rotations.at(i));
 		q.at(i)->applyMatrix(r);
