@@ -47,8 +47,6 @@ void KakInitiator_Runnable::Run() {
 	//this implementation sends a key of fixed size, with all
 	//key-bits sent in serial
 	for ( i = 0; i < KAK_KEY_SIZE; i++ ) {
-		//introduce a small delay to prevent resource exhaustion
-		//on localhost <----> localhost connections
 		//generate a random bit value {0, 1}
 		bits.push_back(round(rand() / (float)RAND_MAX));
 		//generate a random rotation value 0 < rotation <= 1
