@@ -15,6 +15,8 @@
 #include "stateVector.h"
 #include "stateVectorOperation.h"
 
+#include "externals/jacobi_eigenvalue.hpp"
+
 using namespace std;
 
 namespace Quantum {
@@ -321,6 +323,53 @@ int StateVector::measure(int position, int forceResult,
 	this->reduce();
 	this->normalize();
 	return forceResult;
+}
+
+void StateVector::fromDensity(Matrix rho) {
+	int i, j;
+	int N = rho.getRows();
+	double A[N*N];
+	double V[N*N];
+	double D[N];
+	int it_num;
+	int rot_num;
+
+	if ( rho.getRows() != rho.getCols() 
+		|| rho.getRows() != this->qsv.getRows() ) {
+		return;
+	}
+
+	for ( i = 0; i < this->qsv.getRows(); i++ ) {
+		this->qsv.set(0, i, 0);
+	}
+
+	for ( i = 0; i < N; i++ ) {
+		for ( j = 0; j < N; j++ ) {
+			A[i*N + j] = real(rho.get(i, j));
+		}
+	}
+	jacobi_eigenvalue(N, A, 20, V, D, it_num, rot_num);
+	for ( i = 0; i < N; i++ ) {
+		for ( j = 0; j < N; j++ ) {
+			complex<double> temp = this->qsv.get(0, j);
+			temp += D[i] * V[i*N+j];
+			this->qsv.set(0, j, temp);
+		}
+	}
+}
+
+Matrix StateVector::toDensity() {
+	int i, j;
+	Matrix rho(this->qsv.getRows(), this->qsv.getRows());
+
+	for ( i = 0; i < this->qsv.getRows(); i++ ) {
+		for ( j = 0; j < this->qsv.getRows(); j++ ) {
+			complex<double> temp = rho.get(i, j);
+			temp += this->qsv.get(i, 0) * this->qsv.get(j, 0);
+			rho.set(i, j, temp);
+		}		
+	}
+	return rho;
 }
 
 void StateVector::normalize() {

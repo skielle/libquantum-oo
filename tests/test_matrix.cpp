@@ -82,6 +82,6 @@ printf("serialization done.\n");
 	Matrix z = Matrix::matrixTensor(m, ident);
 	printf("I X m\n");
 	z.print();
-	
+
 	return 0;
 }

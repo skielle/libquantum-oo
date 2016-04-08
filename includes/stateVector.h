@@ -44,6 +44,8 @@ class StateVector: public enable_shared_from_this<StateVector> {
 		int measure(int position, int forceResult);
 		int measure(int position, int forceResult,
 			bool propagate);
+		void fromDensity(Matrix rho);
+		Matrix toDensity();
 		void updateSystemsTable();
 		void print();
 		int getWidth();

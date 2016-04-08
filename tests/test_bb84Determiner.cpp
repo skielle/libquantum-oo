@@ -8,8 +8,8 @@
 int main() {
 
 	System* testSys = System::getInstance();
-	shared_ptr<SilentEvil> eve(new SilentEvil());
-	eve->setEvilness(1);
+	shared_ptr<AmplitudeDamping> eve(new AmplitudeDamping());
+	eve->setEta(.3);
 
 	shared_ptr<BB84Determiner_Runnable> crun ( 
 		new BB84Determiner_Runnable());

@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <memory.h>
+#include "amplitudeDamping.h"
+#include "gates.h"
 #include "qubit.h"
 #include "qubitMap.h"
 //#include "../quantumMessage.pb.h"
@@ -24,6 +26,24 @@ int main() {
 	c->print();
 
 	d->print();
+
+	Hadamard h;
+	d->applyMatrix(h);
+	d->print();
+
+	Matrix rho = d->v->toDensity();
+	rho.print();
+
+	d->v->fromDensity(rho);
+
+	d->print();
+
+	AmplitudeDamping er;
+	er.setEta(.10);
+
+	er.doEvil(d);
+
+	d->print();	
 
 	return 0;
 }
