@@ -25,6 +25,10 @@ OBJECTS=$(patsubst %.cpp, %.o, $(SOURCES))
 RUN_SOURCES=$(wildcard runnables/src/*.cpp)
 RUN_OBJECTS=$(patsubst %.cpp, %.o, $(RUN_SOURCES))
 
+EXTERNAL_SOURCES=$(wildcard src/externals/*.cpp)
+EXTERNAL_OBJECTS=$(patsubst %.cpp, %.o, $(EXTERNAL_SOURCES))
+EXTERNAL_INCS=-I$(PWD)/includes/externals
+
 all:
 
 clean:
@@ -46,19 +50,29 @@ protocol_buffers: prep
 		-o $(O_PB_GRPC)
 
 $(OBJECTS): src/%.o :src/%.cpp
-	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
+	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) $(RUN_INCS) $(EXTERNAL_INCS) \
 		-c $< \
 		-o $@
+
+runnables: $(RUN_OBJECTS)
 
 $(RUN_OBJECTS): runnables/src/%.o :runnables/src/%.cpp
-	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
+	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) $(RUN_INCS) $(EXTERNAL_INCS) \
 		-c $< \
 		-o $@
 
-lib_qoosim: protocol_buffers $(OBJECTS) $(RUN_OBJECTS)
+externals: $(EXTERNAL_OBJECTS)
+
+$(EXTERNAL_OBJECTS): src/externals/%.o :src/externals/%.cpp
+	$(CC) $(C11_LIBFLAGS) $(INCS) $(LIBS) $(EXTERNAL_INCS) \
+		-c $< \
+		-o $@
+
+lib_qoosim: protocol_buffers $(OBJECTS) $(RUN_OBJECTS) $(EXTERNAL_OBJECTS)
 	$(LINK) rcs $(O_QOOSIM) \
 		src/*.o \
 		src/evils/*.o \
+		src/externals/*.o \
 		src/gates/*.o \
 		runnables/src/*.o
 
@@ -66,18 +80,21 @@ test_matrix: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
 	tests/test_matrix.cpp \
  	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_matrix
 
 test_stateVector: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
 	tests/test_stateVector.cpp \
  	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_stateVector
 
 test_qubitMap: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) \
 	tests/test_qubitMap.cpp \
  	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_qubitMap 
 
 test_qubit: lib_qoosim
@@ -130,6 +147,19 @@ test_system: lib_qoosim
  	$(O_QOOSIM) \
 	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_echoClientRunnable
+
+test_teleportation: lib_qoosim
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
+	tests/test_teleportationServer.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
+	-o bin/test_teleportationServer
+
+	$(CC) $(CFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
+	tests/test_teleportationClient.cpp \
+ 	$(O_QOOSIM) \
+	$(O_PB) $(O_PB_GRPC) \
+	-o bin/test_teleportationClient
 
 test_bb84: clean lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
