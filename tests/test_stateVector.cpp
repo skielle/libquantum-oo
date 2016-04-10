@@ -4,8 +4,6 @@
 #include <memory.h>
 #include <vector>
 
-//#include "../quantumMessage.pb.h"
-//#include "../complex.h"
 #include "stateVector.h"
 
 using namespace std;

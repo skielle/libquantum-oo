@@ -6,8 +6,6 @@
 #include "gates.h"
 #include "qubit.h"
 #include "qubitMap.h"
-//#include "../quantumMessage.pb.h"
-//#include "../complex.h"
 #include "stateVector.h"
 
 using namespace std;

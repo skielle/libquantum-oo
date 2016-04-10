@@ -23,10 +23,6 @@ Matrix::Matrix(int cols, int rows) {
 
 	this->t = new vector< complex<double> > ( 
 		this->getRows() * this->getCols(), 0) ;
-
-	if ( !this->t ) {
-		Error::error(QUANTUM_ENOMEM);
-	}
 }
 
 Matrix::Matrix(const Matrix &m) {

@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <memory.h>
-//#include "../quantumMessage.pb.h"
-//#include "../complex.h"
 #include "matrix.h"
 
 using namespace std;

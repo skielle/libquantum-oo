@@ -1,33 +1,42 @@
 /*
  * channelService.cpp
  */
-
+//STD C++ includes
 #include <memory>
 #include <thread>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+//Googe RPC includes
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
 #include <grpc++/server_context.h>
 #include <grpc++/support/status.h>
 
+//QooSim includes
 #include "channel.h"
 #include "channelService.h"
 #include "channelService_client.h"
-#include "__stub_remoteQubit.h"
 #include "qubit.h"
 #include "qubitMap.h"
 #include "remotePeer.h"
-#include "channel.h"
 #include "system.h"
+#include "__stub_remoteQubit.h"
 
 using namespace std;
 using namespace Quantum;
 
 namespace QuantumChannel {
 
+/*
+ * SendMeasurementMessage
+ * @param context the server context
+ * @param request the mesurement message
+ * @param reply void
+ * @return GRPC Status
+ * Receive a mearuerment message
+ */
 grpc::Status ChannelService::SendMeasurementMessage(
 	grpc::ServerContext* context,
 	const QuantumMessage::MeasurementMessage* request,
@@ -60,6 +69,13 @@ grpc::Status ChannelService::SendMeasurementMessage(
 	return grpc::Status::OK;
 }
 
+/*
+ * SendClassicData
+ * @param context the server context
+ * @param request the classic data message
+ * @param reply void
+ * @return GRPC Status
+ */
 grpc::Status ChannelService::SendClassicData(grpc::ServerContext* context,
 	const QuantumMessage::ClassicMessage* request,
 	QuantumMessage::VoidMessage* reply) {
@@ -70,8 +86,14 @@ grpc::Status ChannelService::SendClassicData(grpc::ServerContext* context,
 	return grpc::Status::OK;
 }	
 
+/*
+ * SendQubit
+ * @param context the server context
+ * @param request the qubit message
+ * @param reply void
+ * @return GRPC Status
+ */
 grpc::Status ChannelService::SendQubit(grpc::ServerContext* context, 
-	
 	const QuantumMessage::QubitMessage* request, 
 	QuantumMessage::RemoteIndexMessage* reply) {
 	int i, j;
@@ -101,11 +123,6 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 					== remotePID
 				&& localVector->remoteQubits.at(j).remoteIndex 
 					== remoteIndex ) {
-//				localIndex = localVector->getIndex();
-//				q->v = localVector;
-//				q->v->remoteQubits.at(position).remoteSystem 
-//					= "";
-//TODO:  DO CATCHUP HERE
 			}
 		}
 	}
@@ -139,12 +156,6 @@ grpc::Status ChannelService::SendQubit(grpc::ServerContext* context,
 	reply->set_remotepid(getpid());
 
 	sys->addMessage(qm->findQubit(localIndex, position));
-
-	/*
-	printf("Recv qubit position %i, vector %i from system %s, pid %i, vector %i\r\n",
-		position, localIndex, remoteSystem.c_str(), 
-		remotePID, remoteIndex);
-	*/
 
 	return grpc::Status::OK;
 }

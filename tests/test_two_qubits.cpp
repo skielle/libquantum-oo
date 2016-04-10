@@ -4,8 +4,6 @@
 #include <memory.h>
 #include "qubit.h"
 #include "qubitMap.h"
-//#include "../quantumMessage.pb.h"
-//#include "../complex.h"
 #include "stateVector.h"
 #include "gates.h"
 
