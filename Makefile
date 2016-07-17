@@ -161,7 +161,7 @@ test_teleportation: lib_qoosim
 	$(O_PB) $(O_PB_GRPC) \
 	-o bin/test_teleportationClient
 
-test_bb84: clean lib_qoosim
+test_bb84: lib_qoosim
 	$(CC) $(CFLAGS) $(INCS) $(LIBS) $(RUN_INCS) \
 	tests/test_bb84Determiner.cpp \
  	$(O_QOOSIM) \

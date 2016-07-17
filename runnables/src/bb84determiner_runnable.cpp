@@ -23,7 +23,6 @@ namespace Quantum {
 void BB84Determiner_Runnable::Run() {
 	int i, runCounter;
 
-	int runs = 20;
 	int numCheckBits = (BB84_RAW_SIZE - BB84_KEY_SIZE ) / 2;
 
 	vector<int> bases(BB84_BURST_SIZE);
@@ -43,8 +42,6 @@ void BB84Determiner_Runnable::Run() {
 
 	string validBases;
 
-	for ( runCounter = 0; runCounter < runs; runCounter++ ) {
-		keyMaterial.clear();
 	while ( keyMaterial.size() < BB84_RAW_SIZE ) {
 		for ( i = 0; i < bits.size(); i ++ ) {
 			while ( sys->isMessageQueueEmpty() ) {
@@ -111,6 +108,6 @@ void BB84Determiner_Runnable::Run() {
 	}
 	csc->SendClassicData(checkBits);
 
-	}
+	sys->stopServer();
 }
 }

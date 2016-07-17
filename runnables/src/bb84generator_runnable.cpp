@@ -20,8 +20,6 @@ namespace Quantum {
 void BB84Generator_Runnable::Run() {
 	int i, runCounter;
 
-	int runs = 20;
-
 	string basesChosen;
 	string validBases = "";
 	vector<int> bases(BB84_BURST_SIZE);
@@ -39,12 +37,11 @@ void BB84Generator_Runnable::Run() {
 	QuantumChannel::ChannelService_client csc(this->serverIP, 
 		this->serverPort);
 
-	for ( runCounter = 0; runCounter < runs; runCounter++ ) {
-		keyMaterial.clear();
-		int qubitsGenerated = 0;
-		int qubitsLostToBaseMismatch = 0;
-		int qubitsLostToErrorChecking = 0;
-		int qubitsLostToReconciliation = 0;
+	keyMaterial.clear();
+	int qubitsGenerated = 0;
+	int qubitsLostToBaseMismatch = 0;
+	int qubitsLostToErrorChecking = 0;
+	int qubitsLostToReconciliation = 0;
 
 	while( keyMaterial.size() < BB84_RAW_SIZE ) {
 		for ( i = 0; i < BB84_BURST_SIZE; i++ ) {
@@ -112,6 +109,6 @@ void BB84Generator_Runnable::Run() {
 			qubitsLostToErrorChecking, numErrors, 
 			qubitsLostToReconciliation );
 	}
-	}
+	sys->stopServer();
 }
 }
